@@ -1,0 +1,68 @@
+@row-cls: ~'@{prefix}-row';
+@col-cls: ~'@{prefix}-col';
+
+.@{row-cls} {
+  position: relative;
+  height: auto;
+  margin-left: 0;
+  margin-right: 0;
+  zoom: 1;
+  box-sizing: border-box;
+
+  &:after{
+    display: table;
+    clear: both;
+    content: '';
+  }
+
+  &--flex {
+    display: flex;
+
+    &:after {
+      display: none;
+    }
+  }
+
+  &--justify-center {
+    justify-content: center;
+  }
+
+  &--justify-end {
+    justify-content: flex-end;
+  }
+
+  &--justify-space-between {
+    justify-content: space-between;
+  }
+
+  &--justify-space-around {
+    justify-content: space-around;
+  }
+
+  &--align-center {
+    align-items: center;
+  }
+
+  &--align-bottom {
+    align-items: flex-end;
+  }
+}
+
+.@{col-cls} {
+  float: left;
+  box-sizing: border-box;
+  min-height: 1px;
+}
+
+.generate-col(24);
+.generate-col(@n, @i: 1) when (@i =< @n) {
+  .@{col-cls}--@{i} {
+    width: @i * (100% / 24);
+  }
+
+  .@{col-cls}--offset-@{i} {
+    margin-left: @i * (100% / 24);
+  }
+
+  .generate-col(@n, (@i + 1));
+}
