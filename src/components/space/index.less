@@ -1,0 +1,44 @@
+@space-cls: ~'@{prefix}-space';
+
+.@{space-cls} {
+  display: inline-flex;
+
+  &--horizontal {
+    .@{space-cls}__item {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  &--vertical {
+    flex-direction: column;
+  }
+
+  &--align-baseline {
+    align-items: baseline;
+  }
+
+  &--align-start {
+    align-items: flex-start;
+  }
+
+  &--align-end {
+    align-items: flex-end;
+  }
+
+  &--align-center {
+    align-items: center;
+  }
+
+  &--wrap {
+    flex-wrap: wrap;
+  }
+
+  &--fill {
+    display: flex;
+  }
+
+  &__item:empty {
+    display: none;
+  }
+}
