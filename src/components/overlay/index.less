@@ -1,0 +1,25 @@
+@overlay-cls: ~'@{prefix}-overlay';
+
+page {
+  --overlay-layer: 699;
+  --overlay-duration: var(--duration-slow);
+  --overlay-background: rgba(var(--color-black-base), .55);
+}
+
+.@{overlay-cls} {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--overlay-background);
+  z-index: var(--overlay-layer);
+}
+
+.overlay-fade-enter-active {
+  animation: var(--overlay-duration) fade-in both var(--ease-out-sine);
+}
+
+.overlay-fade-leave-active {
+  animation: var(--overlay-duration) fade-out both var(--ease-in-sine);
+}
