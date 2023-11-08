@@ -1,0 +1,16 @@
+@sticky-cls: ~'@{prefix}-sticky';
+
+page {
+  --sticky-layer: 688;
+}
+
+.@{sticky-cls} {
+  position: relative;
+
+  &--fixed {
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: var(--sticky-layer);
+  }
+}
