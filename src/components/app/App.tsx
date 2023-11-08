@@ -1,6 +1,6 @@
 import { NavigationBar } from '../navigation-bar'
 import { Loading } from '../loading'
-import { SafeArea } from '../safa-area'
+import { SafeArea } from '../safe-area'
 import { resultSharedProps, type ResultStatusType } from '../result'
 
 import {
