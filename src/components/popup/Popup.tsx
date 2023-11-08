@@ -1,5 +1,5 @@
 import type { ViewProps, ITouchEvent } from '@tarojs/components'
-import { SafeArea } from '../safa-area'
+import { SafeArea } from '../safe-area'
 import { Overlay } from '../overlay'
 
 import {
