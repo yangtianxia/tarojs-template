@@ -1,0 +1,107 @@
+@radio-group-cls: ~'@{prefix}-radio-group';
+@radio-cls: ~'@{prefix}-radio';
+
+page {
+  --radio-size: 40rpx;
+  --radio-border-color: var(--color-grey-500);
+  --radio-duration: var(--duration-fast);
+  --radio-label-margin: var(--size-xs);
+  --radio-label-color: var(--color-text);
+  --radio-label-font-size: var(--size-md);
+  --radio-checked-icon-color: var(--color-primary);
+  --radio-disabled-icon-color: var(--color-grey-500);
+  --radio-disabled-label-color: var(--color-text-base);
+  --radio-disabled-background: var(--color-border);
+}
+
+.@{radio-group-cls} {
+  &--horizontal {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+.@{radio-cls} {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+
+  &--disabled {
+    cursor: not-allowed;
+  }
+
+  &--label-disabled {
+    cursor: default;
+  }
+
+  &--horizontal {
+    margin-right: var(--size-xs);
+  }
+
+  &__icon {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.9em;
+    height: 0.9em;
+    color: transparent;
+    font-size: var(--radio-size);
+    line-height: 1em;
+    border: 2rpx solid var(--radio-border-color);
+    transition-duration: var(--radio-duration);
+    transition-property: color, border-color, background-color;
+    box-sizing: border-box;
+    cursor: pointer;
+
+    &-check {
+      width: 0.7em;
+      height: 0.7em;
+      mask-image: var(--icon-check);
+      mask-repeat: no-repeat;
+      mask-size: contain;
+      background-color: currentColor;
+    }
+
+    &--round {
+      border-radius: var(--radius-full);
+    }
+
+    &--square {
+      border-radius: var(--radius-xs);
+    }
+
+    &--checked {
+      color: var(--color-white);
+      border-color: var(--radio-checked-icon-color);
+      background-color: var(--radio-checked-icon-color);
+    }
+
+    &--disabled {
+      border-color: var(--radio-disabled-icon-color);
+      background-color: var(--radio-disabled-background);
+      cursor: not-allowed;
+    }
+
+    &--disabled&--checked {
+      color: var(--radio-disabled-icon-color);
+    }
+  }
+
+  &__label {
+    margin-left: var(--radio-label-margin);
+    color: var(--radio-label-color);
+    font-size: var(--radio-label-font-size);
+    line-height: var(--radio-size);
+
+    &--left {
+      margin: 0 var(--radio-label-margin) 0 0;
+    }
+
+    &--disabled {
+      color: var(--radio-disabled-label-color);
+    }
+  }
+}
