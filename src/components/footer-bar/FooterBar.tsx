@@ -1,4 +1,4 @@
-import { SafeArea } from '../safa-area'
+import { SafeArea } from '../safe-area'
 
 import BEM from '@/shared/bem'
 import debounce from 'debounce'
