@@ -1,0 +1,107 @@
+@checkbox-group-cls: ~'@{prefix}-checkbox-group';
+@checkbox-cls: ~'@{prefix}-checkbox';
+
+page {
+  --checkbox-size: var(--size-5);
+  --checkbox-border-color: var(--color-grey-500);
+  --checkbox-duration: var(--duration-fast);
+  --checkbox-label-margin: var(--size-xs);
+  --checkbox-label-color: var(--color-text);
+  --checkbox-label-font-size: var(--size-md);
+  --checkbox-checked-icon-color: var(--color-primary);
+  --checkbox-disabled-icon-color: var(--color-grey-500);
+  --checkbox-disabled-label-color: var(--color-text-base);
+  --checkbox-disabled-background: var(--color-border);
+}
+
+.@{checkbox-group-cls} {
+  &--horizontal {
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+.@{checkbox-cls} {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+
+  &--disabled {
+    cursor: not-allowed;
+  }
+
+  &--label-disabled {
+    cursor: default;
+  }
+
+  &--horizontal {
+    margin-right: var(--size-xs);
+  }
+
+  &__icon {
+    flex: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.9em;
+    height: 0.9em;
+    color: transparent;
+    font-size: var(--checkbox-size);
+    line-height: 1em;
+    border: 2rpx solid var(--checkbox-border-color);
+    transition-duration: var(--checkbox-duration);
+    transition-property: color, border-color, background-color;
+    box-sizing: border-box;
+    cursor: pointer;
+
+    &-check {
+      width: 0.7em;
+      height: 0.7em;
+      mask-image: var(--icon-check);
+      mask-repeat: no-repeat;
+      mask-size: contain;
+      background-color: currentColor;
+    }
+
+    &--round {
+      border-radius: var(--radius-full);
+    }
+
+    &--square {
+      border-radius: var(--radius-xs);
+    }
+
+    &--checked {
+      color: var(--color-white);
+      border-color: var(--checkbox-checked-icon-color);
+      background-color: var(--checkbox-checked-icon-color);
+    }
+
+    &--disabled {
+      border-color: var(--checkbox-disabled-icon-color);
+      background-color: var(--checkbox-disabled-background);
+      cursor: not-allowed;
+    }
+
+    &--disabled&--checked {
+      color: var(--checkbox-disabled-icon-color);
+    }
+  }
+
+  &__label {
+    margin-left: var(--checkbox-label-margin);
+    color: var(--checkbox-label-color);
+    font-size: var(--checkbox-label-font-size);
+    line-height: var(--checkbox-size);
+
+    &--left {
+      margin: 0 var(--checkbox-label-margin) 0 0;
+    }
+
+    &--disabled {
+      color: var(--checkbox-disabled-label-color);
+    }
+  }
+}
