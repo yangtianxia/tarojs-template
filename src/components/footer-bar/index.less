@@ -1,0 +1,26 @@
+@footer-bar-cls: ~'@{prefix}-footer-bar';
+
+page {
+  --footer-bar-layer: 899;
+  --footer-bar-vertical-padding: var(--size-xl);
+  --footer-bar-horizontal-padding: var(--size-xl);
+  --footer-bar-background-color: var(--color-bgcolor, inherit);
+}
+
+.@{footer-bar-cls} {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: var(--footer-bar-layer);
+  background-color: var(--footer-bar-background-color);
+
+  &__content {
+    padding: 0 var(--footer-bar-horizontal-padding);
+    padding-top: var(--footer-bar-vertical-padding);
+  }
+
+  &__bottom {
+    padding-bottom: var(--footer-bar-vertical-padding);
+  }
+}
