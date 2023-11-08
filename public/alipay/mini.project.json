@@ -1,0 +1,10 @@
+{
+  "format": 2,
+  "miniprogramRoot": "./",
+  "compileOptions": {
+    "enableAppxNg": true,
+    "enableHMR": true,
+    "enableNodeModuleBabelTransform": true,
+    "component2": true
+  }
+}
