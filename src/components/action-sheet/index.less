@@ -1,0 +1,96 @@
+@import url(../../style/hairline.less);
+
+@action-sheet-cls: ~"@{prefix}-action-sheet";
+
+page {
+  --action-sheet-max-height: 80%;
+  --action-sheet-description-color: var(--color-text-light);
+  --action-sheet-description-font-size: var(--size-md);
+  --action-sheet-description-line-heigt: var(--line-md);
+  --action-sheet-option-text-color: var(--color-text);
+  --action-sheet-option-line-height: var(--line-md);
+  --action-sheet-option-label-color: var(--color-text-light);
+  --action-sheet-option-label-font-size: var(--size-sm);
+  --action-sheet-option-label-line-height: var(--line-md);
+  --action-sheet-cancel-padding-top: var(--size-xs);
+  --action-sheet-cancel-padding-color: var(--color-bgcolor);
+  --action-sheet-cancel-text-color: var(--color-text);
+}
+
+.@{action-sheet-cls} {
+  display: flex;
+  flex-direction: column;
+  max-height: var(--action-sheet-max-height);
+  overflow: hidden;
+  color: var(--action-sheet-option-text-color);
+
+  &__description {
+    position: relative;
+    flex-shrink: 0;
+    padding: var(--size-md) var(--size-lg);
+    color: var(--action-sheet-description-color);
+    font-size: var(--action-sheet-description-font-size);
+    line-height: var(--action-sheet-description-line-heigt);
+    text-align: center;
+
+    &:after {
+      .hairline-bottom(var(--color-border))
+    }
+  }
+
+  &__content {
+    flex: 1 auto;
+    min-height: 0;
+    overflow-y: hidden;
+  }
+
+  &__option,
+  &__cancel {
+    height: auto;
+    border-radius: 0;
+    border: none;
+    padding: var(--size-md) var(--size-lg);
+
+    &:before {
+      content: none;
+    }
+
+    &:active {
+      background-color: var(--color-active);
+    }
+  }
+
+  &__option {
+    line-height: var(--action-sheet-option-line-height);
+
+    & + & {
+      border-top: var(--size-px) solid var(--color-border);
+    }
+
+    &--unclickable:active {
+      background: none;
+    }
+
+    &-label {
+      margin-top: var(--size-1);
+      color: var(--action-sheet-option-label-color);
+      font-size: var(--action-sheet-option-label-font-size);
+      line-height: var(--action-sheet-option-label-line-height);
+    }
+
+    .@{prefix}-loading {
+      --loading-spinner-size: var(--size-xxl);
+    }
+  }
+
+  &__gap {
+    display: block;
+    padding-top: var(--action-sheet-cancel-padding-top);
+    background-color: var(--action-sheet-cancel-padding-color);
+  }
+
+  &__cancel {
+    flex-shrink: 0;
+    color: var(--action-sheet-cancel-text-color);
+  }
+}
