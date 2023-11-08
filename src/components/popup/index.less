@@ -1,0 +1,182 @@
+@overflow-cls: ~'@{prefix}-overflow';
+@popup-cls: ~'@{prefix}-popup';
+
+page {
+  --popup-background: var(--color-section);
+  --popup-transition: transform var(--duration-slow);
+  --popup-round-radius: var(--radius-xl);
+  --popup-title-height: var(--size-11);
+  --popup-title-font-size: var(--size-md);
+  --popup-title-align: center;
+  --popup-title-padding: var(--size-md) var(--size-lg);
+  --popup-close-icon-size: var(--size-6);
+  --popup-close-icon-color: var(--color-text);
+  --popup-close-icon-margin: 0;
+  --popup-close-icon-layer: 1;
+}
+
+.@{overflow-cls}-hidden {
+  overflow: hidden !important;
+}
+
+.@{popup-cls} {
+  position: fixed;
+  max-height: 86%;
+  box-sizing: border-box;
+  background: var(--popup-background);
+  transition: var(--popup-transition);
+  overflow: hidden;
+
+  &--center {
+    top: 50%;
+    left: 0;
+    right: 0;
+    width: fit-content;
+    max-width: calc(100vw - var(--size-md) * 2);
+    margin: 0 auto;
+    transform: translateY(-50%);
+
+    &.@{popup-cls}--round {
+      border-radius: var(--popup-round-radius);
+    }
+  }
+
+  &--top {
+    top: 0;
+    left: 0;
+    width: 100%;
+
+    &.@{popup-cls}--round {
+      border-radius: 0 0 var(--popup-round-radius)
+        var(--popup-round-radius);
+    }
+  }
+
+  &--right {
+    top: 50%;
+    right: 0;
+    transform: translate3d(0, -50%, 0);
+
+    &.@{popup-cls}--round {
+      border-radius: var(--popup-round-radius) 0 0
+        var(--popup-round-radius);
+    }
+  }
+
+  &--bottom {
+    bottom: 0;
+    left: 0;
+    width: 100%;
+
+    &.@{popup-cls}--round {
+      border-radius: var(--popup-round-radius)
+        var(--popup-round-radius) 0 0;
+    }
+  }
+
+  &--left {
+    top: 50%;
+    left: 0;
+    transform: translate3d(0, -50%, 0);
+
+    &.@{popup-cls}--round {
+      border-radius: 0 var(--popup-round-radius)
+        var(--popup-round-radius) 0;
+    }
+  }
+
+  &-slide-top-enter-active,
+  &-slide-left-enter-active,
+  &-slide-right-enter-active,
+  &-slide-bottom-enter-active {
+    transition-timing-function: var(--ease-out-sine);
+  }
+
+  &-slide-top-leave-active,
+  &-slide-left-leave-active,
+  &-slide-right-leave-active,
+  &-slide-bottom-leave-active {
+    transition-timing-function: var(--ease-in-sine);
+  }
+
+  &-slide-top-enter-from,
+  &-slide-top-leave-active {
+    transform: translate3d(0, -100%, 0);
+  }
+
+  &-slide-right-enter-from,
+  &-slide-right-leave-active {
+    transform: translate3d(100%, -50%, 0);
+  }
+
+  &-slide-bottom-enter-from,
+  &-slide-bottom-leave-active {
+    transform: translate3d(0, 100%, 0);
+  }
+
+  &-slide-left-enter-from,
+  &-slide-left-leave-active {
+    transform: translate3d(-100%, -50%, 0);
+  }
+
+  &__header {
+    flex-shrink: 0;
+    position: relative;
+  }
+
+  &__title {
+    font-weight: var(--weight-bold);
+    font-size: var(--popup-title-font-size);
+    line-height: var(--popup-title-height);
+    text-align: var(--popup-title-align);
+  }
+
+  &__close {
+    z-index: var(--popup-close-icon-layer);
+    position: absolute;
+    color: var(--popup-close-icon-color);
+    font-size: var(--popup-close-icon-size);
+    width: var(--popup-title-height);
+    height: var(--popup-title-height);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &--top-left {
+      top: var(--popup-close-icon-margin);
+      left: var(--popup-close-icon-margin);
+    }
+
+    &--top-right {
+      top: var(--popup-close-icon-margin);
+      right: var(--popup-close-icon-margin);
+    }
+
+    &--bottom-left {
+      bottom: var(--popup-close-icon-margin);
+      left: var(--popup-close-icon-margin);
+    }
+
+    &--bottom-right {
+      right: var(--popup-close-icon-margin);
+      bottom: var(--popup-close-icon-margin);
+    }
+
+    &-icon {
+      width: 1em;
+      height: 1em;
+      mask-image: var(--icon-close-circle);
+      mask-size: contain;
+      mask-repeat: no-repeat;
+      background-color: currentColor;
+    }
+  }
+}
+
+.popup-fade-enter-active {
+  animation: var(--popup-transition) fade-in both var(--ease-out-sine);
+}
+
+.popup-fade-leave-active {
+  animation: var(--popup-transition) fade-out both var(--ease-in-sine);
+}
