@@ -1,0 +1,41 @@
+@loading-cls: ~'@{prefix}-loading';
+
+page {
+  --loading-spinner-color: currentColor;
+  --loading-spinner-size: var(--size-xxl);
+  --loading-text-color: var(--color-text-light);
+  --loading-text-font-size: var(--size-md);
+}
+
+.@{loading-cls} {
+  position: relative;
+  font-size: var(--loading-spinner-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &__spinner {
+    position: relative;
+    width: 1em;
+    height: 1em;
+    mask-image: var(--icon-loading);
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    background-color: var(--loading-spinner-color);
+  }
+
+  &__text {
+    margin-left: var(--size-xs);
+    color: var(--loading-text-color);
+    font-size: var(--loading-text-font-size);
+  }
+
+  &--vertical {
+    flex-direction: column;
+
+    .@{loading-cls}__text {
+      margin: var(--size-xs) 0 0;
+    }
+  }
+}
+
