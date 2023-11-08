@@ -1,0 +1,41 @@
+@import './mixins/hairline.less';
+
+.hairline,
+.hairline--top,
+.hairline--left,
+.hairline--right,
+.hairline--bottom,
+.hairline--top-bottom,
+.hairline--surround {
+  position: relative;
+
+  &:after {
+    .hairline();
+  }
+}
+
+.hairline {
+  &--top:after {
+    border-top-width: var(--size-px);
+  }
+
+  &--left:after {
+    border-left-width: var(--size-px);
+  }
+
+  &--right:after {
+    border-right-width: var(--size-px);
+  }
+
+  &--bottom:after {
+    border-bottom-width: var(--size-px);
+  }
+
+  &--top-bottom:after {
+    border-width: var(--size-px) 0;
+  }
+
+  &--surround:after {
+    border-width: var(--size-px);
+  }
+}
