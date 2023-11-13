@@ -3,7 +3,7 @@ module.exports = {
     /** Greyscale */
     'grey-10': '#F9FAFB',
     'grey-50': '#F8F8F8',
-    'grey-100': '#F7F8Fa',
+    'grey-100': '#F7F8FA',
     'grey-200': '#F5F5F5',
     'grey-300': '#EEEEEE',
     'grey-400': '#DCDEE0',
@@ -16,9 +16,9 @@ module.exports = {
     black: '#000000',
 
     /** Primary */
-    'primary-300': '#84A9FF',
-    'primary-500': '#3366FF',
-    'primary-700': '#1939B7',
+    'primary-300': '#5EEC97',
+    'primary-500': '#00C074',
+    'primary-700': '#006F64',
 
     /** Danger */
     'danger-300': '#FF9D88',
