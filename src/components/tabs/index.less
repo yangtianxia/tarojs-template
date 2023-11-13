@@ -1,0 +1,92 @@
+@import url('@/style/mixins/hairline.less');
+@import url('@/style/mixins/ellipsis.less');
+
+@tabs-cls: ~'@{prefix}-tabs';
+@tab-cls: ~'@{prefix}-tab';
+
+page {
+  --tabs-height: var(--size-11);
+  --tabs-scrollable-padding: var(--size-none);
+  --tabs-background: var(--color-section);
+  --tabs-indicator-width: var(--size-8);
+  --tabs-indicator-height: calc(var(--size-1) * 0.5);
+  --tabs-indicator-background: var(--tab-active-color);
+  --tabs-indicator-offset-left: var(--size-none);
+  --tab-padding: var(--size-none) var(--size-1);
+  --tab-color: var(--text-color);
+  --tab-size: var(--size-md);
+  --tab-disabled-color: var(--color-text-light);
+  --tab-active-color: var(--color-primary);
+  --tab-active-size: var(--tab-size);
+  --tab-active-weight: var(--weight-medium);
+}
+
+.@{tabs-cls} {
+  position: relative;
+  height: var(--tabs-height);
+  background: var(--tabs-background);
+
+  &--scrollable {
+    --tabs-scrollable-padding: var(--size-2);
+    --tab-padding: var(--size-none) var(--size-3);
+  }
+
+  &--border:after {
+    .hairline-bottom(var(--cell-border-color));
+  }
+
+  &__content {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    padding: var(--size-none) var(--tabs-scrollable-padding);
+  }
+
+  &__scroll {
+    height: 100%;
+  }
+
+  &__indicator {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-radius: 10em;
+    width: var(--tabs-indicator-width);
+    height: var(--tabs-indicator-height);
+    transform: translateX(calc(var(--tabs-indicator-offset-left) + var(--tabs-scrollable-padding))) translateX(-50%);
+    background-color: var(--tabs-indicator-background);
+    z-index: var(--layer-1);
+  }
+}
+
+.@{tab-cls} {
+  cursor: pointer;
+  user-select: none;
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--tab-padding);
+  color: var(--tab-color);
+  font-size: var(--tab-size);
+  line-height: var(--line-md);
+  box-sizing: border-box;
+
+  &--disabled {
+    color: var(--tab-disabled-color);
+  }
+
+  &--active {
+    color: var(--tab-active-color);
+    font-size: var(--tab-active-size);
+    font-weight: var(--tab-active-weight);
+  }
+
+  &__content {
+    &--ellipsis {
+      .ellipsis();
+    }
+  }
+}
