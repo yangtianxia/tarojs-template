@@ -14,8 +14,8 @@ import {
 } from 'vue'
 
 import BEM from '@/shared/bem'
-import extend from 'extend'
-import { useNextTick, useRectAll } from '@/hooks'
+import { shallowMerge } from '@txjs/shared'
+import { useRect, useNextTick } from '@/hooks'
 
 import { useId } from '../composables/id'
 import { useParent } from '../composables/parent'
@@ -57,10 +57,17 @@ export default defineComponent({
   props: cascaderProps,
 
   setup(props, { slots, emit }) {
-    const tabs = ref<CascaderTab[]>([])
-    const ready = ref(false)
+    const menuId = useId()
+    const menuRect = useRect(`#${menuId}-container`, {
+      refs: ['height']
+    })
+    const optionRect = useRect(() => `.${menuId}-${activeTab.value}`)
+    const { parent: popup } = useParent(POPUP_KEY)
+
+    const initialized = ref(false)
     const scrollTop = ref(0)
     const activeTab = ref(0)
+    const tabs = ref<CascaderTab[]>([])
 
     const optionStyle = computed(() => {
       const style = {
@@ -71,21 +78,18 @@ export default defineComponent({
         style.transform = `translateX(-${activeTab.value}00vw)`
       }
 
-      if (!ready.value) {
+      if (!initialized.value) {
         style.transition = 'none'
       }
 
       return style
     })
 
-    const menuId = useId()
-    const { parent: popup } = useParent(POPUP_KEY)
-
     const {
       text: textKey,
       value: valueKey,
       children: childrenKey
-    } = extend({
+    } = shallowMerge({
       text: 'text',
       value: 'value',
       children: 'children'
@@ -113,7 +117,7 @@ export default defineComponent({
       }
     }
 
-    const onSelect = async (
+    const onSelectOption = (
       option: CascaderOption,
       tabIndex: number
     ) => {
@@ -140,31 +144,29 @@ export default defineComponent({
         useNextTick(() => activeTab.value++)
       }
 
-      updateScrollTop()
+      triggerScrollTop(() => {
+        const selectedOptions = tabs.value
+          .map((tab) => tab.selected!)
+          .filter(Boolean)
+        const params = {
+          tabIndex,
+          selectedOptions,
+          value: option[valueKey]
+        }
 
-      const selectedOptions = tabs.value
-        .map((tab) => tab.selected!)
-        .filter(Boolean)
+        emit('update:value', option[valueKey])
+        props.onChange?.(params)
 
-      emit('update:value', option[valueKey])
-
-      const params = {
-        tabIndex,
-        selectedOptions,
-        value: option[valueKey]
-      }
-
-      props.onChange?.(params)
-
-      if (!option[childrenKey]) {
-        popup?.close?.()
-        props.onFinish?.(params)
-      }
+        if (!option[childrenKey]) {
+          popup?.close?.()
+          props.onFinish?.(params)
+        }
+      })
     }
 
-    const onClickTab = async (tabIndex: number) => {
+    const onClickTab = (tabIndex: number) => {
       activeTab.value = tabIndex
-      updateScrollTop()
+      triggerScrollTop()
       props.onClickTab?.(tabIndex)
     }
 
@@ -174,7 +176,7 @@ export default defineComponent({
       activeTab.value = 0
     }
 
-    const updateTabs = () => {
+    const triggerTabChange = () => {
       const { options, value } = props
 
       if (value !== undefined) {
@@ -182,21 +184,17 @@ export default defineComponent({
 
         if (selectedOptions) {
           let optionsCursor = options
-
           tabs.value = selectedOptions.map((option) => {
             const tab = {
               options: optionsCursor,
               selected: option,
             }
-
             const next = optionsCursor.find(
               (item) => item[valueKey] === option[valueKey]
             )
-
             if (next) {
               optionsCursor = next[childrenKey]
             }
-
             return tab
           })
 
@@ -207,13 +205,8 @@ export default defineComponent({
             })
           }
 
-          useNextTick(async () => {
-            activeTab.value = tabs.value.length - 1
-            await updateScrollTop()
-            if (!ready.value) {
-              ready.value = true
-            }
-          })
+          activeTab.value = tabs.value.length - 1
+          triggerScrollTop()
           return
         }
       }
@@ -224,25 +217,31 @@ export default defineComponent({
       }]
     }
 
-    const updateScrollTop = async () => {
+    const triggerScrollTop = (callback?: Callback) => {
       const { options, selected } = tabs.value[activeTab.value]
 
       if (selected) {
-        const [root, rectAll] = await useRectAll(`#${menuId}-container,.${menuId}-${activeTab.value}`)
-
-        if (root && rectAll) {
-          const height = rectAll.height / options.length
-          const currHeight = height * options.findIndex((option) => option[valueKey] === selected[valueKey])
-          const half = root.height / 2
-          scrollTop.value = currHeight - (rectAll.height - currHeight < half ? root.height : half) + height
-        }
+        optionRect.triggerBoundingClientRect((rect) => {
+          const menuHeight = menuRect.height.value
+          const optionsHeight = rect.height
+          const optionHeight = optionsHeight / options.length
+          const halfHeight = menuHeight * 0.5
+          const curHeight = optionHeight * options.findIndex(
+            (option) => option[valueKey] === selected[valueKey]
+          )
+          scrollTop.value = curHeight + optionHeight - (
+            optionsHeight - curHeight < halfHeight
+              ? menuHeight
+              : halfHeight
+          )
+          callback?.()
+        })
       }
     }
 
     watch(
       () => props.options,
-      updateTabs,
-      { deep: true }
+      triggerTabChange
     )
 
     watch(
@@ -250,15 +249,16 @@ export default defineComponent({
       (value) => {
         if (value !== undefined) {
           const values = tabs.value.map((tab) => tab.selected?.[valueKey])
-          if (values.includes(value)) return
-          updateTabs()
+          if (!values.includes(value)) {
+            triggerTabChange()
+          }
         } else {
           onReset()
         }
       }
     )
 
-    onMounted(updateTabs)
+    onMounted(triggerTabChange)
 
     const renderTab = (tab: CascaderTab, index: number) => {
       const { selected } = tab
@@ -309,7 +309,7 @@ export default defineComponent({
           class={[bem('option', { selected, disabled }), option.className]}
           aria-checked={selected}
           aria-disabled={disabled || undefined}
-          onTap={() => onSelect(option, tabIndex)}
+          onTap={() => onSelectOption(option, tabIndex)}
         >
           {slots.option ? slots.option({ option, selected }): (
             <text>{option[textKey]}</text>
@@ -329,7 +329,10 @@ export default defineComponent({
       <ScrollView
         scrollY
         enhanced
-        show-scrollbar={false}
+        bounces
+        // @ts-ignore
+        enablePassive
+        fastDeceleration
         scrollTop={tabIndex === activeTab.value ? scrollTop.value : 0}
         class={bem('options')}
       >
