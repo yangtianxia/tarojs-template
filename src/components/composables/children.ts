@@ -1,6 +1,3 @@
-// copy @vant/use
-import extend from 'extend'
-
 import {
   VNode,
   isVNode,
@@ -12,6 +9,8 @@ import {
   ComponentPublicInstance,
   ComponentInternalInstance
 } from 'vue'
+
+import { shallowMerge } from '@txjs/shared'
 
 export function flattenVNodes(children: VNodeNormalizedChildren) {
   const result: VNode[] = []
@@ -80,31 +79,55 @@ export function useChildren<
 >(key: InjectionKey<ProvideValue>) {
   const publicChildren: Child[] = reactive([])
   const internalChildren: ComponentInternalInstance[] = reactive([])
+  const customPublicChildren: Child[] = reactive([])
+  const customInternalChildren: ComponentInternalInstance[] = reactive([])
   const parent = getCurrentInstance()!
 
   const linkChildren = (value?: ProvideValue) => {
-    const link = (child: ComponentInternalInstance) => {
+    const internalLink = (
+      child: ComponentInternalInstance,
+      publicChild: Child[],
+      internalChild: ComponentInternalInstance[]
+    ) => {
       if (child.proxy) {
-        internalChildren.push(child)
-        publicChildren.push(child.proxy as Child)
-        sortChildren(parent, publicChildren, internalChildren)
+        internalChild.push(child)
+        publicChild.push(child.proxy as Child)
+        sortChildren(parent, publicChild, internalChild)
       }
     }
 
+    const unInternalLink = (
+      child: ComponentInternalInstance,
+      publicChild: Child[],
+      internalChild: ComponentInternalInstance[]
+    ) => {
+      const index = internalChild.indexOf(child)
+      publicChild.splice(index, 1)
+      internalChild.splice(index, 1)
+    }
+
+    const link = (child: ComponentInternalInstance, custom?: boolean) => {
+      const args = custom
+        ? [child, customPublicChildren, customInternalChildren] as const
+        : [child, publicChildren, internalChildren] as const
+      internalLink(...args)
+    }
+
     const unlink = (child: ComponentInternalInstance) => {
-      const index = internalChildren.indexOf(child)
-      publicChildren.splice(index, 1)
-      internalChildren.splice(index, 1)
+      unInternalLink(child, customPublicChildren, customInternalChildren)
+      unInternalLink(child, publicChildren, internalChildren)
     }
 
     provide(
       key,
-      extend(
+      shallowMerge(
         {
           link,
           unlink,
           children: publicChildren,
-          internalChildren
+          customChildren: customPublicChildren,
+          internalChildren,
+          customInternalChildren
         },
         value
       )
@@ -113,6 +136,7 @@ export function useChildren<
 
   return {
     children: publicChildren,
+    customChildren: customPublicChildren,
     linkChildren
   }
 }
