@@ -3,7 +3,7 @@ import type { ViewProps } from '@tarojs/components'
 import BEM from '@/shared/bem'
 import { defineComponent, type PropType, type CSSProperties, type ExtractPropTypes } from 'vue'
 
-import { addUnit, numericProp, getSizeStyle } from '../utils'
+import { addUnit, numericProp } from '../utils'
 
 const [name, bem] = BEM('loading')
 
@@ -30,8 +30,8 @@ export default defineComponent({
           <view
             class={bem('text')}
             style={{
-              fontSize: addUnit(props.textSize),
-              color: props.textColor ?? props.color
+              color: props.textColor ?? props.color,
+              fontSize: addUnit(props.textSize)
             }}
           >
             {slots.default()}
@@ -52,8 +52,7 @@ export default defineComponent({
             class={bem('spinner')}
             style={{
               color: props.color,
-              fontSize: addUnit(props.size),
-              ...getSizeStyle(props.size)
+              fontSize: addUnit(props.size)
             }}
           />
           {renderText()}
