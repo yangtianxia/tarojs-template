@@ -1,5 +1,5 @@
 import type { ComponentPublicInstance } from 'vue'
-import type { CurrentTime } from '../composables'
+import type { CurrentTime } from '../composables/count-down'
 import type { CountDownProps } from './CountDown'
 
 type CountDownExpose = {

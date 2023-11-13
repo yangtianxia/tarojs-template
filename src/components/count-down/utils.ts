@@ -1,4 +1,4 @@
-import type { CurrentTime } from '../composables'
+import type { CurrentTime } from '../composables/count-down'
 import { padZero } from '@txjs/shared'
 
 export function parseFormat(format: string, currentTime: CurrentTime): string {
