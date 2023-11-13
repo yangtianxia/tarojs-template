@@ -16,7 +16,7 @@ module.exports = {
     'space-before-function-paren': 0,
     'no-unused-expressions': 'off',
     'node/no-callback-literal': 'off',
-    'multiline-ternary': ['error', 'never'],
+    'multiline-ternary': 'off',
     '@typescript-eslint/no-var-requires': 0,
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
