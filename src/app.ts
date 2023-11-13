@@ -11,12 +11,12 @@ import Cell from '@/components/cell'
 
 import router from '@/router'
 import store, { useThemeStore, useUserStore } from '@/store'
-
+import mitt from '@/shared/mitt'
 import { createApp } from 'vue'
-import { canIUse, onThemeChange, getUpdateManager, exitMiniProgram } from '@tarojs/taro'
-import { useEvent } from '@/hooks/event'
+import { canIUse, getUpdateManager, exitMiniProgram } from '@tarojs/taro'
 import { useSystemInfo } from '@/hooks/system-info'
 import { useModal } from '@/hooks/modal'
+import { useThemeChange } from '@/hooks/theme-change'
 import { EVENT_TYPE } from '@/shared/constants'
 
 const app = createApp({
@@ -29,16 +29,14 @@ const app = createApp({
     }
 
     if (sysInfo.enableDebug) {
-      useEvent.on(EVENT_TYPE.REQUEST_EVENT, (event) => {
+      mitt.on(EVENT_TYPE.REQUEST_EVENT, (event) => {
         console.log(event)
       })
     }
 
-    if (process.env.TARO_ENV === 'weapp') {
-      onThemeChange(({ theme }) => {
-        themeStore.setTheme(theme)
-      })
-    }
+    useThemeChange(({ theme }) => {
+      themeStore.setTheme(theme)
+    })
   },
   onShow(options: Taro.getLaunchOptionsSync.LaunchOptions) {
     const userStore = useUserStore()
