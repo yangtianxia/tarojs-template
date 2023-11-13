@@ -1,4 +1,3 @@
-// copy vant-weapp
 import {
   ref,
   inject,
@@ -11,10 +10,12 @@ import {
 } from 'vue'
 
 type ParentProvide<T> = T & {
-  link(child: ComponentInternalInstance): void
+  link(child: ComponentInternalInstance, costom?: boolean): void
   unlink(child: ComponentInternalInstance): void
   children: ComponentPublicInstance[]
+  customChildren: ComponentPublicInstance[]
   internalChildren: ComponentInternalInstance[]
+  customInternalChildren: ComponentInternalInstance[]
 }
 
 export function useParent<T>(key: InjectionKey<ParentProvide<T>>) {
