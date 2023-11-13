@@ -1,4 +1,4 @@
-import type { ViewProps, ITouchEvent } from '@tarojs/components'
+import { ScrollView, type ViewProps, type ITouchEvent } from '@tarojs/components'
 import { SafeArea } from '../safe-area'
 import { Overlay } from '../overlay'
 
@@ -21,14 +21,15 @@ import {
 import BEM from '@/shared/bem'
 import { useReady, useDidHide } from '@tarojs/taro'
 import { noop, shallowMerge, callInterceptor } from '@txjs/shared'
-import { notNil } from '@txjs/bool'
+import { isNil, notNil } from '@txjs/bool'
 import { useNextTick } from '@/hooks'
 
 import { useId } from '../composables/id'
 import { useExpose } from '../composables/expose'
 import { useChildren } from '../composables/children'
+import { useParent } from '../composables/parent'
 import { useLazyRender } from '../composables/lazy-render'
-import { POPUP_TOGGLE_KEY, makeStringProp } from '../utils'
+import { POPUP_TOGGLE_KEY, truthProp, numericProp, makeStringProp, addUnit } from '../utils'
 
 import { popupSharedProps } from './utils'
 import type { PopupPosition, PopupCloseIconPosition } from './types'
@@ -40,6 +41,8 @@ export const popupProps = shallowMerge({}, popupSharedProps, {
   closeable: Boolean,
   transition: String,
   iconPrefix: String,
+  shrink: truthProp,
+  scrolling: numericProp,
   closeOnPopstate: Boolean,
   safeAreaInsetTop: Boolean,
   safeAreaInsetBottom: Boolean,
@@ -57,6 +60,7 @@ export const popupProps = shallowMerge({}, popupSharedProps, {
 export type PopupProps = ExtractPropTypes<typeof popupProps>
 
 export type PopupProvide = {
+  props: PopupProps,
   close: () => void
 }
 
@@ -152,7 +156,7 @@ export default defineComponent({
 
     provide(POPUP_TOGGLE_KEY, () => props.show)
 
-    linkChildren({ close })
+    linkChildren({ close, props })
 
     onActivated(() => {
       if (shouldReopen) {
@@ -236,19 +240,19 @@ export default defineComponent({
           disableScroll={props.lockScroll}
           onTouchmove={noop}
         >
-          <SafeArea
-            position="top"
-            container={() => popupRef.value}
-            show={safeAreaInsetTop}
-          />
+          {safeAreaInsetTop ? (
+            <SafeArea position="top" />
+          ) : null}
           <view class={bem('header')}>
             {renderTitle()}
             {renderCloseIcon()}
           </view>
           {slots.default?.()}
-          <SafeArea show={safeAreaInsetBottom}>
-            {slots.safearea?.()}
-          </SafeArea>
+          {safeAreaInsetBottom ? (
+            <SafeArea>
+              {slots.safearea?.()}
+            </SafeArea>
+          ) : null}
         </view>
       )
     })
@@ -283,6 +287,66 @@ export default defineComponent({
           {renderOverlay()}
           {renderTransition()}
         </>
+      )
+    }
+  }
+})
+
+export const Content = defineComponent({
+  name: `${name}-content`,
+
+  setup(_, { slots }) {
+    const { parent } = useParent(POPUP_KEY)
+
+    return () => {
+      if (isNil(parent)) return
+
+      const { shrink, scrolling } = parent.props
+      const height = addUnit(scrolling)
+
+      return (
+        <view
+          class={bem('content', { shrink })}
+          style={{ height, maxHeight: height }}
+        >
+          <ScrollView
+            scrollY
+            enhanced
+            bounces
+            // @ts-ignore
+            enablePassive
+            fastDeceleration
+            scrollWithAnimation
+            scrollX={false}
+            class={bem('content-scroll')}
+          >
+            <view class={bem('content-wrapper')}>
+              {slots.default?.()}
+            </view>
+          </ScrollView>
+        </view>
+      )
+    }
+  }
+})
+
+export const Footer = defineComponent({
+  name: `${name}-footer`,
+
+  setup(_, { slots }) {
+    const { parent } = useParent(POPUP_KEY)
+
+    return () => {
+      if (isNil(parent)) return
+
+      const { shrink } = parent.props
+
+      return (
+        <view class={bem('footer', { shrink })}>
+          <view class={bem('footer-wrapper')}>
+            {slots.default?.()}
+          </view>
+        </view>
       )
     }
   }
