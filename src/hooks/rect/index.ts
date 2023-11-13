@@ -1,55 +1,102 @@
-import { createSelectorQuery } from '@tarojs/taro'
+import { reactive, toRef, type Ref } from 'vue'
+import { createSelectorQuery, useReady } from '@tarojs/taro'
+import { shallowMerge } from '@txjs/shared'
+import { isFunction } from '@txjs/bool'
 
-/**
- * 在当前页面下选择第一个匹配选择器 `selector` 的节点。返回一个 `NodesRef` 对象实例，可以用于获取节点信息。
- *
- * **selector 语法**
- *
- *
- * selector类似于 CSS 的选择器，但仅支持下列语法。
- *
- * - ID选择器：#the-id
- * - class选择器（可以连续指定多个）：.a-class.another-class
- * - 子元素选择器：.the-parent > .the-child
- * - 后代选择器：.the-ancestor .the-descendant
- * - 跨自定义组件的后代选择器：.the-ancestor >>> .the-descendant
- * - 多选择器的并集：#a-node, .some-other-nodes
- * ```
- */
-export const useRect = (selector: string, context?: TaroGeneral.IAnyObject) => {
-  return new Promise<Taro.NodesRef.BoundingClientRectCallbackResult>((resolve) => {
+import {
+  makeDOMRect,
+  type DOMRect,
+  type RectElement,
+  type DOMRectKey,
+  type SingleRectOptions
+} from './utils'
+
+function getToRefs<K extends DOMRectKey>(rect: DOMRect, refs: K[]) {
+  return refs.reduce(
+    (ret, key) => {
+      ret[key] = toRef(rect, key)
+      return ret
+    }, {} as Record<K, Ref<number>>
+  )
+}
+
+export const useRect = <K extends DOMRectKey>(
+  element: RectElement,
+  options?: SingleRectOptions<K>
+) => {
+  const {
+    target,
+    triggerCallback,
+    flush = 'pre',
+    refs = []
+  } = options || {}
+  const rect = reactive(
+    makeDOMRect()
+  )
+  let run = false
+
+  const triggerCallbackRun = (result: DOMRect) => {
+    if (triggerCallback && !run) {
+      triggerCallback(result)
+      run = flush === 'pre'
+    }
+  }
+
+  const triggerBoundingClientRect = (callback?: Callback<DOMRect>) => {
     const query = createSelectorQuery()
+    const selectElement = isFunction(element) ? element() : element
 
-    if (context) {
-      query.in(context)
+    if (target) {
+      query.in(target)
     }
 
-    query.select(selector).boundingClientRect().exec((rect = []) => resolve(rect[0]))
+    query
+      .select(selectElement)
+      .boundingClientRect((result: any) => {
+        if (result) {
+          shallowMerge(rect, result)
+          triggerCallbackRun(result)
+          callback?.(result)
+        }
+      })
+      .exec()
+  }
+
+  useReady(() => triggerBoundingClientRect())
+
+  return {
+    rect,
+    triggerBoundingClientRect,
+    ...getToRefs(rect, refs)
+  }
+}
+
+const rectCallback = (
+  triggers: Function[],
+  results: DOMRect[],
+  callback?: Callback<DOMRect[]>
+) => {
+  const trigger = triggers.pop()!
+  trigger((result: DOMRect) => {
+    results = [...results, result]
+    if (triggers.length) {
+      rectCallback(triggers, results, callback)
+    } else {
+      callback?.(results)
+    }
   })
 }
 
-/**
- * 在当前页面下选择匹配选择器 selector 的所有节点。
- *
- * selector 语法
- *
- * selector类似于 CSS 的选择器，但仅支持下列语法。
- *
- * * ID选择器：#the-id
- * * class选择器（可以连续指定多个）：.a-class.another-class
- * * 子元素选择器：.the-parent > .the-child
- * * 后代选择器：.the-ancestor .the-descendant
- * * 跨自定义组件的后代选择器：.the-ancestor >>> .the-descendant
- * * 多选择器的并集：#a-node, .some-other-nodes
- */
-export const useRectAll = (selector: string, context?: TaroGeneral.IAnyObject) => {
-  return new Promise<Taro.NodesRef.BoundingClientRectCallbackResult[]>((resolve) => {
-    const query = createSelectorQuery()
-
-    if (context) {
-      query.in(context)
-    }
-
-    query.selectAll(selector).boundingClientRect().exec((rect = []) => resolve(rect[0]))
-  })
+export const useRectCallback = (
+  triggers: (ReturnType<typeof useRect<any>> | Function)[],
+  callback: Callback<DOMRect[]>
+) => {
+  const list = triggers
+    .reverse()
+    .map((trigger) =>
+      isFunction(trigger)
+        ? trigger
+        : trigger.triggerBoundingClientRect
+    )
+  rectCallback(list, [], callback)
 }
