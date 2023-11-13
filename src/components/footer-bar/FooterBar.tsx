@@ -2,9 +2,8 @@ import { SafeArea } from '../safe-area'
 
 import BEM from '@/shared/bem'
 import debounce from 'debounce'
-import { defineComponent, ref, onUnmounted, type ExtractPropTypes } from 'vue'
-import { useReady } from '@tarojs/taro'
-import { useNextTick, useRect } from '@/hooks'
+import { defineComponent, onMounted, onUnmounted, type ExtractPropTypes } from 'vue'
+import { useRect } from '@/hooks'
 
 import { useId } from '../composables/id'
 import { truthProp, makeNumericProp, getZIndexStyle } from '../utils'
@@ -28,25 +27,23 @@ export default defineComponent({
 
   setup(props, { slots, attrs }) {
     const id = useId()
-    const height = ref(0)
-
-    const lazyRect = debounce(() => {
-      useNextTick(async () => {
-        const rect = await useRect(`#${id}`)
-        if (rect) {
-          height.value = rect.height
-        }
-      })
-    }, 32, true)
-
-    const observer = new MutationObserver(lazyRect)
-
-    useReady(() => {
-      lazyRect()
-      observer.observe(document.getElementById(id)!, {
-        childList: true
-      })
+    const { height, triggerBoundingClientRect } = useRect(`#${id}`, {
+      refs: ['height']
     })
+    const observer = new MutationObserver(
+      debounce(() => triggerBoundingClientRect(), 32, true)
+    )
+
+    const bindingObserver = () => {
+      const el = document.getElementById(id)
+      if (el) {
+        observer.observe(el, {
+          childList: true
+        })
+      }
+    }
+
+    onMounted(bindingObserver)
 
     onUnmounted(() => {
       if (observer) {
