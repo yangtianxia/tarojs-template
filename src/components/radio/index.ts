@@ -3,6 +3,7 @@ import { withInstall } from '../utils/with-install'
 import _Group from './Group'
 import _Radio from './Radio'
 
+import '../checkbox/icon.less'
 import './index.less'
 
 export const RadioGroup = withInstall(_Group)
