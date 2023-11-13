@@ -64,7 +64,6 @@ module.exports = (ctx) => {
 
   ctx.modifyMiniConfigs(({ configMap }) => {
     if (isWeapp && isTruly(process.env.DARKMODE)) {
-      // app.config.ts
       if (Reflect.has(configMap, 'app.config')) {
         const appConfig = Reflect.get(configMap, 'app.config')
         const config = Reflect.get(appConfig, 'content')

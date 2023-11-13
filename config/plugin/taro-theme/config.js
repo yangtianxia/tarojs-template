@@ -69,13 +69,15 @@ module.exports = defineConfig((defaultConfig) => {
 
   modules.color = {
     ...formatColor(cloneLight.color),
+    section: 'var(--color-white)',
+    'section-base': 'var(--color-white-base)',
     grey: 'var(--color-grey-500)',
     info: 'var(--color-info-500)',
     primary: 'var(--color-primary-500)',
     danger: 'var(--color-danger-500)',
     warning: 'var(--color-warning-500)',
     success: 'var(--color-success-500)',
-    section: 'var(--color-white)',
+    active: 'var(--color-grey-300)',
     bgcolor: 'var(--color-grey-200)',
     border: 'var(--color-grey-300)',
     text: 'var(--color-grey-800)',
@@ -109,8 +111,12 @@ module.exports = defineConfig((defaultConfig) => {
   if (isTruly(process.env.DARKMODE)) {
     Reflect.set(media, '(prefers-color-scheme: dark)', {
       ...cloneDark,
-      color: formatColor(cloneDark.color),
-      size: pxTransform(cloneDark.size)
+      size: pxTransform(cloneDark.size),
+      color: {
+        ...formatColor(cloneDark.color),
+        section: 'var(--color-grey-100)',
+        'section-base': 'var(--color-grey-100-base)',
+      },
     })
   }
 
