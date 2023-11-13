@@ -20,10 +20,6 @@ import {
 import { ERROR_ROUTE } from './routes/base'
 import type { RouteMeta, RouterQuery } from './types'
 
-interface RouterInterceptor {
-  (option: RouteMeta): ReturnType<Interceptor>
-}
-
 export type RouterPath = string
 
 export type RouterLinkType = 'navigateTo' | 'reLaunch' | 'redirectTo' | 'switchTab'
@@ -32,6 +28,10 @@ export type RouterOption<T = RouterPath> = {
   path: T,
   query?: RouterQuery,
   beforeEnter?: Interceptor
+}
+
+interface RouterInterceptor {
+  (option: RouteMeta): ReturnType<Interceptor>
 }
 
 interface RouterJump {
@@ -146,7 +146,7 @@ class Router<T extends readonly any[]> {
     const route = this.getRoute(name)
     let code = 200
 
-    // 可在此添加自己的逻辑
+    // 自行添加拦截逻辑
     if (isNil(route)) {
       code = 404
     } else if (
@@ -184,7 +184,6 @@ class Router<T extends readonly any[]> {
     params: Record<string, any> = {},
     linkType: 'navigateTo' | 'redirectTo' = 'navigateTo'
   ) {
-    const userStore = useUserStore()
     const login = this.getRoute('login')
 
     if (isNil(path)) {
@@ -196,9 +195,7 @@ class Router<T extends readonly any[]> {
 
     if (isNil(login) || path.startsWith(login.path)) return
 
-    if (params.$taroTimestamp) {
-      delete params.$taroTimestamp
-    }
+    const userStore = useUserStore()
 
     if (this.checkTabbar(path)) {
       this.navigateTo(login.path)
@@ -227,7 +224,7 @@ class Router<T extends readonly any[]> {
     if (this.getCurrentPages().length > 1) {
       taroNavigateBack.apply(null, [delta])
     } else {
-      this.switchTab(this.appConfig.pages![0])
+      this.reLaunch(this.appConfig.pages![0])
     }
   }
 
