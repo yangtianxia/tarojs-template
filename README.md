@@ -48,11 +48,6 @@ ghost-miniprogram
 ├── babel.config.js
 ├── package.json
 ├── compile.config.js
-├── project.alipay.json
-├── project.config.json
-├── project.lark.json
-├── project.swan.json
-├── project.tt.json
 ├── README.md
 └── tsconfig.json
 ```
@@ -150,7 +145,7 @@ npm run dev:weapp -- --mode test
 
 ## 小程序路由
 
-> 路由配置完后，会根据配置生成路由地址。
+> 路由配置完后，会根据配置生成路由地址
 > 
 > 注意：目前不支持自动生成小程序页面，路由配置完后依旧需要自行在 `app.config.ts` 配置
 
@@ -201,6 +196,12 @@ router支持方法
 * `reLaunch`：`**支持拦截**` 关闭所有页面并跳转
 * `redirectTo`：`**支持拦截**` 关闭当前页面并跳转
 
+## 小程序项目配置
+
+目前 `ghost-miniprogram` 项目配置未使用 `tarojs` 官方定义的方式。而是通过内置的 `taro-mini-config` 插件将指定的配置文件拷贝到生成根目录下，部分配置字段也可以通过配置注入
+
+官方配置文档：[项目配置](https://taro-docs.jd.com/docs/project-config)
+
 #### vue自定义组件忽略配置
 
 `@vue/babel-preset-jsx` 插件配置
@@ -241,4 +242,4 @@ const config = {
 
 ### `navigation-bar` 组件返回按钮问题
 
-`navigation-bar` 组件 `返回按钮` 不会在支付宝小程序中展示。因为支付宝小程序默认返回按钮无法隐藏，且层级在页面层级之上，所以只能沿用支付宝小程序的默认返回按钮，需要自行做兼容处理。
+`navigation-bar` 组件 `返回按钮` 不会在支付宝小程序中展示。因为支付宝小程序默认返回按钮无法隐藏，且层级在页面层级之上，所以只能沿用支付宝小程序的默认返回按钮，需要自行做兼容处理
