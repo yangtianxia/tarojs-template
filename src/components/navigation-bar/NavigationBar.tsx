@@ -18,14 +18,13 @@ import {
   useRoute,
   useRouter,
   useSystemInfo,
-  useRect,
-  useNextTick
+  useRect
 } from '@/hooks'
 
 import BEM from '@/shared/bem'
 import debounce from 'debounce'
 import extend from 'extend'
-import { useReady, usePageScroll } from '@tarojs/taro'
+import { usePageScroll } from '@tarojs/taro'
 import { callInterceptor, type Interceptor } from '@txjs/shared'
 import { useThemeStore } from '@/store'
 
@@ -89,6 +88,9 @@ export default defineComponent({
     const router = useRouter()
     const { path, currentRoute } = useRoute()
     const { statusBarHeight = 0 } = useSystemInfo()
+    const { height } = useRect(`#${id}`, {
+      refs: ['height']
+    })
 
     const hasTabbar = router.checkTabbar(path)
     const hasAccessRecord = router.getCurrentPages().length > 1
@@ -104,7 +106,6 @@ export default defineComponent({
       return titleStyle[foundAt]
     })
 
-    const height = ref(0)
     const opacity = ref(
       props.scrollAnimation ? 0 : 1
     )
@@ -136,25 +137,19 @@ export default defineComponent({
       return style
     })
 
-    const getRootHeight = () => {
-      useNextTick(async () => {
-        const rect = await useRect(`#${id}`)
-
-        if (rect) {
-          height.value = rect.height
-        }
-      })
-    }
-
     const lazySetOpacity = debounce(
       (scrollTop: number) => {
         const visibility = parseFloat(
           (scrollTop / height.value).toFixed(2)
         )
-        opacity.value = visibility > 1 ? 1 : visibility
-        titleColor.value = props.titleAnimation && (opacity.value > 0.1)
-          ? `rgba(var(--color-${titleOriginColor.value})-base, ${opacity.value})`
-          : titleOriginColor.value
+        opacity.value =
+          visibility > 1
+            ? 1
+            : visibility
+        titleColor.value =
+          props.titleAnimation && (opacity.value > 0.1)
+            ? `rgba(var(--color-${titleOriginColor.value})-base, ${opacity.value})`
+            : titleOriginColor.value
       }, 16, true
     )
 
@@ -194,8 +189,6 @@ export default defineComponent({
         lazySetOpacity(scrollTop)
       }
     })
-
-    useReady(getRootHeight)
 
     const renderLeft = () => {
       if (process.env.TARO_ENV !== 'alipay' && showLeftAction.value) {
