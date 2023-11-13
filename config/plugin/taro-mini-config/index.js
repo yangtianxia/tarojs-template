@@ -1,5 +1,6 @@
 const shell = require('shelljs')
 const extend = require('extend')
+const fs = require('fs-extra')
 const { isNil } = require('@txjs/bool')
 const { getCurrentTaroEnv, resolve, loadEnv, cleanEnvValue, toJSON } = require('../utils')
 const { miniConfigMap, envMap } = require('./utils')
@@ -16,9 +17,21 @@ module.exports = (ctx, option = {}) => {
   const projectConfigName = Reflect.get(miniConfigMap, taroEnv)
   const outputPath = resolve(ctx.paths.outputPath, projectConfigName)
   const dynamicOption = Reflect.get(option, taroEnv) || {}
+  const sourceRoot = Reflect.get(option, 'sourceRoot')
   const globalOption = Reflect.get(option, 'global') || {}
 
-  ctx.onBuildFinish(() => {
+  async function copyConfig() {
+    const formRoot = resolve(sourceRoot, taroEnv)
+
+    if (shell.test('-d', formRoot)) {
+      await fs.copy(formRoot, ctx.paths.outputPath)
+    }
+  }
+
+  ctx.onBuildFinish(async () => {
+    // 先拷贝项目初始配置
+    await copyConfig()
+
     if (!shell.test('-e', outputPath)) return
 
     const env = loadEnv()
