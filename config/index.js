@@ -78,8 +78,10 @@ const config = {
     }
   },
   plugins: [
+    [resolve('config/plugin/taro-mini-worker')],
     [resolve('config/plugin/taro-mini-compile')],
     [resolve('config/plugin/taro-mini-config'), {
+      sourceRoot: 'public',
       global: {
         projectname: pkg.name,
         setting: {
@@ -90,11 +92,6 @@ const config = {
           // 开发环境不检查域名
           urlCheck: isProd
         }
-      }
-    }],
-    [resolve('config/plugin/taro-copy'), {
-      alipay: {
-        from: resolve('public/alipay')
       }
     }],
     [resolve('config/plugin/taro-theme')],
