@@ -17,14 +17,14 @@ declare type Callback<T = any, U = void> = (...args: T[]) => U
 
 declare type Numeric = number | string
 
-declare type PromiseReturnType<T extends Promise<any>> = T extends Promise<infer U> ? U: never
+declare type Writeable<T> = {
+  -readonly [P in keyof T]: T[P]
+}
+
+declare type Promised<T extends Promise<any>> = T extends Promise<infer U> ? U : never
 
 declare type ObjectNonNullable<T> = {
   [p in keyof T]: NonNullable<T[p]>
-}
-
-declare type Writeable<T> = {
-  -readonly [P in keyof T]: T[P]
 }
 
 declare type RequiredParams<T> = T extends (...args: infer P) => infer R
