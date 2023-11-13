@@ -5,7 +5,7 @@ import BEM from '@/shared/bem'
 import { defineComponent, type PropType, type ExtractPropTypes } from 'vue'
 import { pick, shallowMerge } from '@txjs/shared'
 
-import { useParent } from '../composables'
+import { useParent } from '../composables/parent'
 
 const [name, bem] = BEM('radio')
 

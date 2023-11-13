@@ -3,7 +3,8 @@ import type { CheckerDirection } from '../checkbox/Checker'
 import BEM from '@/shared/bem'
 import { defineComponent, watch, type PropType, type ExtractPropTypes, type InjectionKey } from 'vue'
 
-import { useChildren, useFieldValue } from '../composables'
+import { useChildren } from '../composables/children'
+import { useFieldValue } from '../composables/field-value'
 import { numericProp, unknownProp } from '../utils'
 
 const [name, bem] = BEM('radio-group')
