@@ -1,16 +1,15 @@
 import type { ParamsType } from 'miniprogram-network-utils'
 import type { RequestConfig, SuccessParam, XHR } from '@txjs/taro-request'
+import type { BaseData, TransformData, ContentType } from './types'
 
 import router from '@/router'
+import mitt from '@/shared/mitt'
 import { REQUEST } from '@txjs/taro-request'
 import { pick } from '@txjs/shared'
 import { isPlainObject, isNil, isUndefined, notNil } from '@txjs/bool'
+import { useToast } from '@/hooks/toast'
 import { isLogin, getToken } from '@/shared/auth'
 import { EVENT_TYPE } from '@/shared/constants'
-
-import { useToast } from '../toast'
-import { useEvent } from '../event'
-import type { BaseData, TransformData, ContentType } from './types'
 
 const keys = [
   'url',
@@ -59,14 +58,14 @@ REQUEST.Defaults.transformResponse = (config) => {
 }
 
 REQUEST.Listeners.onSend.push((config) => {
-  useEvent.trigger(EVENT_TYPE.REQUEST_EVENT, {
+  mitt.trigger(EVENT_TYPE.REQUEST_EVENT, {
     eventName: 'onSend',
     eventLog: config
   })
 })
 
 REQUEST.Listeners.onResponse.push((data, config) => {
-  useEvent.trigger(EVENT_TYPE.REQUEST_EVENT, {
+  mitt.trigger(EVENT_TYPE.REQUEST_EVENT, {
     eventName: 'onResponse',
     eventLog: {
       ...pick(config, keys),
@@ -80,7 +79,7 @@ REQUEST.Listeners.onRejected.push((data, config) => {
     useToast('请求错误，稍后再试')
   }
 
-  useEvent.trigger(EVENT_TYPE.REQUEST_EVENT, {
+  mitt.trigger(EVENT_TYPE.REQUEST_EVENT, {
     eventName: 'onRejected',
     eventLog: {
       ...data,
@@ -181,4 +180,4 @@ class Request {
   options = this.method('OPTIONS')
 }
 
-export const useRequest = new Request()
+export default Request

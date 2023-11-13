@@ -1,4 +1,4 @@
-import { request } from '../with-request'
+import request from '../utils'
 
 interface LoginReturn {
   token: string
