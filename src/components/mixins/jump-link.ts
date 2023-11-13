@@ -1,6 +1,7 @@
 import type { PropType } from 'vue'
 import type { Interceptor } from '@txjs/shared'
-import type { RouterQuery, RouterLinkType } from '@/router/types'
+import type { RouterQuery } from '@/router/types'
+import type { RouterLinkType } from '@/router/router'
 
 import router from '@/router'
 import { isNil, isString, isFunction } from '@txjs/bool'
