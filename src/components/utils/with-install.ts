@@ -1,12 +1,15 @@
-import type { App, Component } from 'vue'
+import type { App, Component, CSSProperties } from 'vue'
+import type { StandardProps } from '@tarojs/components'
 import type { CustomShim } from './types'
 
 import extend from 'extend'
 import { camelize } from '@txjs/shared'
 
-type EventShim = CustomShim<{
-  onTap?: Callback
-}>
+type EventShim = CustomShim<Omit<StandardProps, 'style'> & {
+    style?: string | CSSProperties
+    onTap?: Callback
+  }
+>
 
 export type WithInstall<T, U> = T & U & EventShim & {
   install(app: App): void
