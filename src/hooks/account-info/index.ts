@@ -1,6 +1,6 @@
+import version from '@/shared/version'
 import { canIUse, getAccountInfoSync } from '@tarojs/taro'
 import { isNil } from '@txjs/bool'
-import { useVersion } from '../version'
 
 interface AccountInfoOption {
   appId: string
@@ -12,7 +12,7 @@ let miniProgram: AccountInfoOption
 
 function canIUseGetAccountInfoSync() {
   if (process.env.TARO_ENV === 'alipay') {
-    return useVersion('2.7.17')
+    return version('2.7.17')
   }
   return canIUse('getAccountInfoSync')
 }

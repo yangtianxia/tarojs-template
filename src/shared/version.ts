@@ -1,4 +1,4 @@
-import { useSystemInfo } from '../system-info'
+import { useSystemInfo } from '@/hooks/system-info'
 
 const compareVersion = (v1: any, v2: any) => {
   v1 = v1.split('.')
@@ -29,7 +29,9 @@ const compareVersion = (v1: any, v2: any) => {
   return 0
 }
 
-export function useVersion(version: string) {
+function gte(version: string) {
   const system = useSystemInfo()
   return compareVersion(system.SDKVersion, version) >= 0
 }
+
+export default gte
