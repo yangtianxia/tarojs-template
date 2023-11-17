@@ -81,6 +81,11 @@ page {
   &__options {
     width: 100vw;
     height: var(--cascader-options-height);
+    visibility: hidden;
+
+    &--active {
+      visibility: visible;
+    }
 
     &-title {
       margin-top: var(--size-5);
@@ -92,7 +97,10 @@ page {
 
     &-container {
       display: flex;
-      transition: all var(--duration-slow) var(--ease-in-sine);
+
+      &--animate {
+        transition: transform var(--duration-slow) var(--ease-in-sine);
+      }
     }
   }
 
