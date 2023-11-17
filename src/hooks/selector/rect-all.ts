@@ -1,14 +1,16 @@
 import { shallowRef } from 'vue'
 import { createSelectorQuery, useReady } from '@tarojs/taro'
-import { isFunction } from '@txjs/bool'
 
-import type { RectElement, AllRectOptions  } from '../rect/utils'
+import { getSelectorElement } from './utils'
+import type { SelectorElement, AllRectOptions  } from './types'
 
-function getSelectElement(elements: RectElement[]) {
+export type UseRectAll = ReturnType<typeof useRectAll>
+
+function getSelectElements(elements: SelectorElement[]) {
   return elements
     .reduce(
       (ret, el) => {
-        ret.push(isFunction(el) ? el() : el)
+        ret.push(getSelectorElement(el))
         return ret
       }, [] as string[]
     )
@@ -16,16 +18,18 @@ function getSelectElement(elements: RectElement[]) {
 }
 
 export const useRectAll = (
-  elements: RectElement[],
+  elements: SelectorElement[],
   options?: AllRectOptions
 ) => {
   const {
     target,
+    useCache,
     triggerCallback,
     flush = 'pre'
   } = options || {}
   const rects = shallowRef<DOMRect[]>([])
   let run = false
+  let cached = false
 
   const triggerCallbackRun = (result: DOMRect[]) => {
     if (triggerCallback && !run) {
@@ -35,8 +39,13 @@ export const useRectAll = (
   }
 
   const triggerBoundingClientRect = (callback?: Callback<DOMRect[]>) => {
+    if (useCache && cached) {
+      callback?.(rects.value)
+      return
+    }
+
     const query = createSelectorQuery()
-    const selectElement = getSelectElement(elements)
+    const selectElement = getSelectElements(elements)
 
     if (target) {
       query.in(target)
@@ -44,14 +53,17 @@ export const useRectAll = (
 
     query
       .selectAll(selectElement)
-      .boundingClientRect((result: any) => {
+      .boundingClientRect()
+      // exec兼容性更好
+      .exec((results = []) => {
+        const result = results[0]
         if (result) {
+          cached = true
           rects.value = result
           triggerCallbackRun(result)
           callback?.(result)
         }
       })
-      .exec()
   }
 
   useReady(() => triggerBoundingClientRect())
@@ -60,34 +72,4 @@ export const useRectAll = (
     rects,
     triggerBoundingClientRect
   }
-}
-
-const rectCallback = (
-  triggers: Function[],
-  results: DOMRect[][],
-  callback?: Callback<DOMRect[][]>
-) => {
-  const trigger = triggers.pop()!
-  trigger((result: DOMRect[]) => {
-    results = [...results, result]
-    if (triggers.length) {
-      rectCallback(triggers, results, callback)
-    } else {
-      callback?.(results)
-    }
-  })
-}
-
-export const useRectAllCallback = (
-  triggers: (ReturnType<typeof useRectAll> | Function)[],
-  callback: Callback<DOMRect[][]>
-) => {
-  const list = triggers
-    .reverse()
-    .map((trigger) =>
-      isFunction(trigger)
-        ? trigger
-        : trigger.triggerBoundingClientRect
-    )
-  rectCallback(list, [], callback)
 }
