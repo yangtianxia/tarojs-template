@@ -95,10 +95,9 @@ export default defineComponent({
 
         if (iconName.value) {
           return (
-            <Icon
-              name={iconName.value}
-              class={bem('icon')}
-            />
+            <view class={bem('icon')}>
+              <Icon name={iconName.value} />
+            </view>
           )
         }
       }
