@@ -3,9 +3,9 @@ import { Result, resultSharedProps } from '../result'
 
 import BEM from '@/shared/bem'
 import { defineComponent, ref, watch, onUpdated, type PropType, type ExtractPropTypes } from 'vue'
-import { createSelectorQuery, useReady, usePageScroll, useReachBottom } from '@tarojs/taro'
+import { useReady, usePageScroll, useReachBottom } from '@tarojs/taro'
 import { shallowMerge } from '@txjs/shared'
-import { useNextTick, useSystemInfo } from '@/hooks'
+import { useRect, useNextTick, useSystemInfo } from '@/hooks'
 
 import { useId } from '../composables/id'
 import { useExpose } from '../composables/expose'
@@ -40,16 +40,14 @@ export default defineComponent({
   props: listProps,
 
   setup(props, { slots, emit }) {
+    const placeholderId = useId()
+    const cilentHeight = useSystemInfo().safeArea?.height ?? 0
+    const { bottom, triggerBoundingClientRect } = useRect(`.${placeholderId}`, {
+      refs: ['bottom']
+    })
+
     const scrollTop = ref(0)
     const loading = ref(props.loading)
-
-    const placeholderId = useId()
-    const selector = createSelectorQuery()
-    const cilentHeight =useSystemInfo().safeArea?.height ?? 0
-
-    selector
-      .select(`.${placeholderId}`)
-      .boundingClientRect()
 
     const check = () => {
       useNextTick(() => {
@@ -57,13 +55,11 @@ export default defineComponent({
           loading.value ||
           props.finished ||
           props.error
-        ) {
-          return
-        }
+        ) return
 
-        selector.exec(([{ bottom = 0 }] = []) => {
+        triggerBoundingClientRect(() => {
           // https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollHeight
-          if ((cilentHeight + scrollTop.value >= bottom - +props.offset) && !loading.value) {
+          if ((cilentHeight + scrollTop.value >= bottom.value - +props.offset) && !loading.value) {
             loading.value = true
             emit('update:loading', true)
             props.onLoad?.()
