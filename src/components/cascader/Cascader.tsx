@@ -5,17 +5,18 @@ import { Icon } from '../icon'
 import {
   defineComponent,
   ref,
-  computed,
+  shallowRef,
   watch,
-  onMounted,
+  onBeforeMount,
   type PropType,
-  type CSSProperties,
   type ExtractPropTypes
 } from 'vue'
 
 import BEM from '@/shared/bem'
 import { shallowMerge } from '@txjs/shared'
-import { useRect, useNextTick } from '@/hooks'
+import { makeArray } from '@txjs/make'
+import { isNil, notNil } from '@txjs/bool'
+import { useRect, useRectCallback, useScroll, useNextTick } from '@/hooks'
 
 import { useId } from '../composables/id'
 import { useParent } from '../composables/parent'
@@ -57,33 +58,21 @@ export default defineComponent({
   props: cascaderProps,
 
   setup(props, { slots, emit }) {
-    const menuId = useId()
-    const menuRect = useRect(`#${menuId}-container`, {
-      refs: ['height']
+    const id = useId()
+    const cacheScrollTop = new Map<number, number>()
+    const containerRect = useRect(`#${id}-container`, {
+      useCache: true
     })
-    const optionRect = useRect(() => `.${menuId}-${activeTab.value}`)
+    const menuRect = useRect(() => `.${id}-${activeTab.value}`)
+    const scroller = useScroll(() => `${id}-${activeTab.value}`)
     const { parent: popup } = useParent(POPUP_KEY)
 
     const initialized = ref(false)
-    const scrollTop = ref(0)
     const activeTab = ref(0)
-    const tabs = ref<CascaderTab[]>([])
-
-    const optionStyle = computed(() => {
-      const style = {
-        width: `${tabs.value.length}00vw`
-      } as CSSProperties
-
-      if (activeTab.value > 0) {
-        style.transform = `translateX(-${activeTab.value}00vw)`
-      }
-
-      if (!initialized.value) {
-        style.transition = 'none'
-      }
-
-      return style
-    })
+    const oldActiveTab = ref(0)
+    const tabs = shallowRef(
+      makeArray<CascaderTab>([])
+    )
 
     const {
       text: textKey,
@@ -94,6 +83,12 @@ export default defineComponent({
       value: 'value',
       children: 'children'
     }, props.fieldNames)
+
+    const onScrollOldView = (top?: number) => {
+      notNil(top) && useNextTick(
+        () => scroller.scrollTop(top, `${id}-${oldActiveTab.value}`)
+      )
+    }
 
     const getSelectedOptionsByValue = (
       options: CascaderOption[],
@@ -109,7 +104,6 @@ export default defineComponent({
             option[childrenKey],
             value
           )
-
           if (selectedOptions) {
             return [option, ...selectedOptions]
           }
@@ -129,9 +123,11 @@ export default defineComponent({
         tabs.value = tabs.value.slice(0, tabIndex + 1)
       }
 
-      if (option[childrenKey]) {
+      const childrenOption = option[childrenKey]
+
+      if (childrenOption) {
         const nextTab = {
-          options: option[childrenKey],
+          options: childrenOption,
           selected: null
         }
 
@@ -140,11 +136,9 @@ export default defineComponent({
         } else {
           tabs.value.push(nextTab)
         }
-
-        useNextTick(() => activeTab.value++)
       }
 
-      triggerScrollTop(() => {
+      triggerScrollTop(childrenOption ? activeTab.value + 1 : activeTab.value, () => {
         const selectedOptions = tabs.value
           .map((tab) => tab.selected!)
           .filter(Boolean)
@@ -157,7 +151,7 @@ export default defineComponent({
         emit('update:value', option[valueKey])
         props.onChange?.(params)
 
-        if (!option[childrenKey]) {
+        if (!childrenOption) {
           popup?.close?.()
           props.onFinish?.(params)
         }
@@ -166,17 +160,27 @@ export default defineComponent({
 
     const onClickTab = (tabIndex: number) => {
       activeTab.value = tabIndex
-      triggerScrollTop()
       props.onClickTab?.(tabIndex)
+
+      // 滚动当前scrollView
+      const curScrollTop = cacheScrollTop.get(tabIndex)
+      if (isNil(curScrollTop)) {
+        triggerScrollTop(tabIndex, () => {
+          scroller.scrollTop(
+            cacheScrollTop.get(tabIndex)!
+          )
+        })
+      } else {
+        scroller.scrollTop(curScrollTop)
+      }
+
+      // 滚动上一个scrollView
+      onScrollOldView(
+        cacheScrollTop.get(oldActiveTab.value!)
+      )
     }
 
-    const onReset = () => {
-      tabs.value = []
-      scrollTop.value = 0
-      activeTab.value = 0
-    }
-
-    const triggerTabChange = () => {
+    const onUpdateTab = () => {
       const { options, value } = props
 
       if (value !== undefined) {
@@ -205,8 +209,19 @@ export default defineComponent({
             })
           }
 
-          activeTab.value = tabs.value.length - 1
-          triggerScrollTop()
+          const activeIndex = tabs.value.length - 1
+
+          if (!initialized.value) {
+            activeTab.value = activeIndex
+          }
+
+          triggerScrollTop(activeIndex, () => {
+            useNextTick(() => {
+              if (!initialized.value) {
+                initialized.value = true
+              }
+            })
+          })
           return
         }
       }
@@ -215,33 +230,59 @@ export default defineComponent({
         options,
         selected: null
       }]
+      initialized.value = true
     }
 
-    const triggerScrollTop = (callback?: Callback) => {
+    const triggerScrollTop = (tabIndex: number, callback?: Callback) => {
       const { options, selected } = tabs.value[activeTab.value]
 
       if (selected) {
-        optionRect.triggerBoundingClientRect((rect) => {
-          const menuHeight = menuRect.height.value
-          const optionsHeight = rect.height
-          const optionHeight = optionsHeight / options.length
-          const halfHeight = menuHeight * 0.5
-          const curHeight = optionHeight * options.findIndex(
+        useRectCallback([containerRect, menuRect], ([container, menu]) => {
+          const halfHeight = container.height * 0.5
+          const optionHeight = menu.height / options.length
+          const optionTop = optionHeight * options.findIndex(
             (option) => option[valueKey] === selected[valueKey]
           )
-          scrollTop.value = curHeight + optionHeight - (
-            optionsHeight - curHeight < halfHeight
-              ? menuHeight
-              : halfHeight
-          )
+          const expectedPos = optionTop + (optionHeight * 0.5)
+          const scrollTop = expectedPos < halfHeight ? 0 : expectedPos - halfHeight
+          cacheScrollTop.set(activeTab.value, scrollTop)
+
+          if (activeTab.value !== tabIndex) {
+            activeTab.value = tabIndex
+          }
+
           callback?.()
         })
       }
     }
 
+    const onReset = () => {
+      tabs.value = []
+      activeTab.value = 0
+      oldActiveTab.value = 0
+      cacheScrollTop.clear()
+    }
+
+    watch(
+      () => activeTab.value,
+      (value, oldValue) => {
+        if (notNil(oldValue) && value !== oldValue) {
+          oldActiveTab.value = oldValue
+        }
+      }
+    )
+
+    watch(
+      () => tabs.value,
+      () => {
+        cacheScrollTop.clear()
+        scroller.clearScrollTop()
+      }
+    )
+
     watch(
       () => props.options,
-      triggerTabChange
+      onUpdateTab
     )
 
     watch(
@@ -250,7 +291,7 @@ export default defineComponent({
         if (value !== undefined) {
           const values = tabs.value.map((tab) => tab.selected?.[valueKey])
           if (!values.includes(value)) {
-            triggerTabChange()
+            onUpdateTab()
           }
         } else {
           onReset()
@@ -258,10 +299,9 @@ export default defineComponent({
       }
     )
 
-    onMounted(triggerTabChange)
+    onBeforeMount(onUpdateTab)
 
-    const renderTab = (tab: CascaderTab, index: number) => {
-      const { selected } = tab
+    const renderTab = ({ selected }: CascaderTab, index: number) => {
       const title = selected ? selected[textKey] : DefaultOptionLabel
       const active = !!selected
       const last = tabs.value.length - 1 === index
@@ -275,11 +315,12 @@ export default defineComponent({
           <view class={bem('tab-label', { active: index === activeTab.value })}>
             <text>{title}</text>
           </view>
-          <Icon
-            name="arrow"
-            size={16}
-            class={bem('tab-arrow')}
-          />
+          <view class={bem('tab-arrow')}>
+            <Icon
+              name="arrow"
+              size={16}
+            />
+          </view>
         </view>
       )
     }
@@ -333,12 +374,12 @@ export default defineComponent({
         // @ts-ignore
         enablePassive
         fastDeceleration
-        scrollTop={tabIndex === activeTab.value ? scrollTop.value : 0}
-        class={bem('options')}
+        scrollTop={scroller.collector(`${id}-${tabIndex}`).value}
+        class={bem('options', { active: tabIndex === activeTab.value })}
       >
         <view
           role="menu"
-          class={`${menuId}-${tabIndex}`}
+          class={`${id}-${tabIndex}`}
         >
           {options.map((option) => renderOption(option, selectedOption, tabIndex))}
         </view>
@@ -352,9 +393,12 @@ export default defineComponent({
         </view>
         {renderOptionsTitle()}
         <view
-          class={bem('options-container')}
-          id={`${menuId}-container`}
-          style={optionStyle.value}
+          id={`${id}-container`}
+          class={bem('options-container', { animate: initialized.value })}
+          style={{
+            width: `${tabs.value.length}00vw`,
+            transform: `translateX(${activeTab.value === 0 ? 0 : `-${activeTab.value}00vw`})`
+          }}
         >
           {tabs.value.map(({ options, selected }: CascaderTab, tabIndex) => renderOptions(options, selected, tabIndex))}
         </view>
