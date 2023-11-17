@@ -1,25 +1,16 @@
-export const makeDOMRect = () => ({
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  width: 0,
-  height: 0
-})
+import type { DOMRect } from './utils'
 
-export type RectElement = string | (() => string)
-
-export type DOMRect = ReturnType<typeof makeDOMRect>
-
-export type DOMRectKey = keyof DOMRect
+export type SelectorElement = string | (() => string)
 
 export interface RectOptions {
+  useCache?: boolean
   flush?: 'pre' | 'post'
   target?: TaroGeneral.IAnyObject
 }
 
 export interface SingleRectOptions<K> extends RectOptions {
   refs?: K[]
+  observe?: string | boolean
   triggerCallback?: Callback<DOMRect>
 }
 
