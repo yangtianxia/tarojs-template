@@ -1,5 +1,3 @@
-import type { ViewProps } from '@tarojs/components'
-
 import BEM from '@/shared/bem'
 import { defineComponent, type PropType, type CSSProperties, type ExtractPropTypes } from 'vue'
 
@@ -13,8 +11,6 @@ const classPrefix = 'van-icon'
 const iconProps = {
   size: numericProp,
   color: String as PropType<CSSProperties['color']>,
-  onTap: Function as PropType<ViewProps['onTap']>,
-  onTouchStart: Function as PropType<ViewProps['onTouchStart']>,
   name: {
     type: String as PropType<IconName>,
     required: true
@@ -40,8 +36,6 @@ export default defineComponent({
           color: props.color,
           fontSize: addUnit(props.size)
         }}
-        onTap={props.onTap}
-        onTouchstart={props.onTouchStart}
       >
         {slots.default?.()}
       </view>
