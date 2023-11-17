@@ -1,11 +1,11 @@
 import type { CheckerDirection } from '../checkbox/Checker'
 
 import BEM from '@/shared/bem'
-import { defineComponent, watch, type PropType, type ExtractPropTypes, type InjectionKey } from 'vue'
+import { defineComponent, watch, type PropType, type ExtractPropTypes } from 'vue'
 
 import { useChildren } from '../composables/children'
 import { useFieldValue } from '../composables/field-value'
-import { numericProp, unknownProp } from '../utils'
+import { numericProp, unknownProp, createInjectionKey } from '../utils'
 
 const [name, bem] = BEM('radio-group')
 
@@ -27,7 +27,7 @@ export type RadioGroupProvide = {
   updateValue: (value: unknown) => void
 }
 
-export const RADIO_KEY: InjectionKey<RadioGroupProvide> = Symbol(name)
+export const RADIO_KEY = createInjectionKey<RadioGroupProvide>(name)
 
 export default defineComponent({
   name,

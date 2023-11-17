@@ -1,6 +1,7 @@
-import { inject, watch, type InjectionKey } from 'vue'
+import { inject, watch } from 'vue'
+import { createInjectionKey } from '../utils'
 
-export const POPUP_TOGGLE_KEY: InjectionKey<() => boolean> = Symbol()
+export const POPUP_TOGGLE_KEY = createInjectionKey<() => boolean>('popup-toggle')
 
 export const onPopupReopen = (callback: Callback) => {
   const popupToggleStatus = inject(POPUP_TOGGLE_KEY, null)

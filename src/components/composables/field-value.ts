@@ -1,6 +1,6 @@
-// copy vant-weapp
+import { watch, inject, type Ref } from 'vue'
 import type { FieldValidateTrigger } from '../form/types'
-import { watch, inject, type Ref, type InjectionKey } from 'vue'
+import { createInjectionKey } from '../utils'
 
 export type CustomFieldInjectionValue = {
   customValue: Ref<(() => unknown) | undefined >
@@ -8,7 +8,7 @@ export type CustomFieldInjectionValue = {
   validateWithTrigger: (trigger: FieldValidateTrigger) => void
 }
 
-export const FIELD_INJECTION_KEY: InjectionKey<CustomFieldInjectionValue> = Symbol('field')
+export const FIELD_INJECTION_KEY = createInjectionKey<CustomFieldInjectionValue>('field')
 
 export function useFieldValue(customValue: () => unknown) {
   const field = inject(FIELD_INJECTION_KEY, null)

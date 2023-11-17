@@ -1,13 +1,14 @@
-import { ref, Ref, computed, watchEffect, type ComputedRef, type InjectionKey } from 'vue'
+import { ref, Ref, computed, watchEffect, type ComputedRef } from 'vue'
 import type { NavigationBarConfig, NavigationBarInstance } from '@/components/navigation-bar'
 import { useChildren } from '@/components/composables/children'
+import { createInjectionKey } from '@/components/utils'
 
 export interface UseNavigationBarProvide {
   readonly ctx: Ref<NavigationBarInstance>
   readonly height: ComputedRef<number>
 }
 
-export const USE_NAVIGATION_BAR: InjectionKey<UseNavigationBarProvide> = Symbol('use-navigation-bar')
+export const USE_NAVIGATION_BAR = createInjectionKey<UseNavigationBarProvide>('use-navigation-bar')
 
 export const useNavigationBar = (config?: NavigationBarConfig) => {
   const ctx = ref<NavigationBarInstance>()
