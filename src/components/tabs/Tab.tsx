@@ -36,7 +36,7 @@ export default defineComponent({
     const id = useId()
     const { width, left, triggerBoundingClientRect } = useRect(`#${id}`, {
       refs: ['width', 'left'],
-      callback: () => parent.link(instance!, true)
+      triggerCallback: () => parent.link(instance!, true)
     })
 
     const tabKey = computed(() =>
