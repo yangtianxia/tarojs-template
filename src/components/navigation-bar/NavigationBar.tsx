@@ -89,6 +89,7 @@ export default defineComponent({
     const { path, currentRoute } = useRoute()
     const { statusBarHeight = 0 } = useSystemInfo()
     const { height } = useRect(`#${id}`, {
+      useCache: true,
       refs: ['height']
     })
 
