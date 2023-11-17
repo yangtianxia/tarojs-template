@@ -1,7 +1,8 @@
 import type { ResultStatusType, ResultOption } from '@/components/result'
 import { useChildren } from '@/components/composables/children'
+import { createInjectionKey } from '@/components/utils'
 
-import { reactive, type InjectionKey } from 'vue'
+import { reactive } from 'vue'
 import { isString } from '@txjs/bool'
 
 interface UseAppOption {
@@ -19,7 +20,7 @@ export interface UseAppProvide {
   reload?(error: any, callback?: Callback): void
 }
 
-export const USE_APP_KEY: InjectionKey<UseAppProvide> = Symbol('use-app')
+export const USE_APP_KEY = createInjectionKey<UseAppProvide>('use-app')
 
 export const useApp = (options?: UseAppOption) => {
   const { linkChildren } = useChildren(USE_APP_KEY)
