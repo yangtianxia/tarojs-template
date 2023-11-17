@@ -57,6 +57,22 @@ export default defineComponent({
       props.onCancel?.()
     }
 
+    const onOptionTap = (option: ActionSheetOption, index: number) => {
+      const { loading, disabled, callback } = option
+
+      if (loading || disabled) return
+
+      if (callback) {
+        callback(option)
+      }
+
+      if (props.closeOnClickAction) {
+        updateShow(false)
+      }
+
+      useNextTick(() => props.onSelect?.(option, index))
+    }
+
     const renderDescription = () => {
       if (slots.description || props.description) {
         return (
@@ -102,22 +118,7 @@ export default defineComponent({
     }
 
     const renderOption = (option: ActionSheetOption, index: number) => {
-      const { color, loading, disabled, className, callback } = option
-
-      const onTap = () => {
-        if (loading || disabled) return
-
-        if (callback) {
-          callback(option)
-        }
-
-        if (props.closeOnClickAction) {
-          updateShow(false)
-        }
-
-        useNextTick(() => props.onSelect?.(option, index))
-      }
-
+      const { color, loading, disabled, className } = option
       return (
         <Button
           block
@@ -128,7 +129,7 @@ export default defineComponent({
           iconPosition="right"
           class={[bem('option', { unclickable: loading || disabled }), className]}
           style={{ color }}
-          onTap={onTap}
+          onTap={() => onOptionTap(option, index)}
         >
           {renderOptionContent(option, index)}
         </Button>
