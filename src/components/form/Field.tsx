@@ -640,11 +640,12 @@ export default defineComponent({
       <view class={bem('body', { textarea: props.type === 'textarea' })}>
         {renderInput()}
         {showClear.value ? (
-          <Icon
-            name={props.clearIcon}
+          <view
             class={bem('clear')}
-            onTouchStart={onClear}
-          />
+            onTouchstart={onClear}
+          >
+            <Icon name={props.clearIcon} />
+          </view>
         ) : null}
         {renderRightIcon()}
         {slots.button ? (
