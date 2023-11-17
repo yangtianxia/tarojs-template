@@ -10,10 +10,10 @@ import {
 } from 'vue'
 
 import BEM from '@/shared/bem'
-import { usePageScroll } from '@tarojs/taro'
-import { isNil, isFunction } from '@txjs/bool'
+import { usePageScroll, useReady } from '@tarojs/taro'
 import { shallowMerge } from '@txjs/shared'
-import { useRect } from '@/hooks'
+import { isFunction } from '@txjs/bool'
+import { useRect, useRectCallback, type SelectorElement } from '@/hooks'
 
 import { useId } from '../composables/id'
 import { addUnit, numericProp, makeNumericProp, getZIndexStyle } from '../utils'
@@ -29,7 +29,7 @@ export type StickyScrollOptions = {
 export const stickyProps = {
   zIndex: numericProp,
   offsetTop: makeNumericProp(0),
-  container: Function as PropType<() => Taro.NodesRef>,
+  container: [String, Function] as PropType<SelectorElement>,
   onScroll: Function as PropType<(options: StickyScrollOptions) => void>,
   onChange: Function as PropType<(isFixed: boolean) => void>
 }
@@ -43,8 +43,10 @@ export default defineComponent({
 
   setup(props, { slots }) {
     const id = useId()
-    const innerScrollTop = ref(0)
+    const rootRect = useRect(`#${id}`)
+    const containerRect = useRect(props.container)
 
+    const scrollTop = ref(0)
     const state = reactive({
       fixed: false,
       height: 0,
@@ -52,29 +54,18 @@ export default defineComponent({
       offsetTop: 0
     })
 
-    const offsetTop = computed(() => {
-      let offset = parseFloat(`${props.offsetTop}`)
-
-      if (isNaN(offset)) {
-        offset = 0
-      }
-
-      return offset
-    })
-
+    const offsetTop = computed(() =>
+      parseFloat(`${props.offsetTop}`) || 0
+    )
     const rootStyle = computed(() => {
       const style = {} as CSSProperties
-
       if (state.fixed) {
-        shallowMerge(style, { height: addUnit(state.height) })
+        style.height = addUnit(state.height)
       }
-
       return style
     })
-
     const stickyStyle = computed(() => {
       const style = {} as CSSProperties
-
       if (state.fixed) {
         shallowMerge(style, getZIndexStyle(props.zIndex), {
           height: addUnit(state.height),
@@ -85,18 +76,8 @@ export default defineComponent({
           style.transform = `translate3d(0, ${state.transform}px, 0)`
         }
       }
-
       return style
     })
-
-    const getContainerRect = () => {
-      const nodesRef = props.container!()
-      return new Promise<Taro.NodesRef.BoundingClientRectCallbackResult>(
-        (resolve) => nodesRef.boundingClientRect().exec((rect: any = []) => {
-          return resolve(rect[0])
-        })
-      )
-    }
 
     const setDataAfterDiff = (data: Record<string, any>) => {
       const diff = Object.keys(data)
@@ -114,66 +95,64 @@ export default defineComponent({
       }
 
       props.onScroll?.({
-        scrollTop: innerScrollTop.value,
+        scrollTop: scrollTop.value,
         height: state.height,
         isFixed: state.fixed
       })
     }
 
-    const onScroll = (scrollTop: number) => {
-      innerScrollTop.value = scrollTop || innerScrollTop.value
+    const onChange = (fixed: boolean) => {
+      props.onChange?.(fixed)
+    }
+
+    const onScrollTop = (top: number) => {
+      scrollTop.value = top || scrollTop.value
 
       if (isFunction(props.container)) {
-        Promise.all([
-          useRect(`#${id}`),
-          getContainerRect()
-        ])
-          .then(([root, container]) => {
-            if (root && container) {
-              if (offsetTop.value + root.height > container.top + container.height) {
-                setDataAfterDiff({
-                  fixed: false,
-                  transform: container.height - root.height
-                })
-              } else if (offsetTop.value > root.top) {
-                setDataAfterDiff({
-                  fixed: true,
-                  height: root.height,
-                  transform: 0
-                })
-              } else {
-                setDataAfterDiff({
-                  fixed: false,
-                  transform: 0
-                })
-              }
-            }
-          })
-        return
-      }
-
-      useRect(`#${id}`)
-        .then((rect) => {
-          if (isNil(rect)) return
-          if (offsetTop.value > rect.top) {
+        useRectCallback([rootRect, containerRect], ([root, container]) => {
+          if (offsetTop.value + root.height > container.top + container.height) {
+            setDataAfterDiff({
+              fixed: false,
+              transform: container.height - root.height
+            })
+          } else if (offsetTop.value > root.top) {
             setDataAfterDiff({
               fixed: true,
-              height: rect.height
+              height: root.height,
+              transform: 0
             })
           } else {
             setDataAfterDiff({
-              fixed: false
+              fixed: false,
+              transform: 0
             })
           }
         })
+        return
+      }
+
+      rootRect.triggerBoundingClientRect((rect) => {
+        if (offsetTop.value >= rect.top) {
+          setDataAfterDiff({
+            fixed: true,
+            height: rect.height
+          })
+        } else {
+          setDataAfterDiff({
+            fixed: false
+          })
+        }
+      })
     }
 
     watch(
       () => state.fixed,
-      (value) => props.onChange?.(value)
+      onChange
     )
 
-    usePageScroll(({ scrollTop }) => onScroll(scrollTop))
+    useReady(() => onScrollTop(0))
+
+    usePageScroll(({ scrollTop }) => onScrollTop(scrollTop))
 
     return () => (
       <view
