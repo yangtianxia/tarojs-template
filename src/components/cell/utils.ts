@@ -20,6 +20,7 @@ export const cellSharedProps = {
   titleClass: unknownProp,
   titleWidth: numericProp,
   titleStyle: null as unknown as PropType<CSSProperties>,
+  rightIcon: String as PropType<IconName>,
   arrowDirection: String as PropType<CellArrowDirection>,
   onTap: Function as PropType<ViewProps['onTap']>,
   clickable: {
