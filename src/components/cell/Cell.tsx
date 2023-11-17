@@ -1,5 +1,5 @@
 import type { ITouchEvent } from '@tarojs/components'
-import { Icon, type IconName } from '../icon'
+import { Icon } from '../icon'
 
 import {
   defineComponent,
@@ -13,6 +13,7 @@ import {
 import BEM from '@/shared/bem'
 import { isArray, notNil } from '@txjs/bool'
 import { shallowMerge } from '@txjs/shared'
+import { makeString } from '@txjs/make'
 
 import { useParent } from '../composables/parent'
 import { useExpose } from '../composables/expose'
@@ -88,10 +89,9 @@ export default defineComponent({
 
       if (props.icon) {
         return (
-          <Icon
-            name={props.icon}
-            class={bem('left-icon')}
-          />
+          <view class={bem('left-icon')}>
+            <Icon name={props.icon} />
+          </view>
         )
       }
     }
@@ -126,9 +126,8 @@ export default defineComponent({
 
     const renderValue = () => {
       const valueSlot = slots.value ?? slots.default
-      const hasValue = valueSlot || notNil(props.value)
 
-      if (hasValue) {
+      if (valueSlot || notNil(props.value)) {
         return (
           <view class={[bem('value'), props.valueClass]}>
             {valueSlot?.() || <text>{props.value}</text>}
@@ -143,12 +142,15 @@ export default defineComponent({
       }
 
       if (props.isLink) {
-        const name = props.arrowDirection && props.arrowDirection !== 'right' ? `arrow-${props.arrowDirection}` : 'arrow'
+        const name = props.rightIcon || makeString(
+          props.arrowDirection && props.arrowDirection !== 'right'
+            ? `arrow-${props.arrowDirection}`
+            : 'arrow'
+        )
         return (
-          <Icon
-            name={name as IconName}
-            class={bem('right-icon')}
-          />
+          <view class={bem('right-icon')}>
+            <Icon name={name} />
+          </view>
         )
       }
     }
