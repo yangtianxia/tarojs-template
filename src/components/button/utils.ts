@@ -20,7 +20,7 @@ export const buttonSharedProps = {
   width: numericProp,
   icon: String as PropType<IconName>,
   iconSize: makeNumericProp(14),
-  type: makeStringProp<ButtonType>('default'),
+  type: makeStringProp<ButtonType>('light'),
   size: makeStringProp<ButtonSize>('normal'),
   iconPosition: makeStringProp<ButtonIconPosition>('left'),
   hoverClass: String as PropType<ButtonProps['hoverClass']>,

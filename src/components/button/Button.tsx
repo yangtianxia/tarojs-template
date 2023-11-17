@@ -48,10 +48,11 @@ export default defineComponent({
       const { color, plain, block, width } = props
 
       if (color) {
-        style.color = plain ? 'color' : 'white'
-
         if (plain) {
+          style.color = color
           style.background = color
+        } else {
+          style.color = 'var(--color-white)'
         }
 
         if (color.includes('gradient')) {
@@ -123,11 +124,12 @@ export default defineComponent({
 
       if (props.icon) {
         return (
-          <Icon
-            size={props.iconSize}
-            name={props.icon}
-            class={bem('icon', [props.icon])}
-          />
+          <view class={bem('icon', [props.icon])}>
+            <Icon
+              size={props.iconSize}
+              name={props.icon}
+            />
+          </view>
         )
       }
     }
