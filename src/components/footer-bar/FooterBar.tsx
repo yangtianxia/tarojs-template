@@ -1,8 +1,7 @@
 import { SafeArea } from '../safe-area'
 
 import BEM from '@/shared/bem'
-import debounce from 'debounce'
-import { defineComponent, onMounted, onUnmounted, type ExtractPropTypes } from 'vue'
+import { defineComponent, type ExtractPropTypes } from 'vue'
 import { useRect } from '@/hooks'
 
 import { useId } from '../composables/id'
@@ -27,29 +26,9 @@ export default defineComponent({
 
   setup(props, { slots, attrs }) {
     const id = useId()
-    const { height, triggerBoundingClientRect } = useRect(`#${id}`, {
-      refs: ['height']
-    })
-    const observer = new MutationObserver(
-      debounce(() => triggerBoundingClientRect(), 32, true)
-    )
-
-    const bindingObserver = () => {
-      const el = document.getElementById(id)
-      if (el) {
-        observer.observe(el, {
-          childList: true
-        })
-      }
-    }
-
-    onMounted(bindingObserver)
-
-    onUnmounted(() => {
-      if (observer) {
-        observer.takeRecords()
-        observer.disconnect()
-      }
+    const { height } = useRect(`#${id}`, {
+      refs: ['height'],
+      observe: true
     })
 
     return () => (
