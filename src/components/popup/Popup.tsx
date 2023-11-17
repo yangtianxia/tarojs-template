@@ -14,8 +14,7 @@ import {
   onDeactivated,
   type CSSProperties,
   type ExtractPropTypes,
-  type PropType,
-  type InjectionKey
+  type PropType
 } from 'vue'
 
 import BEM from '@/shared/bem'
@@ -29,7 +28,7 @@ import { useExpose } from '../composables/expose'
 import { useChildren } from '../composables/children'
 import { useParent } from '../composables/parent'
 import { useLazyRender } from '../composables/lazy-render'
-import { POPUP_TOGGLE_KEY, truthProp, numericProp, makeStringProp, addUnit } from '../utils'
+import { POPUP_TOGGLE_KEY, truthProp, numericProp, makeStringProp, addUnit, createInjectionKey } from '../utils'
 
 import { popupSharedProps } from './utils'
 import type { PopupPosition, PopupCloseIconPosition } from './types'
@@ -64,7 +63,7 @@ export type PopupProvide = {
   close: () => void
 }
 
-export const POPUP_KEY: InjectionKey<PopupProvide> = Symbol(name)
+export const POPUP_KEY = createInjectionKey<PopupProvide>(name)
 
 export default defineComponent({
   name,

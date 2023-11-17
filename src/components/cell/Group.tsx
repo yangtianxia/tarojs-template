@@ -1,11 +1,11 @@
 import type { CellInstance } from './Cell'
 
 import BEM from '@/shared/bem'
-import { defineComponent, watch, type ExtractPropTypes, type InjectionKey } from 'vue'
+import { defineComponent, watch, type ExtractPropTypes } from 'vue'
 import { useReady } from '@tarojs/taro'
 
 import { useChildren } from '../composables/children'
-import { truthProp, numericProp } from '../utils'
+import { truthProp, numericProp, createInjectionKey } from '../utils'
 
 const [name, bem] = BEM('cell-group')
 
@@ -23,7 +23,7 @@ export type CellGroupProvide = {
   props: CellGroupProps
 }
 
-export const CELL_GROUP_KEY: InjectionKey<CellGroupProvide> = Symbol(name)
+export const CELL_GROUP_KEY = createInjectionKey<CellGroupProvide>(name)
 
 export default defineComponent({
   name,

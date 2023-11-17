@@ -1,13 +1,13 @@
 import { Form, type ITouchEvent, type FormProps as TaroFormProps } from '@tarojs/components'
 
 import BEM from '@/shared/bem'
-import { defineComponent, type PropType, type InjectionKey, type ExtractPropTypes } from 'vue'
+import { defineComponent, type PropType, type ExtractPropTypes } from 'vue'
 import type { Rule } from '@txjs/vant-validator'
 import { isString } from '@txjs/bool'
 
 import { useExpose } from '../composables/expose'
 import { useChildren } from '../composables/children'
-import { numericProp, truthProp, preventDefault } from '../utils'
+import { numericProp, truthProp, preventDefault, createInjectionKey } from '../utils'
 
 import type {
   FieldRule,
@@ -52,16 +52,14 @@ const formProps = {
 
 export type FormProps = ExtractPropTypes<typeof formProps>
 
-export const FORM_KEY: InjectionKey<FormProvide> = Symbol(name)
+export const FORM_KEY = createInjectionKey<FormProvide>(name)
 
 export default defineComponent({
   name,
 
-  inheritAttrs: false,
-
   props: formProps,
 
-  setup(props, { slots, attrs }) {
+  setup(props, { slots }) {
     const { children, linkChildren } = useChildren(FORM_KEY)
 
     const getFieldsByNames = (names?: string[]) => {
@@ -231,7 +229,6 @@ export default defineComponent({
 
     return () => (
       <Form
-        {...attrs}
         class={bem()}
         onSubmit={onSubmit}
         onReset={onReset}

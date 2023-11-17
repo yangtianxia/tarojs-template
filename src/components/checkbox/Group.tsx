@@ -1,13 +1,13 @@
 import type { CheckerDirection } from '../checkbox/Checker'
 
 import BEM from '@/shared/bem'
-import { defineComponent, watch, type PropType, type InjectionKey, type ExtractPropTypes } from 'vue'
+import { defineComponent, watch, type PropType, type ExtractPropTypes } from 'vue'
 import { isBoolean } from '@txjs/bool'
 
 import { useExpose } from '../composables/expose'
 import { useFieldValue } from '../composables/field-value'
 import { useChildren } from '../composables/children'
-import { numericProp, makeArrayProp } from '../utils'
+import { numericProp, makeArrayProp, createInjectionKey } from '../utils'
 
 import type { CheckboxGroupProvide, CheckboxGroupToggleAllOptions } from './types'
 
@@ -26,7 +26,7 @@ export const checkboxGroupProps = {
 
 export type CheckboxGroupProps = ExtractPropTypes<typeof checkboxGroupProps>
 
-export const CHECKBOX_GROUP_KEY: InjectionKey<CheckboxGroupProvide> = Symbol(name)
+export const CHECKBOX_GROUP_KEY = createInjectionKey<CheckboxGroupProvide>(name)
 
 export default defineComponent({
   name,

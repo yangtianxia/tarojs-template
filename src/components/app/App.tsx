@@ -9,8 +9,7 @@ import {
   provide,
   Transition,
   type ComputedRef,
-  type ExtractPropTypes,
-  type InjectionKey
+  type ExtractPropTypes
 } from 'vue'
 
 import BEM from '@/shared/bem'
@@ -19,7 +18,7 @@ import { notNil } from '@txjs/bool'
 import { USE_APP_KEY, useRoute, useRouter } from '@/hooks'
 
 import { useParent } from '../composables/parent'
-import { truthProp, makeStringProp } from '../utils'
+import { truthProp, makeStringProp, createInjectionKey } from '../utils'
 
 type NavigationStyle = 'custom' | 'default'
 
@@ -37,7 +36,7 @@ export type AppProvide = {
   readonly status: ComputedRef<ResultStatusType>
 }
 
-export const APP_KEY: InjectionKey<AppProvide> = Symbol(name)
+export const APP_KEY = createInjectionKey<AppProvide>(name)
 
 export default defineComponent({
   name,

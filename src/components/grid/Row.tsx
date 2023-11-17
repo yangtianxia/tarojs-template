@@ -1,11 +1,11 @@
 import type { ViewProps } from '@tarojs/components'
 
 import BEM from '@/shared/bem'
-import { defineComponent, type PropType, type InjectionKey, type ExtractPropTypes } from 'vue'
+import { defineComponent, type PropType, type ExtractPropTypes } from 'vue'
 import { isArray } from '@txjs/bool'
 
 import { useChildren } from '../composables/children'
-import { addUnit } from '../utils'
+import { addUnit, createInjectionKey } from '../utils'
 
 const [name, bem] = BEM('row')
 
@@ -21,11 +21,12 @@ const rowProps = {
 }
 
 export type RowProps = ExtractPropTypes<typeof rowProps>
+
 export type RowProvide = {
   props: RowProps
 }
 
-export const ROW_KEY: InjectionKey<RowProvide> = Symbol(name)
+export const ROW_KEY = createInjectionKey<RowProvide>(name)
 
 export default defineComponent({
   name,
