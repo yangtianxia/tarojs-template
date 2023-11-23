@@ -1,12 +1,10 @@
-import { Button } from '../button'
-import { Popup, popupSharedProps, popupSharedPropKeys } from '../popup'
-
-import BEM from '@/shared/bem'
 import { defineComponent, type ExtractPropTypes, type PropType } from 'vue'
 import { pick, shallowMerge } from '@txjs/shared'
 import { useNextTick } from '@/hooks'
 
-import { truthProp, makeArrayProp } from '../utils'
+import { Button } from '../button'
+import { Popup, popupSharedProps, popupSharedPropKeys } from '../popup'
+import { truthProp, vnodeProp, genVNode, makeArrayProp } from '../utils'
 
 const [name, bem] = BEM('action-sheet')
 
@@ -23,11 +21,14 @@ export type ActionSheetOption = {
 export const actionSheetProps = shallowMerge({}, popupSharedProps, {
   round: truthProp,
   actions: makeArrayProp<ActionSheetOption>(),
-  cancelText: String,
-  description: String,
+  description: vnodeProp,
   closeOnPopstate: truthProp,
   closeOnClickAction: Boolean,
   safeAreaInsetBottom: truthProp,
+  cancelText: {
+    type: vnodeProp,
+    default: '取消'
+  },
   onSelect: Function as PropType<(option: ActionSheetOption, index: number) => void>,
   onCancel: Function as PropType<() => void>,
   'onUpdate:show': Function as PropType<(value: boolean) => void>
@@ -45,17 +46,10 @@ const popupPropsKeys = [
 export default defineComponent({
   name,
 
-  inheritAttrs: false,
-
   props: actionSheetProps,
 
   setup(props, { slots, emit }) {
     const updateShow = (show: boolean) => emit('update:show', show)
-
-    const onCancel = () => {
-      updateShow(false)
-      props.onCancel?.()
-    }
 
     const onOptionTap = (option: ActionSheetOption, index: number) => {
       const { loading, disabled, callback } = option
@@ -73,18 +67,27 @@ export default defineComponent({
       useNextTick(() => props.onSelect?.(option, index))
     }
 
+    const onCancel = () => {
+      updateShow(false)
+      props.onCancel?.()
+    }
+
     const renderDescription = () => {
-      if (slots.description || props.description) {
+      const description = genVNode(slots.description || props.description)
+
+      if (description) {
         return (
           <view class={bem('description')}>
-            {slots.description?.() || props.description}
+            {description}
           </view>
         )
       }
     }
 
     const renderCancel = () => {
-      if (slots.cancel || props.cancelText) {
+      const cencel = genVNode(slots.cancel || props.cancelText)
+
+      if (cencel) {
         return (
           <>
             <view class={bem('gap')} />
@@ -95,7 +98,7 @@ export default defineComponent({
               class={bem('cancel')}
               onTap={onCancel}
             >
-              {slots.cancel?.() || props.cancelText}
+              {cencel}
             </Button>
           </>
         )
@@ -111,7 +114,9 @@ export default defineComponent({
         <>
           <text>{option.title}</text>
           {option.label ? (
-            <view class={bem('option-label')}>{option.label}</view>
+            <view class={bem('option-label')}>
+              {option.label}
+            </view>
           ) : null}
         </>
       )

@@ -2,13 +2,13 @@ import type { CSSProperties } from 'vue'
 import { isNil, isInteger, isArray, isNumeric } from '@txjs/bool'
 import { useSystemInfo } from '@/hooks/system-info'
 
-const pixelRatio = parseFloat((750 / useSystemInfo().windowWidth).toFixed(2))
+const pixelRatio = Math.floor((750 / useSystemInfo().windowWidth) * 100) / 100
 
 export function addUnit(value?: Numeric) {
   if (isNil(value)) return
 
   if (isNumeric(value)) {
-    return `${value * pixelRatio}rpx`
+    return `${Math.round(value * pixelRatio)}rpx`
   }
 
   return value

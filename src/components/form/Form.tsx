@@ -1,10 +1,12 @@
-import { Form, type ITouchEvent, type FormProps as TaroFormProps } from '@tarojs/components'
-
-import BEM from '@/shared/bem'
 import { defineComponent, type PropType, type ExtractPropTypes } from 'vue'
 import type { Rule } from '@txjs/vant-validator'
 import { isString } from '@txjs/bool'
 
+import {
+  Form,
+  type ITouchEvent,
+  type FormProps as TaroFormProps
+} from '@tarojs/components'
 import { useExpose } from '../composables/expose'
 import { useChildren } from '../composables/children'
 import { numericProp, truthProp, preventDefault, createInjectionKey } from '../utils'

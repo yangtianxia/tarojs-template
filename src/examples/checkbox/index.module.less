@@ -1,0 +1,20 @@
+.checkbox {
+  &__section {
+    & + & {
+      margin-top: var(--size-3);
+    }
+
+    &-wrapper {
+      border-radius: var(--radius-md);
+      padding: var(--size-4);
+      background-color: var(--color-section);
+    }
+  }
+
+  &__title {
+    color: var(--color-text-light);
+    font-size: var(--size-md);
+    line-height: var(--line-md);
+    padding: 0 var(--size-4) var(--size-3);
+  }
+}

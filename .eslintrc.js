@@ -25,6 +25,10 @@ module.exports = {
   },
   globals: {
     wx: true,
-    my: true
+    my: true,
+    BEM: true,
+    mitt: true,
+    toast: true,
+    modal: true
   }
 }

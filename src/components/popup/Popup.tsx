@@ -1,7 +1,3 @@
-import { ScrollView, type ViewProps, type ITouchEvent } from '@tarojs/components'
-import { SafeArea } from '../safe-area'
-import { Overlay } from '../overlay'
-
 import {
   defineComponent,
   ref,
@@ -16,20 +12,20 @@ import {
   type ExtractPropTypes,
   type PropType
 } from 'vue'
-
-import BEM from '@/shared/bem'
 import { useReady, useDidHide } from '@tarojs/taro'
 import { noop, shallowMerge, callInterceptor } from '@txjs/shared'
 import { isNil, notNil } from '@txjs/bool'
 import { useNextTick } from '@/hooks'
 
+import { ScrollView, type ViewProps, type ITouchEvent } from '@tarojs/components'
+import { SafeArea } from '../safe-area'
+import { Overlay } from '../overlay'
 import { useId } from '../composables/id'
 import { useExpose } from '../composables/expose'
 import { useChildren } from '../composables/children'
 import { useParent } from '../composables/parent'
 import { useLazyRender } from '../composables/lazy-render'
 import { POPUP_TOGGLE_KEY, truthProp, numericProp, makeStringProp, addUnit, createInjectionKey } from '../utils'
-
 import { popupSharedProps } from './utils'
 import type { PopupPosition, PopupCloseIconPosition } from './types'
 
@@ -76,7 +72,7 @@ export default defineComponent({
     let opened: boolean
     let shouldReopen: boolean
 
-    const id = useId()
+    const rootId = useId()
     const { linkChildren } = useChildren(POPUP_KEY)
 
     const zIndex = ref<number>()
@@ -225,31 +221,31 @@ export default defineComponent({
 
     const renderPopup = lazyRender(() => {
       const { round, position, safeAreaInsetTop, safeAreaInsetBottom } = props
-
       return (
         <view
           {...attrs}
-          catchMove
           v-show={props.show}
-          id={id}
+          id={rootId}
           ref={popupRef}
           style={style.value}
+          catchMove={props.lockScroll}
           class={bem({ round, [position]: position })}
-          // @ts-ignore only alipay
-          disableScroll={props.lockScroll}
           onTouchmove={noop}
         >
           {safeAreaInsetTop ? (
             <SafeArea position="top" />
           ) : null}
-          <view class={bem('header')}>
+          <view
+            disableScroll={true}
+            class={bem('header')}
+          >
             {renderTitle()}
             {renderCloseIcon()}
           </view>
           {slots.default?.()}
           {safeAreaInsetBottom ? (
             <SafeArea>
-              {slots.safearea?.()}
+              <view class={bem('bottom')} />
             </SafeArea>
           ) : null}
         </view>
@@ -259,7 +255,6 @@ export default defineComponent({
     const renderTransition = () => {
       const { position, transition, transitionAppear } = props
       const transitionName = position === 'center' ? 'popup-fade' : `${name}-slide-${position}`
-
       return (
         <Transition
           name={transition || transitionName}
@@ -299,10 +294,8 @@ export const Content = defineComponent({
 
     return () => {
       if (isNil(parent)) return
-
       const { shrink, scrolling } = parent.props
       const height = addUnit(scrolling)
-
       return (
         <view
           class={bem('content', { shrink })}
@@ -316,7 +309,6 @@ export const Content = defineComponent({
             enablePassive
             fastDeceleration
             scrollWithAnimation
-            scrollX={false}
             class={bem('content-scroll')}
           >
             <view class={bem('content-wrapper')}>
@@ -337,11 +329,12 @@ export const Footer = defineComponent({
 
     return () => {
       if (isNil(parent)) return
-
       const { shrink } = parent.props
-
       return (
-        <view class={bem('footer', { shrink })}>
+        <view
+          disableScroll={true}
+          class={bem('footer', { shrink })}
+        >
           <view class={bem('footer-wrapper')}>
             {slots.default?.()}
           </view>

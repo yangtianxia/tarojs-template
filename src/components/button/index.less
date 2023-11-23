@@ -1,11 +1,12 @@
 @button-cls: ~'@{prefix}-button';
 
 page {
-  --button-defaut-weight: var(--weight-regular);
-  --button-defaut-height: var(--size-10);
-  --button-defaut-line: var(--line-md);
-  --button-defaut-radius: var(--radius-sm);
-  --button-defaut-background: var(--color-grey-400);
+  --button-default-text-color: var(--color-text);
+  --button-default-text-weight: var(--weight-regular);
+  --button-default-height: var(--size-10);
+  --button-default-line: var(--line-md);
+  --button-default-radius: var(--radius-sm);
+  --button-default-background: var(--color-grey-300);
   --button-light-color: var(--color-text);
   --button-light-border-color: var(--color-text);
   --button-light-background: var(--color-section);
@@ -14,7 +15,7 @@ page {
   --button-danger-color: var(--color-white);
   --button-danger-background: var(--color-danger);
   --button-warn-color: var(--color-white);
-  --button-warn-background: var(--color-warn);
+  --button-warn-background: var(--color-warning);
   --button-success-color: var(--color-white);
   --button-success-background: var(--color-success);
   --button-normal-size: var(--size-md);
@@ -29,8 +30,8 @@ page {
   --button-large-height: var(--size-12);
   --button-bold-weight: var(--weight-bold);
   --button-border-width: var(--size-none);
-  --button-disabled-opacity: var(--opacity-disabled);
-  --button-loading-opacity: var(--opacity-loading);
+  --button-disabled-opacity: var(--opacity-medium);
+  --button-loading-opacity: var(--opacity-high);
   --button-loading-size: var(--size-lg);
 }
 
@@ -45,11 +46,12 @@ page {
   vertical-align: top;
   box-sizing: border-box;
   -webkit-text-size-adjust: 100%;
-  font-weight: var(--button-defaut-weight);
-  height: var(--button-defaut-height);
-  line-height: var(--button-defaut-line);
-  border-radius: var(--button-defaut-radius);
-  background-color: var(--button-defaut-background);
+  color: var(--button-default-text-color);
+  font-weight: var(--button-default-text-weight);
+  height: var(--button-default-height);
+  line-height: var(--button-default-line);
+  border-radius: var(--button-default-radius);
+  background-color: var(--button-default-background);
   transition: opacity 0.2s;
 
   &:before {
@@ -109,8 +111,8 @@ page {
 
   &--success {
     color: var(--button-success-color);
-    background: var(---button-success-background);
-    border: var(--button-border-width) solid var(---button-success-background);
+    background: var(--button-success-background);
+    border: var(--button-border-width) solid var(--button-success-background);
   }
 
   &--plain {
@@ -137,8 +139,8 @@ page {
       }
 
       &--success {
-        color: var(---button-success-background);
-        --loading-spinner-color: var(---button-success-background);
+        color: var(--button-success-background);
+        --loading-spinner-color: var(--button-success-background);
       }
     }
   }
@@ -223,12 +225,12 @@ page {
     }
 
     &:active {
-      opacity: var(--opacity-active);
+      opacity: var(--opacity-medium);
     }
   }
 
   &__active:not(&--disabled):before {
-    opacity: .15;
+    opacity: var(--opacity-low);
   }
 }
 

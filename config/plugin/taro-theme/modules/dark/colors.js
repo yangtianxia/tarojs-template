@@ -41,6 +41,7 @@ module.exports = {
     'info-700': '#A0CBFA',
 
     /** Extra */
-    navigation: 'white'
+    navigation: 'white',
+    section: '#191919'
   }
 }

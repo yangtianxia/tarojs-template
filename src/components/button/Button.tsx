@@ -1,18 +1,22 @@
+import {
+  defineComponent,
+  computed,
+  type PropType,
+  type CSSProperties,
+  type ExtractPropTypes
+} from 'vue'
+import { pick, shallowMerge } from '@txjs/shared'
+
 import { Button, type ButtonProps as TaroButtonProps, type ITouchEvent } from '@tarojs/components'
 import { Loading } from '../loading'
 import { Icon } from '../icon'
-
-import BEM from '@/shared/bem'
-import { defineComponent, computed, type PropType, type CSSProperties, type ExtractPropTypes } from 'vue'
-import { pick, shallowMerge } from '@txjs/shared'
-
-import { preventDefault, addUnit } from '../utils'
+import { genVNode, preventDefault, addUnit, type GenVNodeReturn } from '../utils'
 import { jumpLink, jumpLinkSharedProps } from '../mixins'
 import { buttonSharedProps } from './utils'
 
 const [name, bem] = BEM('button')
 
-const buttonProps = shallowMerge({}, jumpLinkSharedProps, buttonSharedProps, {
+const buttonPrivateProps = {
   lang: String as PropType<TaroButtonProps['lang']>,
   sessionFrom: String as PropType<TaroButtonProps['sessionFrom']>,
   sendMessageTitle: String as PropType<TaroButtonProps['sendMessageTitle']>,
@@ -33,7 +37,9 @@ const buttonProps = shallowMerge({}, jumpLinkSharedProps, buttonSharedProps, {
   onLaunchApp: Function as PropType<TaroButtonProps['onLaunchApp']>,
   onChooseAvatar: Function as PropType<TaroButtonProps['onChooseAvatar']>,
   onFollowLifestyle: Function as PropType<TaroButtonProps['onFollowLifestyle']>
-})
+}
+
+const buttonProps = shallowMerge({}, jumpLinkSharedProps, buttonSharedProps, buttonPrivateProps)
 
 export type ButtonProps = ExtractPropTypes<typeof buttonProps>
 
@@ -55,11 +61,9 @@ export default defineComponent({
           style.color = 'var(--color-white)'
         }
 
-        if (color.includes('gradient')) {
-          style.border = 0
-        } else {
-          style.borderColor = color
-        }
+        style.borderColor = color.includes('gradient')
+          ? 'transparent'
+          : color
       }
 
       if (!block && width) {
@@ -88,21 +92,23 @@ export default defineComponent({
     }
 
     const renderText = () => {
-      let text
+      let childVNode: GenVNodeReturn | undefined
 
       if (props.loading) {
-        text = props.loadingText
+        childVNode = genVNode(props.loadingText)
       } else {
-        text = slots.default?.() ?? props.text
+        childVNode = genVNode(slots.default || props.text)
       }
 
-      if (text) {
+      if (childVNode) {
         if (props.type === 'cell') {
-          return text
+          return childVNode
         }
 
         return (
-          <view class={bem('text')}>{text}</view>
+          <view class={bem('text')}>
+            {childVNode}
+          </view>
         )
       }
     }
@@ -179,10 +185,6 @@ export default defineComponent({
           'sendMessagePath',
           'sendMessageTitle',
           'publicId',
-          'hoverClass',
-          'hoverStartTime',
-          'hoverStayTime',
-          'hoverStopPropagation',
           'appParameter',
           'showMessageCard',
           'openType',

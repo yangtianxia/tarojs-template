@@ -3,11 +3,11 @@
 
 page {
   --app-loading-z-index: 901;
-  --app-loading-bgcolor: var(--color-bgcolor);
+  --app-loading-background: var(--color-bgcolor);
   --app-bottom-height: var(--size-5);
   --body-vertical-padding: var(--size-4);
   --body-horizontal-padding: var(--size-4);
-  --body-backgroud-color: var(--color-bgcolor);
+  --body-backgroud: var(--color-bgcolor);
 }
 
 .@{app-cls} {
@@ -25,7 +25,7 @@ page {
     bottom: 0;
     width: 100%;
     color: var(--color-text-base);
-    background-color: var(--app-loading-bgcolor);
+    background-color: var(--app-loading-background);
     z-index: var(--app-loading-z-index);
 
     &-wrapper {
@@ -61,7 +61,7 @@ page {
 
   &--empty {
     padding: 0;
-    background-color: var(--body-backgroud-color);
+    background-color: var(--body-backgroud);
 
     .@{prefix}-result {
       position: absolute;

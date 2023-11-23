@@ -69,8 +69,6 @@ module.exports = defineConfig((defaultConfig) => {
 
   modules.color = {
     ...formatColor(cloneLight.color),
-    section: 'var(--color-white)',
-    'section-base': 'var(--color-white-base)',
     grey: 'var(--color-grey-500)',
     info: 'var(--color-info-500)',
     primary: 'var(--color-primary-500)',
@@ -112,11 +110,7 @@ module.exports = defineConfig((defaultConfig) => {
     Reflect.set(media, '(prefers-color-scheme: dark)', {
       ...cloneDark,
       size: pxTransform(cloneDark.size),
-      color: {
-        ...formatColor(cloneDark.color),
-        section: 'var(--color-grey-100)',
-        'section-base': 'var(--color-grey-100-base)',
-      },
+      color: formatColor(cloneDark.color)
     })
   }
 

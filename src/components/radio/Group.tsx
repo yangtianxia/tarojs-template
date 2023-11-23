@@ -1,7 +1,6 @@
-import type { CheckerDirection } from '../checkbox/Checker'
-
-import BEM from '@/shared/bem'
 import { defineComponent, watch, type PropType, type ExtractPropTypes } from 'vue'
+
+import type { CheckerDirection } from '../checker/types'
 
 import { useChildren } from '../composables/children'
 import { useFieldValue } from '../composables/field-value'

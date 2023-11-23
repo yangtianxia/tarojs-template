@@ -1,4 +1,3 @@
-import BEM from '@/shared/bem'
 import { defineComponent, computed, watch, type PropType, type ExtractPropTypes } from 'vue'
 
 import { useExpose } from '../composables/expose'

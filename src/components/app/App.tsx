@@ -1,8 +1,3 @@
-import { NavigationBar } from '../navigation-bar'
-import { Loading } from '../loading'
-import { SafeArea } from '../safe-area'
-import { resultSharedProps, type ResultStatusType } from '../result'
-
 import {
   defineComponent,
   computed,
@@ -11,21 +6,20 @@ import {
   type ComputedRef,
   type ExtractPropTypes
 } from 'vue'
-
-import BEM from '@/shared/bem'
 import { noop, shallowMerge } from '@txjs/shared'
 import { notNil } from '@txjs/bool'
-import { USE_APP_KEY, useRoute, useRouter } from '@/hooks'
+import { USE_APP_KEY, useRoute, useRouter, useHideHomeButton } from '@/hooks'
 
+import { resultSharedProps, type ResultStatusType } from '../result'
+import { NavigationBar } from '../navigation-bar'
+import { Loading } from '../loading'
+import { SafeArea } from '../safe-area'
 import { useParent } from '../composables/parent'
-import { truthProp, makeStringProp, createInjectionKey } from '../utils'
-
-type NavigationStyle = 'custom' | 'default'
+import { truthProp, createInjectionKey } from '../utils'
 
 const [name, bem] = BEM('app')
 
 const appProps = shallowMerge({}, resultSharedProps, {
-  navigationStyle: makeStringProp<NavigationStyle>('default'),
   loading: truthProp
 })
 
@@ -45,7 +39,7 @@ export default defineComponent({
 
   setup(props, { slots }) {
     const router = useRouter()
-    const { path } = useRoute()
+    const { path, pageInstance } = useRoute()
     const { parent } = useParent(USE_APP_KEY)
 
     const hasTabbar = router.checkTabbar(path)
@@ -55,6 +49,14 @@ export default defineComponent({
     const status = computed(() =>
       parent?.state.status ?? props.status
     )
+    const navigationStyle = computed(() =>
+      pageInstance?.page?.config?.navigationStyle || pageInstance?.app?.config?.window?.navigationStyle
+    )
+
+    // 支付宝默认隐藏首页图标按钮
+    if (process.env.TARO_ENV === 'alipay') {
+      useHideHomeButton()
+    }
 
     provide(APP_KEY, { loading, status })
 
@@ -75,7 +77,7 @@ export default defineComponent({
     )
 
     const renderNavigationBar = () => {
-      if (props.navigationStyle === 'default') {
+      if (navigationStyle.value === 'custom') {
         return (
           <NavigationBar />
         )

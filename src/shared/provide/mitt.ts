@@ -15,4 +15,5 @@ class Mitt extends Events {
   }
 }
 
+export { Mitt }
 export default new Mitt()

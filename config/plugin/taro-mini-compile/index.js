@@ -118,6 +118,8 @@ module.exports = (ctx, option = {}) => {
         ).to(
           resolve(outputDir, outputPath)
         )
+
+        shell.echo('✨ [taro-mini-compile] build finish')
       } catch (err) {
         console.log('❌', err)
       }

@@ -14,11 +14,11 @@ page {
   --field-clear-icon-color: var(--color-grey-500);
   --field-right-icon-color: var(--color-grey-600);
   --field-error-message-color: var(--color-danger);
-  --field-error-message-font-size: var(--size-sm);
+  --field-error-message-size: var(--size-sm);
   --field-text-area-min-height: 1.4rem;
   --field-word-limit-color: var(--color-grey-700);
-  --field-word-limit-font-size: var(--size-sm);
-  --field-word-limit-line-height: var(--line-md);
+  --field-word-limit-size: var(--size-sm);
+  --field-word-limit-line: var(--line-md);
   --field-disabled-text-color: var(--color-grey-500);
   --field-required-mark-color: var(--color-red);
 }
@@ -71,7 +71,7 @@ page {
     right: 0;
     left: 0;
     pointer-events: none;
-    font-size: var(--cell-font-size);
+    font-size: var(--cell-size);
     color: var(--field-placeholder-text-color);
 
     &--error {
@@ -98,7 +98,7 @@ page {
       box-sizing: border-box;
       padding: 7.2rpx 0;
       line-height: 1.2em;
-      min-height: var(--cell-line-height);
+      min-height: var(--cell-line);
 
       .@{field-cls}__clear {
         align-self: flex-start;
@@ -123,8 +123,8 @@ page {
     border: 0;
     resize: none;
     user-select: auto;
-    line-height: var(--cell-line-height);
-    min-height: var(--cell-line-height);
+    line-height: var(--cell-line);
+    min-height: var(--cell-line);
 
     &--disabled {
       color: var(--field-input-disabled-text-color);
@@ -146,7 +146,7 @@ page {
     &--custom {
       display: flex;
       align-items: center;
-      min-height: var(--cell-line-height);
+      min-height: var(--cell-line);
     }
 
     &--error,
@@ -203,7 +203,7 @@ page {
 
   &__error-message {
     color: var(--field-error-message-color);
-    font-size: var(--field-error-message-font-size);
+    font-size: var(--field-error-message-size);
     text-align: left;
 
     &--center {
@@ -218,8 +218,8 @@ page {
   &__word-limit {
     margin-top: var(--size-1);
     color: var(--field-word-limit-color);
-    font-size: var(--field-word-limit-font-size);
-    line-height: var(--field-word-limit-line-height);
+    font-size: var(--field-word-limit-size);
+    line-height: var(--field-word-limit-line);
     text-align: right;
   }
 }

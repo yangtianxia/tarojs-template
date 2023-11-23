@@ -3,11 +3,9 @@ import type { RequestConfig, SuccessParam, XHR } from '@txjs/taro-request'
 import type { BaseData, TransformData, ContentType } from './types'
 
 import router from '@/router'
-import mitt from '@/shared/mitt'
 import { REQUEST } from '@txjs/taro-request'
 import { pick } from '@txjs/shared'
 import { isPlainObject, isNil, isUndefined, notNil } from '@txjs/bool'
-import { useToast } from '@/hooks/toast'
 import { isLogin, getToken } from '@/shared/auth'
 import { EVENT_TYPE } from '@/shared/constants'
 
@@ -51,7 +49,7 @@ REQUEST.Defaults.transformResponse = (config) => {
   } else if (statusCode === 401) {
     router.jumpLogin()
   } else {
-    useToast(data?.msg || '请求失败')
+    toast.info(data?.msg || '请求失败')
   }
 
   return Promise.reject(data)
@@ -76,7 +74,7 @@ REQUEST.Listeners.onResponse.push((data, config) => {
 
 REQUEST.Listeners.onRejected.push((data, config) => {
   if (data && data.errMsg?.startsWith('request:fail')) {
-    useToast('请求错误，稍后再试')
+    toast.info('请求错误，稍后再试')
   }
 
   mitt.trigger(EVENT_TYPE.REQUEST_EVENT, {

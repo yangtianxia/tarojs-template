@@ -1,16 +1,13 @@
-import type { CellInstance } from './Cell'
-
-import BEM from '@/shared/bem'
 import { defineComponent, watch, type ExtractPropTypes } from 'vue'
-import { useReady } from '@tarojs/taro'
 
 import { useChildren } from '../composables/children'
-import { truthProp, numericProp, createInjectionKey } from '../utils'
+import { vnodeProp, truthProp, numericProp, genVNode, createInjectionKey } from '../utils'
+import type { CellInstance } from './Cell'
 
 const [name, bem] = BEM('cell-group')
 
 const cellGroupProps = {
-  title: String,
+  title: vnodeProp,
   inset: Boolean,
   border: truthProp,
   shrink: Boolean,
@@ -35,14 +32,14 @@ export default defineComponent({
   setup(props, { slots, attrs }) {
     const { children, linkChildren } = useChildren<CellInstance, CellGroupProvide>(CELL_GROUP_KEY)
 
-    const updateCell = () => {
+    const updateChild = () => {
       const { length } = children
       if (length) {
         children.forEach((cell, index) => {
-          cell.setBorder(
+          cell.updateBorder(
             length - 1 === index
               ? false
-              : cell.border
+              : cell.internalBorder
           )
         })
       }
@@ -50,16 +47,13 @@ export default defineComponent({
 
     watch(
       () => children.length,
-      updateCell
+      () => updateChild()
     )
 
     linkChildren({ props })
 
-    useReady(updateCell)
-
     const renderGroup = () => {
       const { inset, shrink } = props
-
       return (
         <view
           {...attrs}
@@ -73,23 +67,21 @@ export default defineComponent({
       )
     }
 
-    const renderTitle = () => (
-      <view class={bem('title', { inset: props.inset })}>
-        {slots.title?.() ?? props.title}
-      </view>
-    )
-
-    return () => {
-      if (slots.title || props.title) {
+    const renderTitle = () => {
+      const title = genVNode(slots.title || props.title)
+      if (title) {
+        const { inset } = props
         return (
-          <>
-            {renderTitle()}
-            {renderGroup()}
-          </>
+          <view class={bem('title', { inset })}>
+            {title}
+          </view>
         )
       }
-
-      return renderGroup()
     }
+
+    return () => [
+      renderTitle(),
+      renderGroup()
+    ]
   }
 })

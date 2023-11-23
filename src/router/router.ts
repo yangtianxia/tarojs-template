@@ -3,7 +3,7 @@ import { noop, cloneDeep, callInterceptor, interceptorAll, type Interceptor } fr
 import { isNil, isArray, isPlainObject, isFunction } from '@txjs/bool'
 import { useUserStore } from '@/store'
 import { useAppConfig } from '@/hooks/app-config'
-import { REDIRECT_URI } from '@/hooks/login'
+import { REDIRECT_URI } from '@/hooks/redirect'
 import { isLogin } from '@/shared/auth'
 import { cutPath, queryStringify, queryParse } from '@/shared/query-router'
 

@@ -1,4 +1,4 @@
-import type { VNode, ComponentPublicInstance } from 'vue'
+import type { VNode as _VNode, ComponentPublicInstance } from 'vue'
 
 export interface CustomShim<T> {
   new (...args: any[]): {
@@ -7,7 +7,7 @@ export interface CustomShim<T> {
 }
 
 export type VNodeChildAtom =
-  | VNode
+  | _VNode
   | string
   | number
   | boolean
@@ -15,10 +15,8 @@ export type VNodeChildAtom =
   | undefined
   | void
 
-export type VueNode = VNodeChildAtom | VNodeChildAtom[] | JSX.Element
-
 export type VueEmit = (event: any, ...args: any[]) => void
 
-export type VueSlotVNode = (...args: any) => VueNode
+export type VNode = (...args: any) => VNodeChildAtom | VNodeChildAtom[] | JSX.Element
 
 export type ComponentInstance = ComponentPublicInstance<Record<string, any>, any>

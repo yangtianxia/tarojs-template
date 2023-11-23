@@ -1,9 +1,7 @@
-import { SafeArea } from '../safe-area'
-
-import BEM from '@/shared/bem'
 import { defineComponent, type ExtractPropTypes } from 'vue'
 import { useRect } from '@/hooks'
 
+import { SafeArea } from '../safe-area'
 import { useId } from '../composables/id'
 import { truthProp, makeNumericProp, getZIndexStyle } from '../utils'
 
@@ -25,8 +23,8 @@ export default defineComponent({
   props: footerBarProps,
 
   setup(props, { slots, attrs }) {
-    const id = useId()
-    const { height } = useRect(`#${id}`, {
+    const contentId = useId()
+    const { height } = useRect(`#${contentId}`, {
       refs: ['height'],
       observe: true
     })
@@ -42,7 +40,7 @@ export default defineComponent({
           style={getZIndexStyle(props.zIndex)}
         >
           <view
-            id={id}
+            id={contentId}
             class={bem('content')}
           >
             {slots.default?.()}

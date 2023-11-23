@@ -1,11 +1,14 @@
-import { Button, buttonSharedProps, buttonPropKeys, type ButtonSize } from '../button'
-
-import BEM from '@/shared/bem'
-import extend from 'extend'
-import { defineComponent, reactive, onUnmounted, type PropType, type ExtractPropTypes } from 'vue'
+import {
+  defineComponent,
+  reactive,
+  onUnmounted,
+  type PropType,
+  type ExtractPropTypes
+} from 'vue'
 import { pick, shallowMerge, callInterceptor, type Interceptor } from '@txjs/shared'
 
-import { makeStringProp } from '../utils'
+import { Button, buttonSharedProps, buttonPropKeys, type ButtonSize } from '../button'
+import { vnodeProp, makeStringProp, genVNode } from '../utils'
 
 const [name, bem] = BEM('count-down-button')
 
@@ -16,16 +19,16 @@ const countDownButtonProps = shallowMerge({}, buttonSharedProps, {
     type: Number as PropType<number>,
     default: 120
   },
-  text: {
-    type: String,
-    default: '获取验证码'
-  },
   beforeText: {
     type: String,
     default: '<s>秒后重发'
   },
+  text: {
+    type: vnodeProp,
+    default: '获取验证码'
+  },
   afterText: {
-    type: String,
+    type: vnodeProp,
     default: '重新获取'
   }
 })
@@ -82,23 +85,24 @@ export default defineComponent({
       })
     }
 
+    const formatBeforeText = (value: string) => {
+      return value.replace(/^<.*>(.*)?$/g, `${state.timing} $1`)
+    }
+
     const renderText = () => {
-      if (state.disabled) {
-        return props.beforeText.replace(/^<.*>(.*)?$/g, `${state.timing} $1`)
-      }
-
-      if (state.endTimer) {
-        return props.afterText
-      }
-
-      return slots.default?.() || props.text
+      const text = state.disabled
+        ? formatBeforeText(props.beforeText)
+        : state.endTimer
+          ? props.afterText
+          : slots.default || props.text
+      return genVNode(text)
     }
 
     onUnmounted(onClear)
 
     return () => (
       <Button
-        {...pick(extend({}, props, state), buttonPropKeys)}
+        {...pick(shallowMerge({}, props, state), buttonPropKeys)}
         class={bem()}
         onTap={onTap}
       >

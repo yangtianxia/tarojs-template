@@ -8,8 +8,6 @@ import {
   type ExtractPropTypes,
   type CSSProperties
 } from 'vue'
-
-import BEM from '@/shared/bem'
 import { usePageScroll, useReady } from '@tarojs/taro'
 import { shallowMerge } from '@txjs/shared'
 import { isFunction } from '@txjs/bool'
@@ -42,9 +40,11 @@ export default defineComponent({
   props: stickyProps,
 
   setup(props, { slots }) {
-    const id = useId()
-    const rootRect = useRect(`#${id}`)
-    const containerRect = useRect(props.container)
+    const rootId = useId()
+    const rootRect = useRect(`#${rootId}`, {
+      immediate: false
+    })
+    const containerRect = useRect(props.container!)
 
     const scrollTop = ref(0)
     const state = reactive({
@@ -131,7 +131,7 @@ export default defineComponent({
         return
       }
 
-      rootRect.triggerBoundingClientRect((rect) => {
+      rootRect.boundingClientRect((rect) => {
         if (offsetTop.value >= rect.top) {
           setDataAfterDiff({
             fixed: true,
@@ -156,7 +156,7 @@ export default defineComponent({
 
     return () => (
       <view
-        id={id}
+        id={rootId}
         style={rootStyle.value}
       >
         <view

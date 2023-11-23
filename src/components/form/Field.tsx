@@ -1,8 +1,3 @@
-import { Input, Textarea, Label, type InputProps, type ViewProps, type ITouchEvent } from '@tarojs/components'
-import { Icon, type IconName } from '../icon'
-import { Cell, cellSharedProps } from '../cell'
-import { FORM_KEY } from './Form'
-
 import {
   defineComponent,
   ref,
@@ -14,18 +9,27 @@ import {
   type PropType,
   type ExtractPropTypes
 } from 'vue'
-
-import BEM from '@/shared/bem'
 import { useReady } from '@tarojs/taro'
 import { isNil, isBoolean, isValidString, notNil } from '@txjs/bool'
 import { pick, shallowMerge, toArray } from '@txjs/shared'
 import { useNextTick } from '@/hooks'
 
+import {
+  Input,
+  Textarea,
+  Label,
+  type InputProps,
+  type ViewProps,
+  type ITouchEvent
+} from '@tarojs/components'
+import { Icon, type IconName } from '../icon'
+import { Cell, cellSharedProps } from '../cell'
 import { useId } from '../composables/id'
 import { useExpose } from '../composables/expose'
 import { useParent } from '../composables/parent'
 import { FIELD_INJECTION_KEY } from '../composables/field-value'
 import { addUnit, truthProp, numericProp, makeStringProp, preventDefault } from '../utils'
+import { FORM_KEY } from './Form'
 
 import type {
   FieldType,

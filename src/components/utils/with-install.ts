@@ -1,11 +1,11 @@
 import type { App, Component, CSSProperties } from 'vue'
-import type { StandardProps } from '@tarojs/components'
+import type { StandardProps, ViewProps } from '@tarojs/components'
 import type { CustomShim } from './types'
 
 import extend from 'extend'
 import { camelize } from '@txjs/shared'
 
-type EventShim = CustomShim<Omit<StandardProps, 'style'> & {
+type EventShim = CustomShim<Omit<StandardProps, 'style'> & Pick<ViewProps, 'catchMove' | 'disableScroll'> & {
     style?: string | CSSProperties
     onTap?: Callback
   }

@@ -3,10 +3,10 @@
 page {
   --range-date-picker-padding: var(--size-4);
   --range-date-picker-label-color: var(--color-text);
-  --range-date-picker-label-font-size: var(--size-md);
+  --range-date-picker-label-size: var(--size-md);
   --range-date-picker-label-font-weight: var(--weight-semibold);
   --range-date-picker-input-color: var(--color-text);
-  --range-date-picker-input-font-size: var(--size-md);
+  --range-date-picker-input-size: var(--size-md);
   --range-date-picker-input-radius: var(--radius-sm);
   --range-date-picker-input-background: var(--color-bgcolor);
   --range-date-picker-input-empty-color: var(--color-text-light);
@@ -16,7 +16,7 @@ page {
   --range-date-picker-input-hover-color: var(--color-text-base);
   --range-date-picker-input-hover-background: var(--color-active);
   --range-date-picker-separator-color: var(--color-text-base);
-  --range-date-picker-separator-font-size: var(--size-md);
+  --range-date-picker-separator-size: var(--size-md);
   --range-date-picker-separator-margin: 0 var(--size-4);
   --range-date-picker-option-disabled: var(--color-text-weak);
   --range-date-picker-option-align: center;
@@ -29,7 +29,7 @@ page {
 
   &__label {
     color: var(--range-date-picker-label-color);
-    font-size: var(--range-date-picker-label-font-size);
+    font-size: var(--range-date-picker-label-size);
     font-weight: var(--range-date-picker-label-font-weight);
     line-height: var(--line-md);
   }
@@ -52,7 +52,7 @@ page {
     min-width: 0;
     text-align: center;
     color: var(--range-date-picker-input-color);
-    font-size: var(--range-date-picker-input-font-size);
+    font-size: var(--range-date-picker-input-size);
     line-height: var(--line-md);
     padding: var(--size-2);
     border-radius: var(--range-date-picker-input-radius);
@@ -88,7 +88,7 @@ page {
     flex-shrink: 0;
     line-height: var(--line-md);
     color: var(--range-date-picker-separator-color);
-    font-size: var(--range-date-picker-separator-font-size);
+    font-size: var(--range-date-picker-separator-size);
     margin: var(--range-date-picker-separator-margin);
   }
 
@@ -113,10 +113,6 @@ page {
 
     &-cancel + &-confirm {
       margin-left: var(--range-date-picker-padding);
-    }
-
-    &-cancel {
-      background-color: var(--color-grey-300);
     }
   }
 }

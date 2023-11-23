@@ -1,4 +1,3 @@
-// copy vant-weapp
 import { getCurrentInstance } from 'vue'
 
 let current = 0

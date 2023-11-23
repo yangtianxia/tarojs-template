@@ -1,5 +1,4 @@
 import { getSetting, authorize, openSetting, type AuthSetting } from '@tarojs/taro'
-import { useModal } from '../modal'
 
 type AuthSettingText = keyof AuthSetting
 
@@ -23,7 +22,7 @@ export const usePermission = async (perName: AuthSettingText, perZhName: string)
         })
         resolve(true)
       } catch {
-        useModal({
+        modal.confirm({
           title: '权限申请',
           content: `需要使用${perZhName}权限，请前往设置打开权限`,
           onOk: async () => {

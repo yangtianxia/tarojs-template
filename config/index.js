@@ -78,8 +78,10 @@ const config = {
     }
   },
   plugins: [
+    [resolve('config/plugin/taro-provider')],
     [resolve('config/plugin/taro-mini-worker')],
     [resolve('config/plugin/taro-mini-compile')],
+    [resolve('config/plugin/taro-mini-page-config')],
     [resolve('config/plugin/taro-mini-config'), {
       sourceRoot: 'public',
       global: {

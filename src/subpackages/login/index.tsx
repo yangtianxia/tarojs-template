@@ -1,5 +1,5 @@
-import BEM from '@/shared/bem'
 import { defineComponent } from 'vue'
+import { useNavigationBar } from '@/hooks'
 
 import less from './index.module.less'
 
@@ -9,8 +9,12 @@ export default defineComponent({
   name,
 
   setup() {
+    useNavigationBar({
+      showHomeIcon: false
+    })
+
     return () => (
-      <gm-app>
+      <gm-app loading={false}>
         <gm-body></gm-body>
       </gm-app>
     )

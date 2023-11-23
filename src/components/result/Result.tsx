@@ -1,28 +1,28 @@
+import {
+  defineComponent,
+  reactive,
+  watch,
+  onMounted,
+  type PropType,
+  type ExtractPropTypes
+} from 'vue'
+import { shallowMerge, omit } from '@txjs/shared'
+import { isPlainObject, isString } from '@txjs/bool'
+
+import type { ResultCode } from './types'
+
 import { Button } from '../button'
-
-import BEM from '@/shared/bem'
-import { defineComponent, reactive, watch, unref, onMounted, type PropType, type ExtractPropTypes } from 'vue'
-import { pick, shallowMerge } from '@txjs/shared'
-import { isPlainObject, isFunction } from '@txjs/bool'
-
-import type { VueSlotVNode } from '../utils'
-import type { ResultOption, ResultStatusType } from './types'
+import { vnodeProp, genVNode, type VNode } from '../utils'
+import { resultSharedProps, resultStatusConfig } from './utils'
 
 const [name, bem] = BEM('result')
 
-export const resultSharedProps = {
-  status: {
-    type: [String, Object] as PropType<ResultStatusType | ResultOption>,
-    default: null
-  }
-}
-
 const resultProps = shallowMerge({}, resultSharedProps, {
-  refresh: Function as PropType<() => void>,
-  image: [String, Function] as PropType<string | VueSlotVNode>,
-  title: [String, Function] as PropType<string | VueSlotVNode>,
-  desc: [String, Function] as PropType<string | VueSlotVNode>,
-  bottom: Function as PropType<VueSlotVNode>
+  image: vnodeProp,
+  title: vnodeProp,
+  desc: vnodeProp,
+  bottom: Function as PropType<VNode>,
+  refresh: Function as PropType<() => void>
 })
 
 export type ResultProps = ExtractPropTypes<typeof resultProps>
@@ -33,8 +33,7 @@ export default defineComponent({
   props: resultProps,
 
   setup(props, { slots }) {
-    const state = reactive<ResultOption>({
-      status: undefined,
+    const state = reactive({
       image: props.image,
       title: props.title,
       bottom: props.bottom,
@@ -42,138 +41,99 @@ export default defineComponent({
       refresh: props.refresh
     })
 
-    const merge = (...args: ResultOption[]) => shallowMerge(state, ...args)
+    const withState = (status?: ResultCode) => {
+      const statusConfig = resultStatusConfig[status!]
 
-    const getNode = (node?: string | VueSlotVNode | null) => isFunction(node) ? node() : node
+      if (statusConfig) {
+        // 自定义状态不支持设置
+        if (state.refresh && (status === 'error' || status === '500')) {
+          state.desc = '别紧张，试试看刷新页面',
+          state.bottom = () => (
+            <Button
+              round
+              bold={false}
+              width={200}
+              size="small"
+              type="primary"
+              onTap={state.refresh}
+            >刷新</Button>
+          )
+        }
 
-    const withStatus = (
-      status: string,
-      options: ResultOption = {}
-    ) => {
-      const defaultOptions = {} as ResultOption
-
-      if (state.refresh && ['500', 'error'].includes(status)) {
-        defaultOptions.desc = '别紧张，试试看刷新页面~'
-        defaultOptions.bottom = () => (
-          <Button
-            round
-            bold={false}
-            width={200}
-            size="small"
-            type="primary"
-            onTap={state.refresh}
-          >刷新</Button>
-        )
+        shallowMerge(state, statusConfig)
       }
-
-      switch (status) {
-        case 'nodata':
-          shallowMerge(defaultOptions, {
-            title: '暂无数据',
-            image: require(`./image/no-data.png`)
-          })
-          break
-        case '404':
-          shallowMerge(defaultOptions, {
-            title: '接口不存在或已删除！',
-            image: require(`./image/404.png`)
-          })
-          break
-        case '500':
-          shallowMerge(defaultOptions, {
-            title: '抱歉，服务器请求异常！',
-            image: require(`./image/500.png`)
-          })
-          break
-        case 'network':
-          shallowMerge(defaultOptions, {
-            title: '网络异常，请检查网络连接！',
-            image: require(`./image/no-network.png`)
-          })
-          break
-        case 'error':
-        default:
-          shallowMerge(defaultOptions, {
-            title: '抱歉，页面发生错误！',
-            image: require(`./image/error.png`)
-          })
-      }
-
-      merge(defaultOptions, options)
     }
 
-    const updateStatus = () => {
-      const original = props.status
+    const updateState = () => {
+      const currentStatus = props.status
 
-      if (isPlainObject(original)) {
-        const { status, ...other } = original
+      // 重置组件内容
+      shallowMerge(state, omit(props, ['status']))
 
-        if (status) {
-          withStatus(status, other)
-        } else {
-          merge(other)
+      if (isPlainObject(currentStatus)) {
+        const { status, ...partial } = currentStatus
+
+        if (isString(status)) {
+          withState(status)
         }
-      } else {
-        withStatus(original)
-      }
 
-      merge(
-        pick(unref(props), [
-          'image',
-          'title',
-          'desc',
-          'bottom',
-          'refresh'
-        ], true)
-      )
+        shallowMerge(state, partial)
+      } else {
+        withState(currentStatus)
+      }
     }
 
     watch(
       () => props.status,
-      updateStatus
+      () => updateState()
     )
 
-    onMounted(updateStatus)
+    onMounted(updateState)
 
     const renderImage = () => {
-      const image = slots.image || state.image
-      const node = getNode(image)
-
-      if (node) {
+      const image = genVNode(slots.image || state.image, {
+        render: (value) => (
+          <image src={value} />
+        )
+      })
+      if (image) {
         return (
           <view class={bem('image')}>
-            {isFunction(image) ? node : <image src={node as string} />}
+            {image}
           </view>
         )
       }
     }
 
     const renderTitle = () => {
-      const title = getNode(slots.title || state.title)
-
+      const title = genVNode(slots.title || state.title)
       if (title) {
         return (
-          <view class={bem('title')}>{title}</view>
+          <view class={bem('title')}>
+            {title}
+          </view>
         )
       }
     }
 
     const renderDesc = () => {
-      const desc = getNode(slots.desc || state.desc)
-
+      const desc = genVNode(slots.desc || state.desc)
       if (desc) {
         return (
-          <view class={bem('desc')}>{desc}</view>
+          <view class={bem('desc')}>
+            {desc}
+          </view>
         )
       }
     }
 
     const renderBottom = () => {
-      const bottom = slots.default || state.bottom
-
+      const bottom = genVNode(slots.default || state.bottom)
       if (bottom) {
         return (
-          <view class={bem('bottom')}>{bottom()}</view>
+          <view class={bem('bottom')}>
+            {bottom}
+          </view>
         )
       }
     }

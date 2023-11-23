@@ -5,32 +5,32 @@
 page {
   --action-sheet-max-height: 80%;
   --action-sheet-description-color: var(--color-text-light);
-  --action-sheet-description-font-size: var(--size-md);
-  --action-sheet-description-line-heigt: var(--line-md);
-  --action-sheet-option-text-color: var(--color-text);
-  --action-sheet-option-line-height: var(--line-md);
+  --action-sheet-description-size: var(--size-md);
+  --action-sheet-description-line: var(--line-md);
+  --action-sheet-option-color: var(--color-text);
+  --action-sheet-option-line: var(--line-md);
   --action-sheet-option-label-color: var(--color-text-light);
-  --action-sheet-option-label-font-size: var(--size-sm);
-  --action-sheet-option-label-line-height: var(--line-md);
-  --action-sheet-cancel-padding-top: var(--size-xs);
-  --action-sheet-cancel-padding-color: var(--color-bgcolor);
-  --action-sheet-cancel-text-color: var(--color-text);
+  --action-sheet-option-label-size: var(--size-sm);
+  --action-sheet-option-label-line: var(--line-md);
+  --action-sheet-gap-height: var(--size-xs);
+  --action-sheet-gap-background: var(--color-bgcolor);
+  --action-sheet-cancel-color: var(--color-text);
 }
 
 .@{action-sheet-cls} {
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   max-height: var(--action-sheet-max-height);
-  overflow: hidden;
-  color: var(--action-sheet-option-text-color);
+  color: var(--action-sheet-option-color);
 
   &__description {
     position: relative;
     flex-shrink: 0;
     padding: var(--size-md) var(--size-lg);
     color: var(--action-sheet-description-color);
-    font-size: var(--action-sheet-description-font-size);
-    line-height: var(--action-sheet-description-line-heigt);
+    font-size: var(--action-sheet-description-size);
+    line-height: var(--action-sheet-description-line);
     text-align: center;
 
     &:after {
@@ -41,14 +41,13 @@ page {
   &__content {
     flex: 1 auto;
     min-height: 0;
-    overflow-y: hidden;
   }
 
   &__option,
   &__cancel {
     height: auto;
-    border-radius: 0;
     border: none;
+    border-radius: 0;
     padding: var(--size-md) var(--size-lg);
 
     &:before {
@@ -61,7 +60,7 @@ page {
   }
 
   &__option {
-    line-height: var(--action-sheet-option-line-height);
+    line-height: var(--action-sheet-option-line);
 
     & + & {
       border-top: var(--size-px) solid var(--color-border);
@@ -74,8 +73,8 @@ page {
     &-label {
       margin-top: var(--size-1);
       color: var(--action-sheet-option-label-color);
-      font-size: var(--action-sheet-option-label-font-size);
-      line-height: var(--action-sheet-option-label-line-height);
+      font-size: var(--action-sheet-option-label-size);
+      line-height: var(--action-sheet-option-label-line);
     }
 
     .@{prefix}-loading {
@@ -85,12 +84,12 @@ page {
 
   &__gap {
     display: block;
-    padding-top: var(--action-sheet-cancel-padding-top);
-    background-color: var(--action-sheet-cancel-padding-color);
+    padding-top: var(--action-sheet-gap-height);
+    background-color: var(--action-sheet-gap-background);
   }
 
   &__cancel {
     flex-shrink: 0;
-    color: var(--action-sheet-cancel-text-color);
+    color: var(--action-sheet-cancel-color);
   }
 }

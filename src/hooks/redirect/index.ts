@@ -7,7 +7,7 @@ import { useRouter } from '../router'
 export const REDIRECT_URI = 'redirect_uri'
 export const REDIRECT_PARAMS = 'redirect_params'
 
-export const useLogin = () => {
+export const useRedirect = () => {
   const router = useRouter()
   const { params } = useRoute()
 

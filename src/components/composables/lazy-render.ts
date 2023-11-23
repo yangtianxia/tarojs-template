@@ -1,4 +1,3 @@
-// copy vant-weapp
 import { ref, watch, WatchSource } from 'vue'
 
 export const useLazyRender = (show: WatchSource<boolean | undefined>) => {

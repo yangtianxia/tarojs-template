@@ -9,7 +9,6 @@ import {
   ComponentPublicInstance,
   ComponentInternalInstance
 } from 'vue'
-
 import { shallowMerge } from '@txjs/shared'
 
 export function flattenVNodes(children: VNodeNormalizedChildren) {

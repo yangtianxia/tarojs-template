@@ -9,8 +9,6 @@ import {
   type VNode,
   type CSSProperties
 } from 'vue'
-
-import BEM from '@/shared/bem'
 import { isArray, isNumber } from '@txjs/bool'
 
 import { addUnit } from '../utils'

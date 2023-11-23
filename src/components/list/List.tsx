@@ -1,15 +1,20 @@
-import { Loading } from '../loading'
-import { Result, resultSharedProps } from '../result'
-
-import BEM from '@/shared/bem'
-import { defineComponent, ref, watch, onUpdated, type PropType, type ExtractPropTypes } from 'vue'
+import {
+  defineComponent,
+  ref,
+  watch,
+  onUpdated,
+  type PropType,
+  type ExtractPropTypes
+} from 'vue'
 import { useReady, usePageScroll, useReachBottom } from '@tarojs/taro'
 import { shallowMerge } from '@txjs/shared'
 import { useRect, useNextTick, useSystemInfo } from '@/hooks'
 
+import { Loading } from '../loading'
+import { Result, resultSharedProps } from '../result'
 import { useId } from '../composables/id'
 import { useExpose } from '../composables/expose'
-import { makeArrayProp, makeStringProp, makeNumericProp } from '../utils'
+import { vnodeProp, makeArrayProp, makeStringProp, makeNumericProp, genVNode } from '../utils'
 
 const [name, bem] = BEM('list')
 
@@ -19,10 +24,16 @@ const listProps = shallowMerge({}, resultSharedProps, {
   finished: Boolean,
   immediateCheck: Boolean,
   data: makeArrayProp(),
-  errorText: makeStringProp('请求失败，点击重新加载'),
-  loadingText: makeStringProp('加载中'),
-  finishedText: makeStringProp('已经到底了'),
   offset: makeNumericProp(50),
+  loadingText:  makeStringProp('加载中'),
+  errorText: {
+    type: vnodeProp,
+    default: '请求失败，点击重新加载'
+  },
+  finishedText: {
+    type: vnodeProp,
+    default: '已经到底了'
+  },
   onLoad: Function as PropType<() => void>,
   'onUpdate:error': Function as PropType<(value: unknown) => void>,
   'onUpdate:loading': Function as PropType<(value: unknown) => void>
@@ -42,12 +53,18 @@ export default defineComponent({
   setup(props, { slots, emit }) {
     const placeholderId = useId()
     const cilentHeight = useSystemInfo().safeArea?.height ?? 0
-    const { bottom, triggerBoundingClientRect } = useRect(`.${placeholderId}`, {
+    const { bottom, boundingClientRect } = useRect(`.${placeholderId}`, {
       refs: ['bottom']
     })
 
     const scrollTop = ref(0)
     const loading = ref(props.loading)
+
+    const load = () => {
+      loading.value = true
+      emit('update:loading', true)
+      props.onLoad?.()
+    }
 
     const check = () => {
       useNextTick(() => {
@@ -57,12 +74,13 @@ export default defineComponent({
           props.error
         ) return
 
-        triggerBoundingClientRect(() => {
+        boundingClientRect(() => {
           // https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollHeight
-          if ((cilentHeight + scrollTop.value >= bottom.value - +props.offset) && !loading.value) {
-            loading.value = true
-            emit('update:loading', true)
-            props.onLoad?.()
+          if (
+            (cilentHeight + scrollTop.value >= bottom.value - +props.offset) &&
+            !loading.value
+          ) {
+            load()
           }
         })
       })
@@ -70,7 +88,7 @@ export default defineComponent({
 
     const onClickErrorText = () => {
       emit('update:error', false)
-      check()
+      load()
     }
 
     const renderFinishedText = () => {
@@ -82,10 +100,11 @@ export default defineComponent({
         )
       }
 
-      if (slots.finished || props.finishedText) {
+      const finished = genVNode(slots.finished || props.finishedText)
+      if (finished) {
         return (
           <view class={bem('finished-text')}>
-            {slots.finished?.() || props.finishedText}
+            {finished}
           </view>
         )
       }
@@ -94,13 +113,14 @@ export default defineComponent({
     const renderErrorText = () => {
       if (!props.error) return
 
-      if (slots.error || props.errorText) {
+      const error = genVNode(slots.error || props.errorText)
+      if (error) {
         return (
           <view
             class={bem('error-text')}
             onTap={onClickErrorText}
           >
-            {slots.error?.() || props.errorText}
+            {error}
           </view>
         )
       }
