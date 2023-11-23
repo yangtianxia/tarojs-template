@@ -1,10 +1,7 @@
-import type { ViewProps } from '@tarojs/components'
-import { ROW_KEY } from './Row'
-
-import BEM from '@/shared/bem'
-import { defineComponent, type PropType, type ExtractPropTypes } from 'vue'
+import { defineComponent, type ExtractPropTypes, type CSSProperties } from 'vue'
 import { isArray } from '@txjs/bool'
 
+import { ROW_KEY } from './Row'
 import { useParent } from '../composables/parent'
 import { addUnit, numericProp } from '../utils'
 
@@ -12,8 +9,7 @@ const [name, bem] = BEM('col')
 
 const colProps = {
   span: numericProp,
-  offset: numericProp,
-  onTap: Function as PropType<ViewProps['onTap']>
+  offset: numericProp
 }
 
 export type ColProps = ExtractPropTypes<typeof colProps>
@@ -26,7 +22,7 @@ export default defineComponent({
   setup(props, { slots }) {
     const { parent } = useParent(ROW_KEY)
     const gutter = (parent && parent.props.gutter) || 0
-    let style = {}
+    let style = {} as CSSProperties
 
     if (isArray(gutter)) {
       const paddingLR = addUnit(gutter[0])
@@ -52,7 +48,6 @@ export default defineComponent({
 
     return () => {
       const { span, offset } = props
-
       return (
         <view
           style={style}
@@ -60,7 +55,6 @@ export default defineComponent({
             [span as any]: span,
             [`offset-${offset}`]: offset
           })}
-          onTap={props.onTap}
         >
           {slots.default?.()}
         </view>

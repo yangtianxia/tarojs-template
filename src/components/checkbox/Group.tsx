@@ -1,14 +1,11 @@
-import type { CheckerDirection } from '../checkbox/Checker'
-
-import BEM from '@/shared/bem'
 import { defineComponent, watch, type PropType, type ExtractPropTypes } from 'vue'
 import { isBoolean } from '@txjs/bool'
 
+import type { CheckerDirection } from '../checker/types'
 import { useExpose } from '../composables/expose'
 import { useFieldValue } from '../composables/field-value'
 import { useChildren } from '../composables/children'
 import { numericProp, makeArrayProp, createInjectionKey } from '../utils'
-
 import type { CheckboxGroupProvide, CheckboxGroupToggleAllOptions } from './types'
 
 const [name, bem] = BEM('checkbox-group')
@@ -18,8 +15,8 @@ export const checkboxGroupProps = {
   disabled: Boolean,
   iconSize: numericProp,
   checkedColor: String,
-  direction: String as PropType<CheckerDirection>,
   value: makeArrayProp<unknown>(),
+  direction: String as PropType<CheckerDirection>,
   onChange: Function as PropType<(value: unknown[]) => void>,
   'onUpdate:value': Function as PropType<(value: unknown[]) => void>
 }
@@ -58,9 +55,13 @@ export default defineComponent({
       updateValue(names)
     }
 
+    const onChange = (value: unknown[]) => {
+      props.onChange?.(value)
+    }
+
     watch(
       () => props.value,
-      (value) => props.onChange?.(value)
+      (value) => onChange(value)
     )
 
     useExpose({ toggleAll })

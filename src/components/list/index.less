@@ -1,7 +1,7 @@
 @list-cls: ~'@{prefix}-list';
 
 page {
-  --list-text-line-height: 100rpx;
+  --list-text-line: 100rpx;
 }
 
 .@{list-cls} {
@@ -10,12 +10,12 @@ page {
   &__error-text {
     color: var(--color-text-light);
     font-size: var(--size-md);
-    line-height: var(--list-text-line-height);
+    line-height: var(--list-text-line);
     text-align: center;
   }
 
   &__placeholder {
-    height: 0;
+    height: var(--size-none);
     pointer-events: none;
   }
 }

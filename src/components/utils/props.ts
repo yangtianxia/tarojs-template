@@ -1,11 +1,14 @@
 import type { PropType } from 'vue'
-import type { VueSlotVNode } from './types'
+import type { IconName } from '../icon'
+import type { VNode } from './types'
 
 export const numericProp = [Number, String]
 
 export const unknownProp = (null as unknown) as PropType<unknown>
 
-export const vnodeProp = [String, Function] as PropType<string | VueSlotVNode>
+export const iconProp = String as PropType<IconName>
+
+export const vnodeProp = [String, Function] as PropType<string | VNode>
 
 export const truthProp = {
   type: Boolean,

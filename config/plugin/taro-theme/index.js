@@ -65,23 +65,23 @@ module.exports = (ctx) => {
   ctx.modifyMiniConfigs(({ configMap }) => {
     if (isWeapp && isTruly(process.env.DARKMODE)) {
       if (Reflect.has(configMap, 'app.config')) {
-        const appConfig = Reflect.get(configMap, 'app.config')
-        const config = Reflect.get(appConfig, 'content')
+        const content = Reflect.get(configMap, 'app.config')
+        const appConfig = Reflect.get(content, 'content')
 
         // 开启weapp暗黑模式配置
-        Reflect.set(config, 'darkmode', true)
-        Reflect.set(config, 'themeLocation', 'theme.json')
-        Reflect.set(appConfig, 'content', config)
+        Reflect.set(appConfig, 'darkmode', true)
+        Reflect.set(appConfig, 'themeLocation', 'theme.json')
+        Reflect.set(content, 'content', appConfig)
       }
     } else {
       const constants = generateTheme()
       for (const key in configMap) {
-        const pageConfig = Reflect.get(configMap, key)
-        const config = Reflect.get(pageConfig, 'content')
+        const content = Reflect.get(configMap, key)
+        const pageConfig = Reflect.get(content, 'content')
 
         // 将weapp暗黑模式配置的变量，重新改为默认配置原始值
-        formatMiniConfigField(config, constants.light)
-        Reflect.set(pageConfig, config)
+        formatMiniConfigField(pageConfig, constants.light)
+        Reflect.set(content, 'content', pageConfig)
       }
     }
   })

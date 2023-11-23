@@ -24,21 +24,22 @@ export const useRectAll = (
   const {
     target,
     useCache,
-    triggerCallback,
-    flush = 'pre'
+    callback,
+    flush = 'pre',
+    immediate = true
   } = options || {}
   const rects = shallowRef<DOMRect[]>([])
-  let run = false
+  let canRun = false
   let cached = false
 
   const triggerCallbackRun = (result: DOMRect[]) => {
-    if (triggerCallback && !run) {
-      triggerCallback(result)
-      run = flush === 'pre'
+    if (callback && !canRun) {
+      callback(result)
+      canRun = flush === 'pre'
     }
   }
 
-  const triggerBoundingClientRect = (callback?: Callback<DOMRect[]>) => {
+  const boundingClientRect = (callback?: Callback<DOMRect[]>) => {
     if (useCache && cached) {
       callback?.(rects.value)
       return
@@ -66,10 +67,12 @@ export const useRectAll = (
       })
   }
 
-  useReady(() => triggerBoundingClientRect())
+  if (immediate) {
+    useReady(() => boundingClientRect())
+  }
 
   return {
     rects,
-    triggerBoundingClientRect
+    boundingClientRect
   }
 }

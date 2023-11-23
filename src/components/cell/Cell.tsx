@@ -1,36 +1,34 @@
-import type { ITouchEvent } from '@tarojs/components'
-import { Icon } from '../icon'
-
 import {
   defineComponent,
   ref,
   computed,
+  type Ref,
   type CSSProperties,
   type ExtractPropTypes,
   type ComponentPublicInstance
 } from 'vue'
-
-import BEM from '@/shared/bem'
-import { isArray, notNil } from '@txjs/bool'
 import { shallowMerge } from '@txjs/shared'
 import { makeString } from '@txjs/make'
+import { isNil } from '@txjs/bool'
 
+import type { ITouchEvent } from '@tarojs/components'
+import { Icon } from '../icon'
 import { useParent } from '../composables/parent'
 import { useExpose } from '../composables/expose'
 import { jumpLinkSharedProps, jumpLink } from '../mixins'
-import { addUnit } from '../utils'
-
+import { genVNode, addUnit } from '../utils'
 import { CELL_GROUP_KEY } from './Group'
 import { cellSharedProps } from './utils'
 
 const [name, bem] = BEM('cell')
 
-const callProps = shallowMerge({}, cellSharedProps, jumpLinkSharedProps)
+const callProps = shallowMerge({}, jumpLinkSharedProps, cellSharedProps)
 
 export type CellProps = ExtractPropTypes<typeof callProps>
 
 export type CellProvide = {
-  setBorder(value: boolean): void
+  internalBorder: Ref<boolean>
+  updateBorder(value: boolean): void
 }
 
 export type CellInstance = ComponentPublicInstance<CellProps, CellProvide>
@@ -41,14 +39,15 @@ export default defineComponent({
   props: callProps,
 
   setup(props, { slots }) {
-    const border = ref(props.border)
     const { parent } = useParent(CELL_GROUP_KEY)
 
+    const internalBorder = ref(
+      isNil(props.border) || props.border
+    )
     const titleWidth = computed(() =>
       props.titleWidth || parent?.props.titleWidth
     )
-
-    const titleStyle = () => {
+    const titleStyle = computed(() => {
       const style = {} as CSSProperties
 
       if (titleWidth.value) {
@@ -61,10 +60,12 @@ export default defineComponent({
       }
 
       return style
-    }
+    })
 
-    const setBorder = (value: boolean) => {
-      border.value = value
+    const updateBorder = (value: boolean) => {
+      // 通过设置 `border=true` 不受此方法控制
+      if (props.border === true) return
+      internalBorder.value = value
     }
 
     const onTap = (event: ITouchEvent) => {
@@ -80,7 +81,7 @@ export default defineComponent({
       }
     }
 
-    useExpose({ setBorder })
+    useExpose({ updateBorder, internalBorder })
 
     const renderLeftIcon = () => {
       if (slots.icon) {
@@ -97,27 +98,31 @@ export default defineComponent({
     }
 
     const renderLabel = () => {
-      if (slots.label || notNil(props.label)) {
+      const label = genVNode(slots.label || props.label)
+
+      if (label) {
         return (
           <view class={[bem('label'), props.labelClass]}>
-            {slots.label?.() || props.label}
+            {label}
           </view>
         )
       }
     }
 
     const renderTitle = () => {
-      if (slots.title || notNil(props.title)) {
-        const titleSlot = slots.title?.()
+      const title = genVNode(slots.title || props.title, {
+        render: (value) => (
+          <text>{value}</text>
+        )
+      })
 
-        if (isArray(titleSlot) && titleSlot.length === 0) return
-
+      if (title) {
         return (
           <view
             class={[bem('title'), props.titleClass]}
-            style={titleStyle()}
+            style={titleStyle.value}
           >
-            {titleSlot || <text>{props.title}</text>}
+            {title}
             {renderLabel()}
           </view>
         )
@@ -125,12 +130,16 @@ export default defineComponent({
     }
 
     const renderValue = () => {
-      const valueSlot = slots.value ?? slots.default
+      const value = genVNode(slots.value || slots.default || props.value, {
+        render: (value) => (
+          <text>{value}</text>
+        )
+      })
 
-      if (valueSlot || notNil(props.value)) {
+      if (value) {
         return (
           <view class={[bem('value'), props.valueClass]}>
-            {valueSlot?.() || <text>{props.value}</text>}
+            {value}
           </view>
         )
       }
@@ -164,7 +173,7 @@ export default defineComponent({
         required,
         clickable,
         shrink,
-        borderless: !border.value
+        borderless: !internalBorder.value
       }
 
       if (size) {

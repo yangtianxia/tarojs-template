@@ -2,29 +2,29 @@
 
 page {
   --cascader-active-color: var(--color-primary);
-  --cascader-background-color: var(--color-section);
+  --cascader-background: var(--color-section);
   --cascader-close-color: var(--color-text-light);
-  --cascader-close-font-size: var(--size-xl);
-  --cascader-close-padding: 0 var(--size-lg);
+  --cascader-close-size: var(--size-xl);
+  --cascader-close-padding: var(--size-none) var(--size-lg);
   --cascader-steps-horizontal-padding: var(--size-md);
-  --cascader-step-height: 88rpx;
+  --cascader-step-height: var(--size-11);
   --cascader-step-dot-size: var(--size-2);
   --cascader-step-arrow-color: var(--color-grey-500);
   --cascader-options-title-color: var(--color-text-light);
-  --cascader-options-height: 640rpx;
-  --cascader-option-font-size: var(--size-lg);
+  --cascader-options-height: var(--size-80);
+  --cascader-option-size: var(--size-lg);
   --cascader-option-padding: var(--size-md);
 }
 
 .@{cascader-cls} {
   display: flex;
   flex-direction: column;
-  background-color: var(--cascader-background-color);
+  background-color: var(--cascader-background);
   color: var(--cascader-title-color);
 
   &__tabs {
     position: relative;
-    padding: 0 var(--cascader-steps-horizontal-padding) 12rpx;
+    padding: var(--size-none) var(--cascader-steps-horizontal-padding) 12rpx;
   }
 
   &__tab {
@@ -107,7 +107,7 @@ page {
   &__option {
     display: flex;
     align-items: center;
-    font-size: var(--cascader-option-font-size);
+    font-size: var(--cascader-option-size);
     padding: var(--cascader-option-padding);
 
     &:not(&--disabled):active {

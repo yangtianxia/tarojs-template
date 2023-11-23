@@ -1,5 +1,10 @@
-// copy vant-weapp
-import { ref, computed, onActivated, onDeactivated, onBeforeUnmount, } from 'vue'
+import {
+  ref,
+  computed,
+  onActivated,
+  onDeactivated,
+  onBeforeUnmount
+} from 'vue'
 
 export type CurrentTime = {
   days: number

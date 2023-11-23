@@ -1,11 +1,16 @@
-import type { ITouchEvent } from '@tarojs/components'
-import { TABS_KEY } from './Tabs'
-
-import BEM from '@/shared/bem'
-import { defineComponent, computed, watch, getCurrentInstance, type ExtractPropTypes } from 'vue'
+import {
+  defineComponent,
+  computed,
+  watch,
+  getCurrentInstance,
+  type ExtractPropTypes
+} from 'vue'
 import { isNil } from '@txjs/bool'
 import { useRect } from '@/hooks'
 
+import type { ITouchEvent } from '@tarojs/components'
+
+import { TABS_KEY } from './Tabs'
 import { useId } from '../composables/id'
 import { useExpose } from '../composables/expose'
 import { useParent } from '../composables/parent'
@@ -26,17 +31,17 @@ export default defineComponent({
   props: tabProps,
 
   setup(props, { slots }) {
-    const instance = getCurrentInstance()
     const { parent, index } = useParent(TABS_KEY)
 
     if (isNil(parent)) {
-      throw new Error('`Tab` is not a child of `tabs`')
+      throw new Error('Tab必须是Tabs的子组件')
     }
 
-    const id = useId()
-    const { width, left, triggerBoundingClientRect } = useRect(`#${id}`, {
+    const rootId = useId()
+    const instance = getCurrentInstance()
+    const { width, left, boundingClientRect } = useRect(`#${rootId}`, {
       refs: ['width', 'left'],
-      triggerCallback: () => parent.link(instance!, true)
+      callback: () => parent.link(instance!, true)
     })
 
     const tabKey = computed(() =>
@@ -45,9 +50,12 @@ export default defineComponent({
     const isActive = computed(() =>
       tabKey.value === parent.props.value
     )
+    const canScroll = computed(() =>
+      parent.canScroll.value
+    )
 
     const onTabClick = (event: ITouchEvent) => {
-      triggerBoundingClientRect()
+      boundingClientRect()
       parent.props.onClickTab?.({
         event,
         name: tabKey.value,
@@ -64,7 +72,7 @@ export default defineComponent({
       () => isActive.value,
       (value, oldValue) => {
         if (oldValue && value === false) {
-          triggerBoundingClientRect()
+          boundingClientRect()
         }
       }
     )
@@ -73,7 +81,7 @@ export default defineComponent({
 
     return () => (
       <view
-        id={id}
+        id={rootId}
         key={tabKey.value}
         onTap={onTabClick}
         class={bem({
@@ -81,11 +89,13 @@ export default defineComponent({
           disabled: props.disabled
         })}
       >
-        <view class={bem('content', { ellipsis: parent.canScroll.value })}>
+        <view class={bem('content', { ellipsis: canScroll.value })}>
           {slots.default?.({
             name: tabKey.value,
             active: isActive.value
-          }) || props.title}
+          }) || (
+            <text>{props.title}</text>
+          )}
         </view>
       </view>
     )

@@ -16,4 +16,8 @@ declare module '@tarojs/taro' {
   interface PageInstance {
     [USE_ROUTE_KEY]: CurrentRoute
   }
+
+  interface AppInstance {
+    config?: Taro.Config
+  }
 }

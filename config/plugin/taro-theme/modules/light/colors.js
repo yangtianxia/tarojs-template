@@ -26,21 +26,22 @@ module.exports = {
     'danger-700': '#B71D37',
 
     /** Warning */
-    'warning-300': '#FFD68D',
-    'warning-500': '#FFAA42',
-    'warning-700': '#B76621',
+    'warning-300': '#FAD96E',
+    'warning-500': '#F0AD10',
+    'warning-700': '#8B5605',
 
     /** Success */
-    'success-300': '#BFF483',
-    'success-500': '#7ADD33',
-    'success-700': '#429F19',
+    'success-300': '#63EC89',
+    'success-500': '#07C160',
+    'success-700': '#026F57',
 
     /** Info */
-    'info-300': '#87F5FF',
-    'info-500': '#38D3FF',
-    'info-700': '#1C7EB7',
+    'info-300': '#6FA8F2',
+    'info-500': '#155BD4',
+    'info-700': '#06247A',
 
     /** Extra */
-    navigation: 'black'
+    navigation: 'black',
+    section: '#FFFFFF'
   }
 }

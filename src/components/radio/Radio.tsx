@@ -1,13 +1,14 @@
-import { RADIO_KEY } from './Group'
-import Checker, { checkerSharedProps, CheckerShape, CheckerLabelPosition } from '../checkbox/Checker'
-
-import BEM from '@/shared/bem'
-import { defineComponent, type PropType, type ExtractPropTypes } from 'vue'
+import { defineComponent, computed, type PropType, type ExtractPropTypes } from 'vue'
 import { pick, shallowMerge } from '@txjs/shared'
 
-import { useParent } from '../composables/parent'
+import type { CheckerShape, CheckerLabelPosition } from '../checker/types'
 
-const [name, bem] = BEM('radio')
+import Checker from '../checker'
+import { checkerSharedProps } from '../checker/utils'
+import { useParent } from '../composables/parent'
+import { RADIO_KEY } from './Group'
+
+const [name] = BEM('radio')
 
 export const radioProps = shallowMerge({}, checkerSharedProps, {
   'onUpdate:value': Function as PropType<(value: unknown) => void>
@@ -25,10 +26,10 @@ export default defineComponent({
   setup(props, { emit, slots }) {
     const { parent } = useParent(RADIO_KEY)
 
-    const checked = () => {
+    const checked = computed(() => {
       const value = parent ? parent.props.value : props.value
       return value === props.name
-    }
+    })
 
     const toggle = () => {
       if (parent) {
@@ -41,10 +42,9 @@ export default defineComponent({
     return () => (
       <Checker
         v-slots={pick(slots, ['default', 'icon'])}
-        bem={bem}
         role="radio"
         parent={parent}
-        checked={checked()}
+        checked={checked.value}
         onToggle={toggle}
         {...props}
       />

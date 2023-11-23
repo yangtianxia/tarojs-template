@@ -1,0 +1,87 @@
+@checker-cls: ~'@{prefix}-checker';
+
+page {
+  --checker-text-size: var(--size-5);
+  --checker-duration: var(--duration-fast);
+  --checker-border-color: var(--color-grey-500);
+  --checker-label-color: var(--color-text);
+  --checker-label-size: var(--size-md);
+  --checker-label-margin: var(--size-xs);
+  --checker-checked-icon-color: var(--color-primary);
+  --checker-disabled-icon-color: var(--checker-border-color);
+  --checker-disabled-label-color: var(--color-text-base);
+  --checker-disabled-background: var(--color-border);
+}
+
+.@{checker-cls} {
+  display: flex;
+  align-items: center;
+  user-select: none;
+  overflow: hidden;
+
+  &--horizontal {
+    margin-right: var(--size-xs);
+  }
+
+  &__icon {
+    flex: none;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.9em;
+    height: 0.9em;
+    color: transparent;
+    font-size: var(--checker-text-size);
+    line-height: var(--line-none);
+    border: var(--size-px) solid var(--checker-border-color);
+    transition-duration: var(--checker-duration);
+    transition-property: color, border-color, background-color;
+    box-sizing: border-box;
+
+    &-check {
+      width: 0.7em;
+      height: 0.7em;
+      mask: var(--icon-check) no-repeat 0 0 / contain;
+      background-color: currentColor;
+    }
+
+    &--round {
+      border-radius: var(--radius-full);
+    }
+
+    &--square {
+      border-radius: var(--radius-xs);
+    }
+
+    &--checked {
+      color: var(--color-white);
+      border-color: var(--checker-checked-icon-color);
+      background-color: var(--checker-checked-icon-color);
+    }
+
+    &--disabled {
+      border-color: var(--checker-disabled-icon-color);
+      background-color: var(--checker-disabled-background);
+    }
+
+    &--disabled&--checked {
+      color: var(--checker-disabled-icon-color);
+    }
+  }
+
+  &__label {
+    margin-left: var(--checker-label-margin);
+    color: var(--checker-label-color);
+    font-size: var(--checker-label-size);
+    line-height: var(--checker-size);
+
+    &--left {
+      margin: 0 var(--checker-label-margin) 0 0;
+    }
+
+    &--disabled {
+      color: var(--checker-disabled-label-color);
+    }
+  }
+}

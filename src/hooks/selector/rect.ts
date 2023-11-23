@@ -21,15 +21,16 @@ function getToRefs<K extends DOMRectKey>(rect: DOMRect, refs: K[]) {
 }
 
 export const useRect = <K extends DOMRectKey>(
-  element?: SelectorElement,
+  element: SelectorElement,
   options?: SingleRectOptions<K>
 ) => {
   const {
     target,
     observe,
     useCache,
-    triggerCallback,
+    callback,
     flush = 'pre',
+    immediate = true,
     refs = []
   } = options || {}
   const hasObserve = notNil(observe) && isString(element)
@@ -37,28 +38,17 @@ export const useRect = <K extends DOMRectKey>(
     makeDOMRect()
   )
   let observer: MutationObserver
-  let run = false
+  let canRun = false
   let cached = false
 
-  const triggerCallbackRun = (result: DOMRect) => {
-    if (triggerCallback && !run) {
-      triggerCallback(result)
-      run = flush === 'pre'
+  const triggerCallback = (result: DOMRect) => {
+    if (callback && !canRun) {
+      callback(result)
+      canRun = flush === 'pre'
     }
   }
 
   const triggerBoundingClientRect = (callback?: Callback<DOMRect>) => {
-    if (!element) return
-
-    if ((useCache || hasObserve) && cached) {
-      callback?.(rect)
-      return
-    }
-
-    if (hasObserve && !observer) {
-      createObserver()
-    }
-
     const query = createSelectorQuery()
     const selectElement = getSelectorElement(element)
 
@@ -75,10 +65,23 @@ export const useRect = <K extends DOMRectKey>(
         if (result) {
           cached = true
           shallowMerge(rect, result)
-          triggerCallbackRun(result)
+          triggerCallback(result)
           callback?.(result)
         }
       })
+  }
+
+  const boundingClientRect = (callback?: Callback<DOMRect>) => {
+    if (useCache && cached) {
+      callback?.(rect)
+      return
+    }
+
+    if (hasObserve && !observer) {
+      createObserver()
+    }
+
+    triggerBoundingClientRect(callback)
   }
 
   const createObserver = () => {
@@ -107,11 +110,13 @@ export const useRect = <K extends DOMRectKey>(
   onUnmounted(unObserver)
   useUnload(unObserver)
 
-  useReady(() => triggerBoundingClientRect())
+  if (immediate) {
+    useReady(() => boundingClientRect())
+  }
 
   return {
     rect,
-    triggerBoundingClientRect,
+    boundingClientRect,
     ...getToRefs(rect, refs)
   }
 }

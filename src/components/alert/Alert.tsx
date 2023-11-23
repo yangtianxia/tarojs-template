@@ -1,21 +1,27 @@
+import {
+  defineComponent,
+  ref,
+  computed,
+  Transition,
+  type PropType,
+  type ExtractPropTypes
+} from 'vue'
+
 import type { ITouchEvent } from '@tarojs/components'
-import { Icon, type IconName } from '../icon'
-
-import BEM from '@/shared/bem'
-import { defineComponent, ref, computed, Transition, type PropType, type ExtractPropTypes } from 'vue'
-
-type AlertType = 'normal' | 'success' | 'info' | 'warning' | 'error'
+import { Icon } from '../icon'
+import { vnodeProp, iconProp, genVNode } from '../utils'
+import type { AlertType } from './types'
 
 const [name, bem] = BEM('alert')
 
 const alertProps = {
-  showIcon: Boolean,
-  message: String,
-  description: String,
-  closeText: String,
-  closable: Boolean,
   banner: Boolean,
-  icon: String as PropType<IconName>,
+  showIcon: Boolean,
+  closable: Boolean,
+  message: vnodeProp,
+  description: vnodeProp,
+  closeText: vnodeProp,
+  icon: iconProp,
   type: String as PropType<AlertType>,
   onClose: Function as PropType<(event: ITouchEvent) => void>
 }
@@ -31,32 +37,18 @@ export default defineComponent({
     const closing = ref(false)
     const closed = ref(false)
 
-    const type = computed(() => {
-      if (props.type) {
-        return props.type
-      }
-
-      if (props.banner) {
-        return 'warning'
-      }
-
-      return 'info'
-    })
-
-    const showIcon = computed(() =>
-      props.showIcon || props.banner
+    const type = computed(() =>
+      props.type || (props.banner ? 'warning' : 'info')
     )
-
-    const withDescription = computed(() =>
-      !!slots.description || props.description
+    const description = computed(() =>
+      genVNode(slots.description || props.description)
     )
-
     const iconName = computed(() => {
       if (props.icon) {
         return props.icon
       }
 
-      if (withDescription.value) {
+      if (description.value) {
         switch (type.value) {
           case 'info':
             return 'info-o'
@@ -88,7 +80,7 @@ export default defineComponent({
     }
 
     const renderIcon = () => {
-      if (showIcon.value) {
+      if (props.showIcon || props.banner) {
         if (slots.icon) {
           return slots.icon()
         }
@@ -104,20 +96,21 @@ export default defineComponent({
     }
 
     const renderMessage = () => {
-      if (slots.message || props.message) {
+      const message = genVNode(slots.message || props.message)
+      if (message) {
         return (
           <view class={bem('message')}>
-            {slots.message?.() || props.message}
+            {message}
           </view>
         )
       }
     }
 
     const renderDescription = () => {
-      if (withDescription.value) {
+      if (description.value) {
         return (
           <view class={bem('description')}>
-            {slots.description?.() || props.description}
+            {description.value}
           </view>
         )
       }
@@ -140,9 +133,9 @@ export default defineComponent({
             class={bem('close-icon')}
             onTap={onClose}
           >
-            {slots.closeIcon?.() || props.closeText ? (
-              <text>{props.closeText}</text>
-            ) : (
+            {genVNode(slots.closeIcon || props.closeText, {
+              render: (value) => <text>{value}</text>
+            }) || (
               <Icon name="cross" />
             )}
           </view>
@@ -162,7 +155,7 @@ export default defineComponent({
             v-show={!closing.value}
             class={bem([type.value, {
               banner: props.banner,
-              'with-description': withDescription.value
+              'with-description': description.value
             }])}
           >
             {renderIcon()}

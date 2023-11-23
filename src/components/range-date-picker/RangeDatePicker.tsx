@@ -1,13 +1,18 @@
+import {
+  defineComponent,
+  ref,
+  computed,
+  watch,
+  type PropType,
+  type ExtractPropTypes
+} from 'vue'
+import { isDate, isEqual } from '@txjs/bool'
+import { useNextTick } from '@/hooks'
+
 import { PickerView, PickerViewColumn, type ITouchEvent } from '@tarojs/components'
 import { POPUP_KEY } from '../popup'
 import { Row, Col } from '../grid'
 import { Button } from '../button'
-
-import BEM from '@/shared/bem'
-import { defineComponent, ref, computed, watch, type PropType, type ExtractPropTypes } from 'vue'
-import { isDate, isEqual } from '@txjs/bool'
-import { useNextTick } from '@/hooks'
-
 import { useParent } from '../composables/parent'
 import { makeNumberProp, makeStringProp, makeArrayProp } from '../utils'
 
@@ -498,8 +503,7 @@ export default defineComponent({
       <view class={bem('action')}>
         <Button
           block
-          bold={false}
-          size="large"
+          type="default"
           class={bem('action-cancel')}
           onTap={onCancel}
         >
@@ -507,8 +511,6 @@ export default defineComponent({
         </Button>
         <Button
           block
-          bold={false}
-          size="large"
           type="primary"
           class={bem('action-confirm')}
           onTap={onConfirm}

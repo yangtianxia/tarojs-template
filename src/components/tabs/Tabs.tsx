@@ -1,5 +1,3 @@
-import { ScrollView, type ITouchEvent } from '@tarojs/components'
-
 import {
   defineComponent,
   ref,
@@ -12,15 +10,20 @@ import {
   type CSSProperties,
   type ExtractPropTypes
 } from 'vue'
-
-import BEM from '@/shared/bem'
 import { isNil, isArray } from '@txjs/bool'
 import { shallowMerge, callInterceptor, type Interceptor } from '@txjs/shared'
 import { useRect } from '@/hooks'
 
+import { ScrollView, type ITouchEvent } from '@tarojs/components'
 import { useId } from '../composables/id'
 import { useChildren } from '../composables/children'
-import { truthProp, makeNumberProp, makeNumericProp, createInjectionKey, addUnit } from '../utils'
+import {
+  truthProp,
+  makeNumberProp,
+  makeNumericProp,
+  createInjectionKey,
+  addUnit
+} from '../utils'
 
 const [name, bem] = BEM('tabs')
 
@@ -78,9 +81,9 @@ export default defineComponent({
   props: tabsProps,
 
   setup(props, { slots, emit }) {
-    const id = useId()
+    const contentId = useId()
     const { children, customChildren, linkChildren } = useChildren(TABS_KEY)
-    const { width, triggerBoundingClientRect } = useRect(`#${id}`, {
+    const { width, boundingClientRect } = useRect(`#${contentId}`, {
       refs: ['width']
     })
 
@@ -145,7 +148,7 @@ export default defineComponent({
       callInterceptor(props.beforeChange, {
         args: [name],
         done: () => {
-          triggerBoundingClientRect()
+          boundingClientRect()
           emit('update:value', name)
         }
       })
@@ -200,7 +203,7 @@ export default defineComponent({
             class={bem('scroll')}
           >
             <view
-              id={id}
+              id={contentId}
               class={bem('content')}
             >
               {filterChildren(slots.default?.())}

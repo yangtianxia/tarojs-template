@@ -13,9 +13,13 @@ declare module '*.sass'
 declare module '*.styl'
 declare module '*.json'
 
-declare type Callback<T = any, U = void> = (...args: T[]) => U
+declare type Timeout = ReturnType<typeof setTimeout> | null
+
+declare type Interval = ReturnType<typeof setInterval> | null
 
 declare type Numeric = number | string
+
+declare type Callback<T = any, U = void> = (...args: T[]) => U
 
 declare type Writeable<T> = {
   -readonly [P in keyof T]: T[P]
@@ -23,7 +27,7 @@ declare type Writeable<T> = {
 
 declare type Promised<T extends Promise<any>> = T extends Promise<infer U> ? U : never
 
-declare type ObjectNonNullable<T> = {
+declare type FieldsNonNullable<T> = {
   [p in keyof T]: NonNullable<T[p]>
 }
 

@@ -1,7 +1,3 @@
-import { ScrollView } from '@tarojs/components'
-import { POPUP_KEY } from '../popup'
-import { Icon } from '../icon'
-
 import {
   defineComponent,
   ref,
@@ -11,13 +7,14 @@ import {
   type PropType,
   type ExtractPropTypes
 } from 'vue'
-
-import BEM from '@/shared/bem'
 import { shallowMerge } from '@txjs/shared'
 import { makeArray } from '@txjs/make'
 import { isNil, notNil } from '@txjs/bool'
 import { useRect, useRectCallback, useScroll, useNextTick } from '@/hooks'
 
+import { ScrollView } from '@tarojs/components'
+import { POPUP_KEY } from '../popup'
+import { Icon } from '../icon'
 import { useId } from '../composables/id'
 import { useParent } from '../composables/parent'
 import { truthProp, numericProp, makeArrayProp } from '../utils'
@@ -305,7 +302,6 @@ export default defineComponent({
       const title = selected ? selected[textKey] : DefaultOptionLabel
       const active = !!selected
       const last = tabs.value.length - 1 === index
-
       return (
         <view
           class={bem('tab')}
@@ -328,7 +324,10 @@ export default defineComponent({
     const renderOptionsTitle = () => {
       if (props.subTitles && props.subTitles[activeTab.value]) {
         return (
-          <view class={bem('options-title')}>
+          <view
+            disableScroll={true}
+            class={bem('options-title')}
+          >
             {props.subTitles[activeTab.value]}
           </view>
         )
@@ -388,7 +387,10 @@ export default defineComponent({
 
     return () => (
       <view class={bem()}>
-        <view class={[bem('tabs'), 'hairline--bottom']}>
+        <view
+          disableScroll={true}
+          class={[bem('tabs'), 'hairline--bottom']}
+        >
           {tabs.value.map(renderTab)}
         </view>
         {renderOptionsTitle()}

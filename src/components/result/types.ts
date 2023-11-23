@@ -1,14 +1,14 @@
-import type { VueSlotVNode } from '../utils'
+import type { VNode } from '../utils'
 
-export type ResultCode = '500' | '404' | 'error' | 'network' | 'search' | 'nodata'
+export type ResultCode = '500' | '404' | 'error' | 'network' | 'nodata'
 
-export interface ResultOption {
+export interface ResultOptions {
   status?: ResultCode
-  bottom?: VueSlotVNode | null
-  title?: string | VueSlotVNode | null
-  image?: string | VueSlotVNode | null
-  desc?: string | VueSlotVNode | null
+  bottom?: VNode
+  title?: string | VNode
+  image?: string | VNode
+  desc?: string | VNode
   refresh?(): void
 }
 
-export type ResultStatusType = ResultCode | ResultOption
+export type ResultStatusType = ResultCode | ResultOptions

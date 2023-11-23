@@ -1,37 +1,63 @@
 @import url('@/style/mixins/hairline.less');
 
+@cell-group-cls: ~'@{prefix}-cell-group';
 @cell-cls: ~'@{prefix}-cell';
 
 page {
   --cell-group-title-color: var(--color-grey-600);
   --cell-group-title-padding: var(--size-md) var(--size-md) var(--size-xs);
-  --cell-group-title-font-size: var(--size-md);
-  --cell-group-title-line-height: var(--size-4);
+  --cell-group-title-size: var(--size-md);
+  --cell-group-title-line: var(--size-4);
   --cell-group-inset-title-padding: var(--size-md) var(--size-md) var(--size-3) var(--size-xl);
-  --cell-group-inset-padding: 0 var(--size-md);
-  --cell-group-inset-border-radius: var(--radius-lg);
-  --cell-font-size: var(--size-md);
-  --cell-label-font-size: var(--size-sm);
-  --cell-large-title-font-size: var(--size-lg);
-  --cell-large-value-font-size: var(--size-lg);
-  --cell-large-label-font-size: var(--size-md);
-  --cell-text-color: var(--color-text);
-  --cell-icon-color: var(--color-text-base);
-  --cell-label-color: var(--color-grey-600);
-  --cell-value-color: var(--color-grey-600);
-  --cell-value-text-align: right;
-  --cell-right-icon-color: var(--color-grey-500);
-  --cell-right-icon-font-size: var(--size-md);
+  --cell-group-inset-padding: var(--size-none) var(--size-md);
+  --cell-group-inset-radius: var(--radius-lg);
+
   --cell-vertical-padding: var(--size-md);
   --cell-horizontal-padding: var(--size-md);
-  --cell-large-vertical-padding: var(--size-md);
-  --cell-line-height: var(--size-6);
-  --cell-label-line-height: var(--cell-line-height);
+  --cell-text-size: var(--size-md);
+  --cell-text-color: var(--color-text);
+  --cell-line: var(--size-6);
+  --cell-background: var(--color-section);
   --cell-border-color: var(--color-border);
   --cell-active-color: var(--color-active);
-  --cell-required-color: red;
-  --cell-background-color: var(--color-section);
+  --cell-large-title-size: var(--size-lg);
+  --cell-large-value-size: var(--size-lg);
+  --cell-large-label-size: var(--size-md);
+  --cell-large-vertical-padding: var(--size-md);
+  --cell-value-color: var(--color-grey-600);
+  --cell-value-text-align: right;
+  --cell-icon-color: var(--color-text-base);
+  --cell-right-icon-color: var(--color-grey-500);
+  --cell-right-icon-size: var(--size-md);
+  --cell-label-color: var(--color-grey-600);
+  --cell-label-size: var(--size-sm);
+  --cell-label-line: var(--cell-line);
   --cell-label-margin-top: 6rpx;
+  --cell-required-color: red;
+}
+
+.@{cell-group-cls} {
+  background-color: var(--cell-background);
+
+  &__title {
+    color: var(--cell-group-title-color);
+    font-size: var(--cell-group-title-size);
+    line-height: var(--cell-group-title-line);
+    padding: var(--cell-group-title-padding);
+
+    &--inset {
+      padding: var(--cell-group-inset-title-padding);
+    }
+  }
+
+  &--inset {
+    border-radius: var(--cell-group-inset-radius);
+    overflow: hidden;
+  }
+
+  &--shrink {
+    margin: var(--cell-group-inset-padding);
+  }
 }
 
 .@{cell-cls} {
@@ -40,10 +66,10 @@ page {
   width: 100%;
   padding-top: var(--cell-vertical-padding);
   padding-bottom: var(--cell-vertical-padding);
-  font-size: var(--cell-font-size);
-  line-height: var(--cell-line-height);
+  font-size: var(--cell-text-size);
   color: var(--cell-text-color);
-  background-color: var(--cell-background-color);
+  line-height: var(--cell-line);
+  background-color: var(--cell-background);
   box-sizing: border-box;
 
   &:after {
@@ -64,43 +90,14 @@ page {
     }
   }
 
-  &-group {
-    background-color: var(--cell-background-color);
-
-    &__title {
-      color: var(--cell-group-title-color);
-      font-size: var(--cell-group-title-font-size);
-      line-height: var(--cell-group-title-line-height);
-      padding: var(--cell-group-title-padding);
-
-      &--inset {
-        padding: var(--cell-group-inset-title-padding);
-      }
-    }
-
-    &--inset {
-      border-radius: var(--cell-group-inset-border-radius);
-      overflow: hidden;
-    }
-
-    &--shrink {
-      margin: var(--cell-group-inset-padding);
-    }
-  }
-
-  &__icon {
-    min-width: 1em;
-    margin-right: 12rpx;
-  }
-
   &__title {
     font-weight: var(--weight-medium);
   }
 
   &__label {
     margin-top: var(--cell-label-margin-top);
-    font-size: var(--cell-label-font-size);
-    line-height: var(--cell-label-line-height);
+    font-size: var(--cell-label-size);
+    line-height: var(--cell-label-line);
     color: var(--cell-label-color);
   }
 
@@ -123,8 +120,8 @@ page {
   &__right-icon {
     display: flex;
     align-items: center;
-    height: var(--cell-line-height);
-    line-height: 0;
+    height: var(--cell-line);
+    line-height: var(--line-none);
   }
 
   &__left-icon {
@@ -135,7 +132,7 @@ page {
 
   &__right-icon {
     color: var(--cell-right-icon-color);
-    font-size: var(--cell-right-icon-font-size);
+    font-size: var(--cell-right-icon-size);
     margin-left: 8rpx;
   }
 
@@ -151,7 +148,7 @@ page {
       content: '*';
       left: var(--cell-horizontal-padding);
       margin-left: calc(var(--size-2) * -1);
-      font-size: var(--cell-font-size);
+      font-size: var(--cell-size);
       color: var(--cell-required-color);
     }
   }
@@ -166,15 +163,15 @@ page {
 
     .@{cell-cls} {
       &__title {
-        font-size: var(--cell-large-title-font-size);
+        font-size: var(--cell-large-title-size);
       }
 
       &__value {
-        font-size: var(--cell-large-value-font-size);
+        font-size: var(--cell-large-value-size);
       }
 
       &__label {
-        font-size: var(--cell-large-label-font-size);
+        font-size: var(--cell-large-label-size);
       }
     }
   }

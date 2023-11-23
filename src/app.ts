@@ -11,11 +11,9 @@ import Cell from '@/components/cell'
 
 import router from '@/router'
 import store, { useThemeStore, useUserStore } from '@/store'
-import mitt from '@/shared/mitt'
 import { createApp } from 'vue'
 import { canIUse, getUpdateManager, exitMiniProgram } from '@tarojs/taro'
 import { useSystemInfo } from '@/hooks/system-info'
-import { useModal } from '@/hooks/modal'
 import { useThemeChange } from '@/hooks/theme-change'
 import { EVENT_TYPE } from '@/shared/constants'
 
@@ -48,7 +46,7 @@ const app = createApp({
         if (!hasUpdate) return
 
         updateManager.onUpdateReady(() => {
-          useModal.info({
+          modal.info({
             title: '更新提示',
             content: '新版本已经准备好，现在更新并重启小程序~',
             confirmText: '立即更新',
@@ -57,7 +55,7 @@ const app = createApp({
         })
 
         updateManager.onUpdateFailed(() => {
-          useModal.info({
+          modal.info({
             title: '更新失败',
             content: '小程序更新失败，请删除当前小程序，重新搜索打开哟~',
             onOk: () => exitMiniProgram()

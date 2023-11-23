@@ -1,9 +1,8 @@
-import { APP_KEY } from './App'
-import { Result } from '../result'
-
-import BEM from '@/shared/bem'
 import { defineComponent, inject, type ExtractPropTypes } from 'vue'
 import { isNil, notNil } from '@txjs/bool'
+
+import { APP_KEY } from './App'
+import { Result } from '../result'
 
 const [name, bem] = BEM('body')
 
@@ -21,7 +20,9 @@ export default defineComponent({
   setup(props, { slots }) {
     const parent = inject(APP_KEY)
 
-    if (isNil(parent)) return
+    if (isNil(parent)) {
+      throw new Error('Body必须是App的子组件')
+    }
 
     return () => {
       const { shrink } = props

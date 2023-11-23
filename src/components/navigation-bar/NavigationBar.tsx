@@ -1,46 +1,39 @@
-import { Icon } from '../icon'
-
 import {
   defineComponent,
   ref,
   reactive,
   computed,
   watch,
-  mergeProps,
   type Ref,
   type PropType,
   type ExtractPropTypes,
   type CSSProperties
 } from 'vue'
-
+import debounce from 'debounce'
+import { usePageScroll } from '@tarojs/taro'
+import { shallowMerge, callInterceptor, type Interceptor } from '@txjs/shared'
+import { useThemeStore } from '@/store'
 import {
   USE_NAVIGATION_BAR,
   useRoute,
   useRouter,
-  useSystemInfo,
-  useRect
+  useSystemInfo
 } from '@/hooks'
 
-import BEM from '@/shared/bem'
-import debounce from 'debounce'
-import extend from 'extend'
-import { usePageScroll } from '@tarojs/taro'
-import { callInterceptor, type Interceptor } from '@txjs/shared'
-import { useThemeStore } from '@/store'
-
-import { useId } from '../composables/id'
+import { Icon } from '../icon'
 import { useExpose } from '../composables/expose'
 import { useParent } from '../composables/parent'
-import type { NavigationBarPosition, NavigationBarTitleStyle } from './types'
-
 import {
+  vnodeProp,
   truthProp,
   makeNumericProp,
   makeStringProp,
+  genVNode,
   getZIndexStyle,
   addUnit,
   onAppLoaded
 } from '../utils'
+import type { NavigationBarPosition, NavigationBarTitleStyle } from './types'
 
 const [name, bem] = BEM('navigation-bar')
 
@@ -48,7 +41,7 @@ const titleStyle = ['black', 'white']
 
 const navigationBarProps = {
   border: Boolean,
-  title: String,
+  title: vnodeProp,
   titleClass: String,
   leftClass: String,
   fixed: truthProp,
@@ -83,16 +76,12 @@ export default defineComponent({
   props: navigationBarProps,
 
   setup(originProps, { slots, attrs }) {
-    const id = useId()
     const themeStore = useThemeStore()
     const router = useRouter()
     const { path, currentRoute } = useRoute()
     const { statusBarHeight = 0 } = useSystemInfo()
-    const { height } = useRect(`#${id}`, {
-      useCache: true,
-      refs: ['height']
-    })
 
+    const BASE_HEIGHT = 44
     const hasTabbar = router.checkTabbar(path)
     const hasAccessRecord = router.getCurrentPages().length > 1
 
@@ -107,24 +96,28 @@ export default defineComponent({
       return titleStyle[foundAt]
     })
 
+    const height = ref(
+      statusBarHeight + BASE_HEIGHT
+    )
     const opacity = ref(
       props.scrollAnimation ? 0 : 1
     )
     const titleColor = ref(
       titleOriginColor.value
     )
-    const leftArrowVisible = ref(
-      !hasTabbar && (hasAccessRecord || props.showHomeIcon)
-    )
 
-    const titleText = computed(() =>
-      props.title ?? currentRoute.value?.title
+    const leftArrowVisible = computed(() =>
+      !hasTabbar && (hasAccessRecord || props.showHomeIcon)
     )
     const showLeftAction = computed(() =>
       !!slots.left || leftArrowVisible.value
     )
     const navigationBarStyle = computed(() => {
-      const style = getZIndexStyle(props.zIndex)
+      const style = {
+        ...getZIndexStyle(props.zIndex),
+        height: addUnit(BASE_HEIGHT),
+        lineHeight: addUnit(BASE_HEIGHT)
+      } as CSSProperties
       if (props.safeAreaInsetTop) {
         style.paddingTop = addUnit(statusBarHeight)
       }
@@ -161,13 +154,12 @@ export default defineComponent({
     }
 
     const setConfig = (partial: NavigationBarConfig) => {
-      extend(props, partial)
+      shallowMerge(props, partial)
     }
 
     watch(
       () => originProps,
-      setConfig,
-      { deep: true }
+      (value) => setConfig(value)
     )
 
     watch(
@@ -213,7 +205,8 @@ export default defineComponent({
     }
 
     const renderTitle = () => {
-      if (slots.default || titleText.value) {
+      const title = genVNode(slots.default || (props.title ?? currentRoute.value?.title))
+      if (title) {
         return (
           <view
             class={[
@@ -222,7 +215,7 @@ export default defineComponent({
             ]}
             style={{ color: titleColor.value }}
           >
-            {slots.default?.() || titleText.value}
+            {title}
           </view>
         )
       }
@@ -239,7 +232,7 @@ export default defineComponent({
     const renderNavbar = () => (
       <view
         catchMove
-        {...mergeProps(attrs, { id })}
+        {...attrs}
         style={navigationBarStyle.value}
         class={bem({
           fixed: props.fixed,

@@ -1,9 +1,10 @@
-import type { ResultStatusType, ResultOption } from '@/components/result'
-import { useChildren } from '@/components/composables/children'
-import { createInjectionKey } from '@/components/utils'
-
 import { reactive } from 'vue'
 import { isString } from '@txjs/bool'
+
+import type { ResultStatusType, ResultOptions } from '@/components/result'
+
+import { useChildren } from '@/components/composables/children'
+import { createInjectionKey } from '@/components/utils'
 
 interface UseAppOption {
   loading?: boolean
@@ -33,7 +34,7 @@ export const useApp = (options?: UseAppOption) => {
   const reload = (error: any, callback?: Callback) => {
     if (error.code === 401) return
 
-    let result = { status: error } as ResultOption
+    let result = { status: error } as ResultOptions
     let errMsg = error.message || error.errMsg || error.msg
 
     if (isString(error)) {
@@ -59,8 +60,14 @@ export const useApp = (options?: UseAppOption) => {
     set loading(value: boolean) {
       state.loading = value
     },
+    get loading() {
+      return state.loading
+    },
     set status(value: ResultStatusType | undefined) {
       state.status = value
+    },
+    get status() {
+      return state.status
     }
   }
 

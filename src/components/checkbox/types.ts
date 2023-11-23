@@ -1,8 +1,7 @@
+import type { ComponentPublicInstance, ComputedRef } from 'vue'
 import type { CheckboxProps } from './Checkbox'
 import type { CheckboxGroupProps } from './Group'
-
-import type { ComponentPublicInstance, ComputedRef } from 'vue'
-import type { CheckerParent, CheckerShape, CheckerDirection, CheckerLabelPosition } from './Checker'
+import type { CheckerParent, CheckerShape, CheckerDirection, CheckerLabelPosition } from '../checker/types'
 
 export type CheckboxGroupDirection = CheckerDirection
 export type CheckboxGroupToggleAllOptions =

@@ -1,7 +1,4 @@
-import type { ViewProps } from '@tarojs/components'
-
-import BEM from '@/shared/bem'
-import { defineComponent, type PropType, type ExtractPropTypes } from 'vue'
+import { defineComponent, type PropType, type ExtractPropTypes, type CSSProperties } from 'vue'
 import { isArray } from '@txjs/bool'
 
 import { useChildren } from '../composables/children'
@@ -13,7 +10,6 @@ const rowProps = {
   type: String,
   align: String,
   justify: String,
-  onTap: Function as PropType<ViewProps['onTap']>,
   gutter: {
     type: [Number, Array] as PropType<number | number[]>,
     default: 0
@@ -37,14 +33,20 @@ export default defineComponent({
     const { linkChildren } = useChildren(ROW_KEY)
     const flex = props.type === 'flex'
     const gutter = isArray(props.gutter) ? props.gutter[0] : props.gutter
-    const margin = `-${addUnit(gutter)}`
-    const style = gutter ? { marginLeft: margin, marginRight: margin } : {}
+    let style = {} as CSSProperties
+
+    if (gutter) {
+      const margin = `-${addUnit(gutter)}`
+      style = {
+        marginLeft: margin,
+        marginRight: margin
+      }
+    }
 
     linkChildren({ props })
 
     return () => {
       const { align, justify } = props
-
       return (
         <view
           style={style}

@@ -4,7 +4,7 @@ import type { UseRectAll } from './rect-all'
 
 type ExtractTrigger<T> =
   T extends UseRect | UseRectAll
-    ? T['triggerBoundingClientRect']
+    ? T['boundingClientRect']
     : T
 
 const rectCallback = <T,>(
@@ -38,7 +38,7 @@ export const useRectCallback = <
     .map((trigger) =>
       isFunction(trigger)
         ? trigger
-        : trigger.triggerBoundingClientRect
+        : trigger.boundingClientRect
     )
   rectCallback(list, [], callback)
 }

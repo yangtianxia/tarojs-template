@@ -1,17 +1,9 @@
-import BEM from '@/shared/bem'
 import { defineComponent, computed, type CSSProperties, type ExtractPropTypes } from 'vue'
 import { useSystemInfo } from '@/hooks'
 
 import { addUnit, truthProp, makeStringProp } from '../utils'
 
 type SafeAreaPosition = 'top' | 'bottom'
-
-const [name] = BEM('safe-area')
-
-const safeAreaProps = {
-  show: truthProp,
-  position: makeStringProp<SafeAreaPosition>('bottom')
-}
 
 const {
   hasSafeArea,
@@ -20,14 +12,23 @@ const {
   statusBarHeight = 0
 } = useSystemInfo()
 
+const [name] = BEM('safe-area')
+
+const safeAreaProps = {
+  show: truthProp,
+  position: makeStringProp<SafeAreaPosition>('bottom')
+}
+
 export type SafeAreaProps = ExtractPropTypes<typeof safeAreaProps>
 
 export default defineComponent({
   name,
 
+  inheritAttrs: false,
+
   props: safeAreaProps,
 
-  setup(props, { slots }) {
+  setup(props, { slots, attrs }) {
     const visible = computed(() => {
       switch (props.position) {
         case 'bottom':
@@ -46,13 +47,19 @@ export default defineComponent({
         const style = {} as CSSProperties
 
         if (props.position === 'bottom') {
+          console.log(screenHeight, safeArea!.bottom)
           style.paddingBottom = addUnit(screenHeight - safeArea!.bottom)
         } else if (props.position === 'top') {
           style.paddingTop = addUnit(statusBarHeight)
         }
 
         return (
-          <view style={style} />
+          <view
+            {...attrs}
+            catchMove
+            style={style}
+            disableScroll={true}
+          />
         )
       }
 

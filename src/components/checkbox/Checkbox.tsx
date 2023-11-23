@@ -1,16 +1,21 @@
-import { CHECKBOX_GROUP_KEY } from './Group'
-import Checker, { checkerSharedProps } from './Checker'
-
-import BEM from '@/shared/bem'
-import { defineComponent, computed, watch, type PropType, type ExtractPropTypes } from 'vue'
+import {
+  defineComponent,
+  computed,
+  watch,
+  type PropType,
+  type ExtractPropTypes
+} from 'vue'
 import { pick, shallowMerge } from '@txjs/shared'
 
+import Checker from '../checker'
+import { checkerSharedProps } from '../checker/utils'
+import { CHECKBOX_GROUP_KEY } from './Group'
 import { useExpose } from '../composables/expose'
 import { useParent } from '../composables/parent'
 import { useFieldValue } from '../composables/field-value'
 import { truthProp } from '../utils'
 
-const [name, bem] = BEM('checkbox')
+const [name] = BEM('checkbox')
 
 export const checkboxProps = shallowMerge({}, checkerSharedProps, {
   bindGroup: truthProp,
@@ -34,6 +39,10 @@ export default defineComponent({
       }
       return !!props.value
     })
+
+    const onChange = (value: unknown) => {
+      props.onChange?.(value)
+    }
 
     const setParentValue = (checked: boolean) => {
       const { name } = props
@@ -73,7 +82,7 @@ export default defineComponent({
 
     watch(
       () => props.value,
-      (value) => props.onChange?.(value)
+      (value) => onChange(value)
     )
 
     useExpose({ toggle, props, checked })
@@ -83,7 +92,6 @@ export default defineComponent({
     return () => (
       <Checker
         v-slots={pick(slots, ['default', 'icon'])}
-        bem={bem}
         role="checkbox"
         parent={parent}
         checked={checked.value}

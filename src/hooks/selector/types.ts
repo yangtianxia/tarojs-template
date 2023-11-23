@@ -3,6 +3,7 @@ import type { DOMRect } from './utils'
 export type SelectorElement = string | (() => string)
 
 export interface RectOptions {
+  immediate?: boolean
   useCache?: boolean
   flush?: 'pre' | 'post'
   target?: TaroGeneral.IAnyObject
@@ -11,9 +12,9 @@ export interface RectOptions {
 export interface SingleRectOptions<K> extends RectOptions {
   refs?: K[]
   observe?: string | boolean
-  triggerCallback?: Callback<DOMRect>
+  callback?: Callback<DOMRect>
 }
 
 export interface AllRectOptions extends RectOptions {
-  triggerCallback?: Callback<DOMRect[]>
+  callback?: Callback<DOMRect[]>
 }

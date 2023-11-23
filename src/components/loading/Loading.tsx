@@ -1,6 +1,3 @@
-import type { ViewProps } from '@tarojs/components'
-
-import BEM from '@/shared/bem'
 import { defineComponent, type PropType, type CSSProperties, type ExtractPropTypes } from 'vue'
 
 import { addUnit, numericProp } from '../utils'
@@ -12,8 +9,7 @@ const loadingProps = {
   vertical: Boolean,
   textSize: numericProp,
   color: String as PropType<CSSProperties['color']>,
-  textColor: String as PropType<CSSProperties['color']>,
-  onTap: Function as PropType<ViewProps['onTap']>
+  textColor: String as PropType<CSSProperties['color']>
 }
 
 export type LoadingProps = ExtractPropTypes<typeof loadingProps>
