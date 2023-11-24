@@ -1,3 +1,5 @@
+const path = require('path')
+const shell = require('shelljs')
 const { isNil } = require('@txjs/bool')
 const { getCurrentTaroEnv } = require('../utils')
 
@@ -7,11 +9,13 @@ const { getCurrentTaroEnv } = require('../utils')
 module.exports = (ctx) => {
   const taroEnv = getCurrentTaroEnv()
 
-  if (isNil(taroEnv) || taroEnv === 'h5') return
+  if (
+    isNil(taroEnv) ||
+    taroEnv === 'h5' ||
+    !shell.test('-d', path.resolve(__dirname, taroEnv))
+  ) return
 
   const run = require(`./${taroEnv}`)
 
-  ctx.modifyMiniConfigs(({ configMap }) => {
-    run?.({ configMap })
-  })
+  ctx.modifyMiniConfigs(run)
 }
