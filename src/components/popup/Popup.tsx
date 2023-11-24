@@ -236,7 +236,7 @@ export default defineComponent({
             <SafeArea position="top" />
           ) : null}
           <view
-            disableScroll={true}
+            disableScroll
             class={bem('header')}
           >
             {renderTitle()}
@@ -332,7 +332,7 @@ export const Footer = defineComponent({
       const { shrink } = parent.props
       return (
         <view
-          disableScroll={true}
+          disableScroll
           class={bem('footer', { shrink })}
         >
           <view class={bem('footer-wrapper')}>

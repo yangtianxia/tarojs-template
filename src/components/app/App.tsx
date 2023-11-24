@@ -41,8 +41,8 @@ export default defineComponent({
     const router = useRouter()
     const { path, pageInstance } = useRoute()
     const { parent } = useParent(USE_APP_KEY)
-
     const hasTabbar = router.checkTabbar(path)
+
     const loading = computed(() =>
       parent?.state.loading ?? props.loading
     )

@@ -325,7 +325,7 @@ export default defineComponent({
       if (props.subTitles && props.subTitles[activeTab.value]) {
         return (
           <view
-            disableScroll={true}
+            disableScroll
             class={bem('options-title')}
           >
             {props.subTitles[activeTab.value]}
@@ -388,7 +388,7 @@ export default defineComponent({
     return () => (
       <view class={bem()}>
         <view
-          disableScroll={true}
+          disableScroll
           class={[bem('tabs'), 'hairline--bottom']}
         >
           {tabs.value.map(renderTab)}

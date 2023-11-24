@@ -54,10 +54,10 @@ export default defineComponent({
 
         return (
           <view
-            {...attrs}
             catchMove
+            disableScroll
+            {...attrs}
             style={style}
-            disableScroll={true}
           />
         )
       }
