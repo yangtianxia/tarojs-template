@@ -41,6 +41,32 @@ const [name, bem] = BEM('range-date-picker')
 const currentDate = new Date()
 const Year = currentDate.getFullYear()
 
+const patchPickerIndex = (values: number[]) => {
+  if (process.env.TARO_ENV === 'alipay') {
+    values = [0, ...values, 0]
+  }
+  return values
+}
+
+const filterPickerIndex = (values: number[]) => {
+  if (process.env.TARO_ENV === 'alipay') {
+    values = values.slice(1, values.length - 1)
+  }
+  return values
+}
+
+const patchColumnIndex = (value: number, colIndex: number, columns: RangeDatePickerOption[][]) => {
+  if (process.env.TARO_ENV === 'alipay') {
+    const column = columns[colIndex]
+    value = value === 0
+      ? value
+      : value > column.length
+        ? value - 2
+        : value - 1
+  }
+  return value
+}
+
 const datePickerProps = {
   autoSearch: Boolean,
   presetsLabel: String,
@@ -89,9 +115,14 @@ export default defineComponent({
   props: datePickerProps,
 
   setup(props, { emit, slots }) {
-    const type = ref<RangeDatePickerTypeText>(rangeDatePickerType.START)
-    const modeLength = ref(props.mode.length)
+    const { parent: popup } = useParent(POPUP_KEY)
 
+    const type = ref<RangeDatePickerTypeText>(
+      rangeDatePickerType.START
+    )
+    const modeLength = ref(
+      props.mode.length
+    )
     const currentDateValue = ref(
       formatDate(currentDate, modeLength.value)
     )
@@ -99,15 +130,20 @@ export default defineComponent({
       isInvalidDate(props.start) ? currentDateValue.value : props.start
     )
     const endValue = ref<TimeType>(props.end)
-    const columnIndex = ref<number[]>(new Array(modeLength.value).fill(0))
+    const columnIndex = ref<number[]>(
+      patchPickerIndex(new Array(modeLength.value).fill(0))
+    )
     const updatedByExternalSources = ref(false)
 
     const indicatorHeight = computed(() =>
       `${props.indicatorStyle}px`
     )
-    const startEmpty = computed(() => isInvalidDate(startValue.value))
-    const endEmpty = computed(() => isInvalidDate(endValue.value))
-
+    const startEmpty = computed(() =>
+      isInvalidDate(startValue.value)
+    )
+    const endEmpty = computed(() =>
+      isInvalidDate(endValue.value)
+    )
     const modelValue = computed(() =>
       type.value === rangeDatePickerType.END ? props.end : props.start
     )
@@ -117,8 +153,6 @@ export default defineComponent({
       }
       return endEmpty.value ? startValue.value : endValue.value
     })
-
-    const { parent: popup } = useParent(POPUP_KEY)
 
     const updateStart = (values: TimeType = []) => {
       startValue.value = values
@@ -140,7 +174,9 @@ export default defineComponent({
       const [year, month, day] = type === rangeDatePickerType.START ? endValue.value : startValue.value
 
       const compared = (valueRight: Numeric) =>
-        type === rangeDatePickerType.START ? value > formatValueNumber(valueRight) : value < formatValueNumber(valueRight)
+        type === rangeDatePickerType.START
+          ? value > formatValueNumber(valueRight)
+          : value < formatValueNumber(valueRight)
 
       switch (mode) {
         case rangeDatePickerMode.YEAR:
@@ -190,7 +226,9 @@ export default defineComponent({
     const getValue = (type: RangeDatePickerModeText) => {
       const { minDate, mode } = props
       const index = mode.indexOf(type)
-      const value = updatedByExternalSources.value ? modelValue.value[index] : currentValue.value[index]
+      const value = updatedByExternalSources.value
+        ? modelValue.value[index]
+        : currentValue.value[index]
 
       if (value) {
         return +value
@@ -289,11 +327,18 @@ export default defineComponent({
     }
 
     const getColumnIndex = () => {
-      columnIndex.value = columns.value.map((item, columnIndex) => {
+      const indexs = columns.value.map((item, columnIndex) => {
         const value = currentValue.value[columnIndex]
         const index = Math.max(item.findIndex((child) => formatValueNumber(child.value!) === formatValueNumber(value)), 0)
         return props.autoSearch ? getAutoIndex(item, index) || index : index
       })
+      if (process.env.TARO_ENV === 'alipay') {
+        columnIndex.value = patchPickerIndex(
+          indexs.map((index) => index + 1)
+        )
+      } else {
+        columnIndex.value = indexs
+      }
     }
 
     const onInputChange = (text: RangeDatePickerTypeText) => {
@@ -309,13 +354,20 @@ export default defineComponent({
     const onValuesChange = (indexs: number[]) => {
       const selectOptions = columns.value.map((item, index) => item[indexs[index]])
       const values = selectOptions.map((item) => item.value!)
-      const index = selectOptions.findIndex((item) => item.disabled)
+      const foundAt = selectOptions.findIndex((item) => item.disabled)
+      const noFound = foundAt === -1
+      let currentIndexs = columnIndex.value
 
-      if (index === -1) {
+      if (process.env.TARO_ENV === 'alipay') {
+        currentIndexs = filterPickerIndex(currentIndexs)
+          .map((item) => item - 1)
+      }
+
+      if (noFound) {
         updateDateValue(values)
         props.onChange?.(type.value, values, selectOptions, indexs)
-      } else if (!isEqual(indexs, columnIndex.value)) {
-        onValuesChange(columnIndex.value)
+      } else if (!isEqual(indexs, currentIndexs)) {
+        onValuesChange(currentIndexs)
       } else {
         getColumnIndex()
       }
@@ -336,7 +388,14 @@ export default defineComponent({
       })
     }
 
-    const onPickerViewChange = (event: ITouchEvent) => onValuesChange(event.detail.value as number[])
+    const onPickerViewChange = (event: ITouchEvent) => {
+      let values = event.detail.value as number[]
+      if (process.env.TARO_ENV === 'alipay') {
+        values = filterPickerIndex(values)
+          .map((item, index) => patchColumnIndex(item, index, columns.value))
+      }
+      onValuesChange(values)
+    }
 
     const onClose = () => popup?.close()
 
@@ -372,7 +431,9 @@ export default defineComponent({
     }
 
     const onModelValueChange = (type: RangeDatePickerTypeText) => (newValues: TimeType, oldValues: TimeType) => {
-      const values = type === rangeDatePickerType.START ? startValue.value : endValue.value
+      const values = type === rangeDatePickerType.START
+        ? startValue.value
+        : endValue.value
 
       updatedByExternalSources.value = isEqual(oldValues, values)
       newValues = formatValueRange(newValues, columns.value)
