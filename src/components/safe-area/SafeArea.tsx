@@ -47,7 +47,6 @@ export default defineComponent({
         const style = {} as CSSProperties
 
         if (props.position === 'bottom') {
-          console.log(screenHeight, safeArea!.bottom)
           style.paddingBottom = addUnit(screenHeight - safeArea!.bottom)
         } else if (props.position === 'top') {
           style.paddingTop = addUnit(statusBarHeight)
