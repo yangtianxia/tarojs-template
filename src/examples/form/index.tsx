@@ -1,12 +1,8 @@
-import { App } from '@/components/app'
-import { CellGroup, Cell } from '@/components/cell'
-import { Form, Field } from '@/components/form'
-import { Button } from '@/components/button'
-
-import Bem from '@txjs/bem'
 import { defineComponent, reactive } from 'vue'
 import { validator } from '@txjs/vant-validator'
 import { makeStringMap } from '@txjs/make'
+
+import { Form, Field } from '@/components/form'
 
 import less from './index.module.less'
 
@@ -15,7 +11,7 @@ definePageConfig({
   navigationBarTitleText: 'form'
 })
 
-const [name] = Bem('form', less)
+const [name] = BEM('form', less)
 
 export default defineComponent({
   name,
@@ -49,13 +45,13 @@ export default defineComponent({
     })
 
     return () => (
-      <App loading={false}>
-        <App.Body>
+      <gm-app loading={false}>
+        <gm-body shrink>
           <Form
             rules={formRules}
             requiredAlign="right"
           >
-            <CellGroup
+            <gm-cell-group
               inset
               title="用户信息"
             >
@@ -91,22 +87,22 @@ export default defineComponent({
                 title="地址"
                 placeholder="请输入地址"
               />
-            </CellGroup>
-            <Button
+            </gm-cell-group>
+            <gm-button
               width={300}
               type="primary"
               formType="submit"
               style={{ marginTop: '32rpx' }}
-            >提交</Button>
+            >提交</gm-button>
           </Form>
-          <CellGroup
+          <gm-cell-group
             inset
             title="表单结果"
           >
-            <Cell value={JSON.stringify(formModel)} />
-          </CellGroup>
-        </App.Body>
-      </App>
+            <gm-cell value={JSON.stringify(formModel)} />
+          </gm-cell-group>
+        </gm-body>
+      </gm-app>
     )
   }
 })
