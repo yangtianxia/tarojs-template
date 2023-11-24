@@ -1,11 +1,6 @@
-import { App } from '@/components/app'
-import { CellGroup, Cell } from '@/components/cell'
-import { Space } from '@/components/space'
-import { Checkbox, type CheckboxGroupInstance, type CheckboxInstance } from '@/components/checkbox'
-import { Button } from '@/components/button'
-
-import Bem from '@txjs/bem'
 import { defineComponent, ref, reactive } from 'vue'
+
+import { Checkbox, type CheckboxGroupInstance, type CheckboxInstance } from '@/components/checkbox'
 
 import less from './index.module.less'
 
@@ -14,7 +9,7 @@ definePageConfig({
   navigationBarTitleText: 'checkbox'
 })
 
-const [name, bem] = Bem('checkbox', less)
+const [name, bem] = BEM('checkbox', less)
 
 export default defineComponent({
   name,
@@ -50,8 +45,8 @@ export default defineComponent({
     }
 
     return () => (
-      <App loading={false}>
-        <App.Body shrink>
+      <gm-app loading={false}>
+        <gm-body shrink>
           <view class={bem('section')}>
             <view class={bem('title')}>基础用法</view>
             <view class={bem('section-wrapper')}>
@@ -62,10 +57,10 @@ export default defineComponent({
           <view class={bem('section')}>
             <view class={bem('title')}>禁用状态</view>
             <view class={bem('section-wrapper')}>
-              <Space direction="vertical">
+              <gm-space direction="vertical">
                 <Checkbox disabled>复选框</Checkbox>
                 <Checkbox disabled v-model:value={checkbox.a2}>复选框</Checkbox>
-              </Space>
+              </gm-space>
             </view>
           </view>
 
@@ -100,10 +95,10 @@ export default defineComponent({
           <view class={bem('section')}>
             <view class={bem('title')}>基础用法</view>
             <view class={bem('section-wrapper')}>
-              <Space direction="vertical">
+              <gm-space direction="vertical">
                 <Checkbox v-model:value={checkbox.a7}>复选框a</Checkbox>
                 <Checkbox v-model:value={checkbox.a8}>复选框b</Checkbox>
-              </Space>
+              </gm-space>
             </view>
           </view>
 
@@ -121,11 +116,11 @@ export default defineComponent({
             <view class={bem('title')}>限制最大可选数</view>
             <view class={bem('section-wrapper')}>
               <Checkbox.Group v-model:value={checkbox.a10} max={2}>
-                <Space direction="vertical">
+                <gm-space direction="vertical">
                   <Checkbox name="a">复选框a</Checkbox>
                   <Checkbox name="b">复选框b</Checkbox>
                   <Checkbox name="c">复选框c</Checkbox>
-                </Space>
+                </gm-space>
               </Checkbox.Group>
             </view>
           </view>
@@ -134,22 +129,22 @@ export default defineComponent({
             <view class={bem('title')}>全选或反选</view>
             <view class={bem('section-wrapper')}>
               <Checkbox.Group v-model:value={checkbox.a11} ref={checkboxGroupRef}>
-                <Space direction="vertical">
+                <gm-space direction="vertical">
                   <Checkbox name="a">复选框a</Checkbox>
                   <Checkbox name="b">复选框b</Checkbox>
                   <Checkbox name="c">复选框c</Checkbox>
-                </Space>
+                </gm-space>
               </Checkbox.Group>
-              <Space style={{ marginTop: '12px' }}>
-                <Button type="primary" size="mini" onTap={checkAll}>全选</Button>
-                <Button type="primary" size="mini" onTap={toggleAll}>反选</Button>
-              </Space>
+              <gm-space style={{ marginTop: '12px' }}>
+                <gm-button type="primary" size="mini" onTap={checkAll}>全选</gm-button>
+                <gm-button type="primary" size="mini" onTap={toggleAll}>反选</gm-button>
+              </gm-space>
             </view>
           </view>
 
           <Checkbox.Group v-model:value={checkbox.a12}>
-            <CellGroup inset title="搭配单元格组件使用">
-              <Cell
+            <gm-cell-group inset title="搭配单元格组件使用">
+              <gm-cell
                 clickable
                 title="复选框a"
                 onTap={() => toggle(0)}
@@ -166,7 +161,7 @@ export default defineComponent({
                   )
                 }}
               />
-              <Cell
+              <gm-cell
                 clickable
                 title="复选框b"
                 onTap={() => toggle(1)}
@@ -183,10 +178,10 @@ export default defineComponent({
                   )
                 }}
               />
-            </CellGroup>
+            </gm-cell-group>
           </Checkbox.Group>
-        </App.Body>
-      </App>
+        </gm-body>
+      </gm-app>
     )
   }
 })

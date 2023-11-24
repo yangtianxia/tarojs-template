@@ -1,10 +1,6 @@
-import { App } from '@/components/app'
-import { CellGroup, Cell } from '@/components/cell'
-import { Space } from '@/components/space'
-import { Radio } from '@/components/radio'
-
-import Bem from '@txjs/bem'
 import { defineComponent, reactive } from 'vue'
+
+import { Radio } from '@/components/radio'
 
 import less from './index.module.less'
 
@@ -13,7 +9,7 @@ definePageConfig({
   navigationBarTitleText: 'radio'
 })
 
-const [name, bem] = Bem('radio', less)
+const [name, bem] = BEM('radio', less)
 
 export default defineComponent({
   name,
@@ -30,16 +26,16 @@ export default defineComponent({
     })
 
     return () => (
-      <App loading={false}>
-        <App.Body shrink>
+      <gm-app loading={false}>
+        <gm-body shrink>
           <view class={bem('section')}>
             <view class={bem('title')}>基础用法</view>
             <view class={bem('section-wrapper')}>
               <Radio.Group v-model:value={radio.a1}>
-                <Space direction="vertical">
+                <gm-space direction="vertical">
                   <Radio name={1}>复选框1</Radio>
                   <Radio name={2}>复选框2</Radio>
-                </Space>
+                </gm-space>
               </Radio.Group>
             </view>
           </view>
@@ -58,10 +54,10 @@ export default defineComponent({
             <view class={bem('title')}>禁用状态</view>
             <view class={bem('section-wrapper')}>
               <Radio.Group disabled v-model:value={radio.a3}>
-                <Space direction="vertical">
+                <gm-space direction="vertical">
                   <Radio name={1}>复选框1</Radio>
                   <Radio name={2}>复选框2</Radio>
-                </Space>
+                </gm-space>
               </Radio.Group>
             </view>
           </view>
@@ -70,10 +66,10 @@ export default defineComponent({
             <view class={bem('title')}>自定义形状</view>
             <view class={bem('section-wrapper')}>
               <Radio.Group v-model:value={radio.a3}>
-                <Space direction="vertical">
+                <gm-space direction="vertical">
                   <Radio shape="square" name={1}>复选框1</Radio>
                   <Radio shape="square" name={2}>复选框2</Radio>
-                </Space>
+                </gm-space>
               </Radio.Group>
             </view>
           </view>
@@ -82,10 +78,10 @@ export default defineComponent({
             <view class={bem('title')}>自定义颜色</view>
             <view class={bem('section-wrapper')}>
               <Radio.Group v-model:value={radio.a4}>
-                <Space direction="vertical">
+                <gm-space direction="vertical">
                   <Radio checkedColor="var(--color-danger)" name={1}>复选框1</Radio>
                   <Radio checkedColor="var(--color-danger)" name={2}>复选框2</Radio>
-                </Space>
+                </gm-space>
               </Radio.Group>
             </view>
           </view>
@@ -94,10 +90,10 @@ export default defineComponent({
             <view class={bem('title')}>左侧文本</view>
             <view class={bem('section-wrapper')}>
               <Radio.Group v-model:value={radio.a5}>
-                <Space direction="vertical">
+                <gm-space direction="vertical">
                   <Radio labelPosition="left" name={1}>复选框1</Radio>
                   <Radio labelPosition="left" name={2}>复选框2</Radio>
-                </Space>
+                </gm-space>
               </Radio.Group>
             </view>
           </view>
@@ -106,17 +102,17 @@ export default defineComponent({
             <view class={bem('title')}>禁用文本点击</view>
             <view class={bem('section-wrapper')}>
               <Radio.Group v-model:value={radio.a6}>
-                <Space direction="vertical">
+                <gm-space direction="vertical">
                   <Radio labelDisabled name={1}>复选框1</Radio>
                   <Radio labelDisabled name={2}>复选框2</Radio>
-                </Space>
+                </gm-space>
               </Radio.Group>
             </view>
           </view>
 
           <Radio.Group v-model:value={radio.a7}>
-            <CellGroup inset title="搭配单元格组件使用">
-              <Cell
+            <gm-cell-group inset title="搭配单元格组件使用">
+              <gm-cell
                 clickable
                 title="复选框a"
                 onTap={() => radio.a7 = 1}
@@ -132,7 +128,7 @@ export default defineComponent({
                   )
                 }}
               />
-              <Cell
+              <gm-cell
                 clickable
                 title="复选框b"
                 onTap={() => radio.a7 = 2}
@@ -148,10 +144,10 @@ export default defineComponent({
                   )
                 }}
               />
-            </CellGroup>
+            </gm-cell-group>
           </Radio.Group>
-        </App.Body>
-      </App>
+        </gm-body>
+      </gm-app>
     )
   }
 })

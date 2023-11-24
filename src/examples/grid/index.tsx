@@ -1,8 +1,6 @@
-import { App } from '@/components/app'
-import { Row, Col } from '@/components/grid'
-
-import Bem from '@txjs/bem'
 import { defineComponent, ref } from 'vue'
+
+import { Row, Col } from '@/components/grid'
 
 import less from './index.module.less'
 
@@ -11,7 +9,7 @@ definePageConfig({
   navigationBarTitleText: 'grid'
 })
 
-const [name, bem] = Bem('grid', less)
+const [name, bem] = BEM('grid', less)
 
 export default defineComponent({
   name,
@@ -28,8 +26,8 @@ export default defineComponent({
     }, 1000 / 5)
 
     return () => (
-      <App loading={false}>
-        <App.Body shrink>
+      <gm-app loading={false}>
+        <gm-body shrink>
           {Array(24).fill(0).map((value, index) => (
             <Row gutter={[8, 8]}>
               <Col span={24 - (value + index)}>
@@ -95,8 +93,8 @@ export default defineComponent({
               <view class={bem('col')}>4</view>
             </Col>
           </Row>
-        </App.Body>
-      </App>
+        </gm-body>
+      </gm-app>
     )
   }
 })
