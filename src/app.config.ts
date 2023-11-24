@@ -32,7 +32,7 @@ if (process.env.TARO_ENV === 'alipay') {
   }
 }
 
-if (process.env.NODE_ENV === 'development') {
+if (process.env.ENV === 'examples') {
   config.subpackages!.push({
     root: 'examples',
     pages: [
