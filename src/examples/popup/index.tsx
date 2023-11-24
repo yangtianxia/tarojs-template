@@ -1,9 +1,6 @@
-import { App } from '@/components/app'
-import { CellGroup, Cell } from '@/components/cell'
-import { Popup } from '@/components/popup'
-
-import Bem from '@txjs/bem'
 import { defineComponent, reactive } from 'vue'
+
+import { Popup } from '@/components/popup'
 
 import less from './index.module.less'
 
@@ -12,7 +9,7 @@ definePageConfig({
   navigationBarTitleText: 'popup'
 })
 
-const [name] = Bem('popup', less)
+const [name] = BEM('popup', less)
 
 export default defineComponent({
   name,
@@ -27,35 +24,35 @@ export default defineComponent({
     })
 
     return () => (
-      <App loading={false}>
-        <App.Body shrink>
-          <CellGroup inset>
-            <Cell
+      <gm-app loading={false}>
+        <gm-body shrink>
+          <gm-cell-group inset>
+            <gm-cell
               isLink
               title="center"
               onTap={() => model.center = true}
             />
-            <Cell
+            <gm-cell
               isLink
               title="top"
               onTap={() => model.top = true}
             />
-            <Cell
+            <gm-cell
               isLink
               title="bottom"
               onTap={() => model.bottom = true}
             />
-            <Cell
+            <gm-cell
               isLink
               title="left"
               onTap={() => model.left = true}
             />
-            <Cell
+            <gm-cell
               isLink
               title="right"
               onTap={() => model.right = true}
             />
-          </CellGroup>
+          </gm-cell-group>
           <Popup
             v-model:show={model.center}
             round
@@ -92,8 +89,8 @@ export default defineComponent({
             style={{ height: '100%', width: '80%' }}
           >
           </Popup>
-        </App.Body>
-      </App>
+        </gm-body>
+      </gm-app>
     )
   }
 })

@@ -1,8 +1,6 @@
-import { App } from '@/components/app'
-import { CountDown } from '@/components/count-down'
-
-import Bem from '@txjs/bem'
 import { defineComponent } from 'vue'
+
+import { CountDown } from '@/components/count-down'
 
 import less from './index.module.less'
 
@@ -10,19 +8,19 @@ definePageConfig({
   navigationStyle: 'default'
 })
 
-const [name] = Bem('count-down', less)
+const [name] = BEM('count-down', less)
 
 export default defineComponent({
   name,
 
   setup() {
     return () => (
-      <App loading={false}>
-        <App.Body>
+      <gm-app loading={false}>
+        <gm-body shrink>
           <CountDown time={24 * 60 * 60 * 1000} />
           <CountDown time={24 * 60 * 60 * 1000} millisecond />
-        </App.Body>
-      </App>
+        </gm-body>
+      </gm-app>
     )
   }
 })

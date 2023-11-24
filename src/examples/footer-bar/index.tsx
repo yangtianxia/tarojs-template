@@ -1,8 +1,6 @@
-import { Button } from '@/components/button'
-import { FooterBar } from '@/components/footer-bar'
-
-import Bem from '@txjs/bem'
 import { defineComponent, ref } from 'vue'
+
+import { FooterBar } from '@/components/footer-bar'
 
 import less from './index.module.less'
 
@@ -11,7 +9,7 @@ definePageConfig({
   navigationBarTitleText: 'footer-bar'
 })
 
-const [name] = Bem('footer-bar', less)
+const [name] = BEM('footer-bar', less)
 
 export default defineComponent({
   name,
@@ -22,11 +20,10 @@ export default defineComponent({
     return () => (
       <gm-app loading={false}>
         <gm-body shrink>
-          <Button onTap={() => show.value = true}>显示</Button>
-
+          <gm-button onTap={() => show.value = true}>显示</gm-button>
           <FooterBar>
-            <Button block>按钮1</Button>
-            {show.value ? <Button block>按钮2</Button> : null}
+            <gm-button block>按钮1</gm-button>
+            {show.value ? <gm-button block>按钮2</gm-button> : null}
           </FooterBar>
         </gm-body>
       </gm-app>

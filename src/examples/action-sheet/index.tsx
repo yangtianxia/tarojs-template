@@ -1,9 +1,6 @@
-import { App } from '@/components/app'
-import { CellGroup, Cell } from '@/components/cell'
-import { ActionSheet } from '@/components/action-sheet'
-
-import Bem from '@txjs/bem'
 import { defineComponent, reactive } from 'vue'
+
+import { ActionSheet } from '@/components/action-sheet'
 
 import less from './index.module.less'
 
@@ -12,7 +9,7 @@ definePageConfig({
   navigationBarTitleText: 'action-sheet'
 })
 
-const [name] = Bem('action-sheet', less)
+const [name] = BEM('action-sheet', less)
 
 export default defineComponent({
   name,
@@ -23,16 +20,16 @@ export default defineComponent({
     })
 
     return () => (
-      <App loading={false}>
-        <App.Body>
-          <CellGroup>
-            <Cell
+      <gm-app loading={false}>
+        <gm-body shrink>
+          <gm-cell-group inset>
+            <gm-cell
               isLink
               title="默认使用"
               onTap={() => model.show1 = true}
             />
-          </CellGroup>
-        </App.Body>
+          </gm-cell-group>
+        </gm-body>
         <ActionSheet
           v-model:show={model.show1}
           description="请选择原因"
@@ -45,7 +42,7 @@ export default defineComponent({
             { title: '选项6' }
           ]}
         />
-      </App>
+      </gm-app>
     )
   }
 })

@@ -1,10 +1,8 @@
-import { CellGroup } from '@/components/cell'
+import { defineComponent, ref, reactive } from 'vue'
+
 import { Field } from '@/components/form'
 import { Popup } from '@/components/popup'
 import { RangeDatePicker } from '@/components/range-date-picker'
-
-import Bem from '@txjs/bem'
-import { defineComponent, ref, reactive } from 'vue'
 
 import less from './index.module.less'
 
@@ -13,7 +11,7 @@ definePageConfig({
   navigationBarTitleText: 'range-date-picker'
 })
 
-const [name] = Bem('range-date-picker', less)
+const [name] = BEM('range-date-picker', less)
 
 export default defineComponent({
   name,
@@ -39,7 +37,7 @@ export default defineComponent({
     return () => (
       <gm-app loading={false}>
         <gm-body shrink>
-          <CellGroup inset>
+          <gm-cell-group inset>
             <Field
               readonly
               inputAlign="right"
@@ -56,7 +54,7 @@ export default defineComponent({
               placeholder="请选择时间"
               onTap={() => show1.value = true}
             />
-          </CellGroup>
+          </gm-cell-group>
         </gm-body>
         <Popup
           v-model:show={show.value}

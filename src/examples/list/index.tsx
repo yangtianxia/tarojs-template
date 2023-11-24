@@ -1,8 +1,6 @@
-import { App } from '@/components/app'
-import { List } from '@/components/list'
-
-import Bem from '@txjs/bem'
 import { defineComponent, reactive } from 'vue'
+
+import { List } from '@/components/list'
 
 import less from './index.module.less'
 
@@ -11,7 +9,7 @@ definePageConfig({
   navigationBarTitleText: 'list'
 })
 
-const [name] = Bem('list', less)
+const [name] = BEM('list', less)
 
 export default defineComponent({
   name,
@@ -33,16 +31,18 @@ export default defineComponent({
     }
 
     return () => (
-      <App loading={false}>
-        <List
-          v-model:loading={listModel.loading}
-          v-model:error={listModel.error}
-          immediateCheck
-          data={listModel.data}
-          finished={listModel.finish}
-          onLoad={onLoad}
-        />
-      </App>
+      <gm-app loading={false}>
+        <gm-body shrink>
+          <List
+            v-model:loading={listModel.loading}
+            v-model:error={listModel.error}
+            immediateCheck
+            data={listModel.data}
+            finished={listModel.finish}
+            onLoad={onLoad}
+          />
+        </gm-body>
+      </gm-app>
     )
   }
 })

@@ -1,12 +1,9 @@
-import { App } from '@/components/app'
-import { CellGroup } from '@/components/cell'
+import { defineComponent, ref } from 'vue'
+import { useAreaData } from '@/shared/area-data'
+
 import { Field } from '@/components/form'
 import { Cascader } from '@/components/cascader'
 import { Popup } from '@/components/popup'
-
-import Bem from '@txjs/bem'
-import { defineComponent, ref } from 'vue'
-import { useAreaData } from '@/shared/area-data'
 
 import less from './index.module.less'
 
@@ -15,7 +12,7 @@ definePageConfig({
   navigationBarTitleText: 'cascader'
 })
 
-const [name] = Bem('cascader', less)
+const [name] = BEM('cascader', less)
 
 export default defineComponent({
   name,
@@ -26,9 +23,9 @@ export default defineComponent({
     const value = ref('370323')
 
     return () => (
-      <App loading={false}>
-        <App.Body shrink>
-          <CellGroup
+      <gm-app loading={false}>
+        <gm-body shrink>
+          <gm-cell-group
             inset
             title="常规使用"
           >
@@ -41,7 +38,7 @@ export default defineComponent({
               value={fieldValue.value}
               onTap={() => visible.value = true}
             />
-          </CellGroup>
+          </gm-cell-group>
           <Popup
             v-model:show={visible.value}
             round
@@ -58,8 +55,8 @@ export default defineComponent({
               }}
             />
           </Popup>
-        </App.Body>
-      </App>
+        </gm-body>
+      </gm-app>
     )
   }
 })

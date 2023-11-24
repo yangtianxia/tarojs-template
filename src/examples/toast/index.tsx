@@ -1,12 +1,9 @@
-import Bem from '@txjs/bem'
-import { defineComponent, ref } from 'vue'
+import { defineComponent } from 'vue'
 import { useNavigationBar } from '@/hooks'
-
-import { Cell, CellGroup } from '@/components/cell'
 
 import { postLogin } from '@/api/user/login'
 
-const [name] = Bem('toast')
+const [name] = BEM('toast')
 
 export default defineComponent({
   name,
@@ -15,8 +12,6 @@ export default defineComponent({
     useNavigationBar({
       title: 'toast'
     })
-
-    const count = ref(1000)
 
     const onShowLoading = async () => {
       toast.loading()
@@ -51,31 +46,28 @@ export default defineComponent({
     return () => (
       <gm-app loading={false}>
         <gm-body shrink>
-          <CellGroup
-            inset
-            shrink={false}
-          >
-            <Cell
+          <gm-cell-group inset>
+            <gm-cell
               isLink
               title="显示loading"
               onTap={onShowLoading}
             />
-            <Cell
+            <gm-cell
               isLink
               title="显示toast"
               onTap={onShowToast}
             />
-            <Cell
+            <gm-cell
               isLink
               title="显示modal"
               onTap={onShowModal}
             />
-            <Cell
+            <gm-cell
               isLink
               title="显示modal-info"
               onTap={onShowModalInfo}
             />
-          </CellGroup>
+          </gm-cell-group>
         </gm-body>
       </gm-app>
     )
