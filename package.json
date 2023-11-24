@@ -25,6 +25,14 @@
 		"ios >= 8"
 	],
 	"author": "yangtianxia",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yangtianxia/ghost-miniprogram.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yangtianxia/ghost-miniprogram/issues"
+  },
+  "homepage": "https://github.com/yangtianxia/ghost-miniprogram#readme",
 	"dependencies": {
 		"@babel/runtime": "^7.7.7",
 		"@tarojs/components": "3.6.16",
