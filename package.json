@@ -16,6 +16,9 @@
 		"dev:weapp": "npm run build:weapp -- --watch",
 		"dev:alipay": "npm run build:alipay -- --watch",
 		"dev:tt": "npm run build:tt -- --watch",
+    "exa:weapp": "npm run build:weapp -- --watch --mode examples",
+		"exa:alipay": "npm run build:alipay -- --watch --mode examples",
+		"exa:tt": "npm run build:tt -- --watch --mode examples",
 		"debug": "npm run dev:weapp -- --debug",
 		"mock": "npm run dev:weapp -- --mock"
 	},
