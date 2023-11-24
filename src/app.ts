@@ -6,6 +6,7 @@ import '@/components/style/index.less'
 import App from '@/components/app'
 import NavigationBar from '@/components/navigation-bar'
 import Icon from '@/components/icon'
+import Space from '@/components/space'
 import Button from '@/components/button'
 import Cell from '@/components/cell'
 
@@ -81,6 +82,7 @@ app.use(store)
 app.use(App)
 app.use(NavigationBar)
 app.use(Icon)
+app.use(Space)
 app.use(Button)
 app.use(Cell)
 
