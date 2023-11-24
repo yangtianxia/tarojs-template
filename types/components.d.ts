@@ -2,6 +2,7 @@ import type { ElementAttrs, TransformReact2VueType, StandardProps } from '@taroj
 import type { AppProps, BodyProps } from '../src/components/app'
 import type { NavigationBarProps } from '../src/components/navigation-bar'
 import type { ButtonProps } from '../src/components/button'
+import type { SpaceProps } from '../src/components/space'
 import type { CellProps, CellGroupProps } from '../src/components/cell'
 import type { IconProps } from '../src/components/icon'
 
@@ -20,6 +21,8 @@ declare global {
       'gm-navigation-bar': Shim<NavigationBarProps>,
       gmButton: Shim<ButtonProps>,
       'gm-button': Shim<ButtonProps>,
+      gmSpace: Shim<SpaceProps>,
+      'gm-space': Shim<SpaceProps>,
       gmCell: Shim<CellProps>,
       'gm-cell': Shim<CellProps>,
       gmCellGroup: Shim<CellGroupProps>,
