@@ -11,7 +11,7 @@ export const USE_ROUTE_KEY = Symbol('use-route')
 const getCurrentRoute = (pageInstance?: ReturnType<typeof getCurrentInstance>) => {
   const pageRouter = pageInstance?.router!
   const currentRoute = ref(
-    extend(router.getRoute(pageRouter.path), {
+    extend({}, router.getRoute(pageRouter.path), {
       title: pageInstance?.page?.config?.navigationBarTitleText
     })
   )
