@@ -15,7 +15,7 @@ import {
 import { useReady, useDidHide } from '@tarojs/taro'
 import { noop, shallowMerge, callInterceptor } from '@txjs/shared'
 import { isNil, notNil } from '@txjs/bool'
-import { useNextTick } from '@/hooks'
+import { useNextTick, useScroll } from '@/hooks'
 
 import { ScrollView, type ViewProps, type ITouchEvent } from '@tarojs/components'
 import { SafeArea } from '../safe-area'
@@ -277,10 +277,10 @@ export default defineComponent({
       }
 
       return (
-        <>
+        <view>
           {renderOverlay()}
           {renderTransition()}
-        </>
+        </view>
       )
     }
   }
@@ -290,15 +290,20 @@ export const Content = defineComponent({
   name: `${name}-content`,
 
   setup(_, { slots }) {
+    const scrollId = useId()
+    const scroller = useScroll(scrollId)
     const { parent } = useParent(POPUP_KEY)
+
+    useExpose({ scroller })
 
     return () => {
       if (isNil(parent)) return
+
       const { shrink, scrolling } = parent.props
       const height = addUnit(scrolling)
       return (
         <view
-          class={bem('content', { shrink })}
+          class={bem('content')}
           style={{ height, maxHeight: height }}
         >
           <ScrollView
@@ -309,9 +314,11 @@ export const Content = defineComponent({
             enablePassive
             fastDeceleration
             scrollWithAnimation
+            id={scrollId}
             class={bem('content-scroll')}
+            scrollTop={scroller.collector(scrollId).value}
           >
-            <view class={bem('content-wrapper')}>
+            <view class={bem('content-wrapper', { shrink })}>
               {slots.default?.()}
             </view>
           </ScrollView>
@@ -329,6 +336,7 @@ export const Footer = defineComponent({
 
     return () => {
       if (isNil(parent)) return
+
       const { shrink } = parent.props
       return (
         <view
