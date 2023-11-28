@@ -23,7 +23,8 @@ const alertProps = {
   closeText: vnodeProp,
   icon: iconProp,
   type: String as PropType<AlertType>,
-  onClose: Function as PropType<(event: ITouchEvent) => void>
+  onClose: Function as PropType<(event: ITouchEvent) => void>,
+  onMessageClick: Function as PropType<(event: ITouchEvent) => void>
 }
 
 export type AlertProps = ExtractPropTypes<typeof alertProps>
@@ -79,6 +80,10 @@ export default defineComponent({
       props.onClose?.(event)
     }
 
+    const onMessageClick = (event: ITouchEvent) => {
+      props.onMessageClick?.(event)
+    }
+
     const renderIcon = () => {
       if (props.showIcon || props.banner) {
         if (slots.icon) {
@@ -99,7 +104,10 @@ export default defineComponent({
       const message = genVNode(slots.message || props.message)
       if (message) {
         return (
-          <view class={bem('message')}>
+          <view
+            class={bem('message')}
+            onTap={onMessageClick}
+          >
             {message}
           </view>
         )
