@@ -1,5 +1,5 @@
-import extend from 'extend'
 import { getSystemInfoSync } from '@tarojs/taro'
+import { shallowMerge } from '@txjs/shared'
 import { isNil } from '@txjs/bool'
 
 interface SystemInfo extends Taro.getSystemInfoSync.Result {
@@ -24,7 +24,7 @@ export const useSystemInfo = () => {
     const isPC = system.startsWith('Windows') || system.startsWith('macOS')
     const hasSafeArea = info.safeArea?.bottom !== info.screenHeight
 
-    systemInfo = extend(info, {
+    systemInfo = shallowMerge(info, {
       system,
       isIOS,
       isAnd,
