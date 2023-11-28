@@ -1,4 +1,4 @@
-import type { ElementAttrs, TransformReact2VueType, StandardProps } from '@tarojs/components/types/index.vue3'
+import type { ElementAttrs, TransformReact2VueType, StandardProps, ITouchEvent } from '@tarojs/components/types/index.vue3'
 import type { AppProps, BodyProps } from '../src/components/app'
 import type { NavigationBarProps } from '../src/components/navigation-bar'
 import type { ButtonProps } from '../src/components/button'
@@ -6,9 +6,9 @@ import type { SpaceProps } from '../src/components/space'
 import type { CellProps, CellGroupProps } from '../src/components/cell'
 import type { IconProps } from '../src/components/icon'
 
-type Shim<T = Record<string, any>> = ElementAttrs<
-  TransformReact2VueType<Partial<T> & StandardProps>
->
+type Shim<T = Record<string, any>> = ElementAttrs<TransformReact2VueType<Partial<T> & StandardProps>> & {
+  onTap?: Callback<ITouchEvent>
+}
 
 declare global {
   namespace JSX {
