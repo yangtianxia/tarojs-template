@@ -193,17 +193,17 @@ page {
     word-break: break-all;
     word-wrap: break-word;
 
-    &--shrink {
-      padding: 0 var(--popup-content-horizontal-padding);
-    }
-
     &-scroll {
-      height: inherit;
+      height: 100%;
     }
 
     &-wrapper {
       position: relative;
       padding-bottom: var(--popup-content-bottom-padding);
+
+      &--shrink {
+        padding: 0 var(--popup-content-horizontal-padding);
+      }
     }
   }
 
