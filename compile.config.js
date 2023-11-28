@@ -26,7 +26,7 @@ module.exports = [
     query: '',
     launchMode: 'default',
     scene: null,
-    mode: ['examples']
+    mode: ['development']
   },
   {
     title: 'cascader-示例',
@@ -34,7 +34,7 @@ module.exports = [
     query: '',
     launchMode: 'default',
     scene: null,
-    mode: ['examples']
+    mode: ['development']
   },
   {
     title: 'grid-示例',
@@ -42,7 +42,7 @@ module.exports = [
     query: '',
     launchMode: 'default',
     scene: null,
-    mode: ['examples']
+    mode: ['development']
   },
   {
     title: 'cell-示例',
@@ -50,7 +50,7 @@ module.exports = [
     query: '',
     launchMode: 'default',
     scene: null,
-    mode: ['examples']
+    mode: ['development']
   },
   {
     title: 'checkbox-示例',
@@ -58,7 +58,7 @@ module.exports = [
     query: '',
     launchMode: 'default',
     scene: null,
-    mode: ['examples']
+    mode: ['development']
   },
   {
     title: 'radio-示例',
@@ -66,7 +66,7 @@ module.exports = [
     query: '',
     launchMode: 'default',
     scene: null,
-    mode: ['examples']
+    mode: ['development']
   },
   {
     title: 'result-示例',
@@ -74,7 +74,7 @@ module.exports = [
     query: '',
     launchMode: 'default',
     scene: null,
-    mode: ['examples']
+    mode: ['development']
   },
   {
     title: 'form-示例',
@@ -82,7 +82,7 @@ module.exports = [
     query: '',
     launchMode: 'default',
     scene: null,
-    mode: ['examples']
+    mode: ['development']
   },
   {
     title: 'alert-示例',
@@ -90,7 +90,7 @@ module.exports = [
     query: '',
     launchMode: 'default',
     scene: null,
-    mode: ['examples']
+    mode: ['development']
   },
   {
     title: 'list-示例',
@@ -98,7 +98,7 @@ module.exports = [
     query: '',
     launchMode: 'default',
     scene: null,
-    mode: ['examples']
+    mode: ['development']
   },
   {
     title: 'footer-bar-示例',
@@ -106,7 +106,7 @@ module.exports = [
     query: '',
     launchMode: 'default',
     scene: null,
-    mode: ['examples']
+    mode: ['development']
   },
   {
     title: 'action-sheet-示例',
@@ -114,7 +114,7 @@ module.exports = [
     query: '',
     launchMode: 'default',
     scene: null,
-    mode: ['examples']
+    mode: ['development']
   },
   {
     title: 'count-down-示例',
@@ -122,7 +122,7 @@ module.exports = [
     query: '',
     launchMode: 'default',
     scene: null,
-    mode: ['examples']
+    mode: ['development']
   },
   {
     title: 'range-date-picker-示例',
@@ -130,7 +130,7 @@ module.exports = [
     query: '',
     launchMode: 'default',
     scene: null,
-    mode: ['examples']
+    mode: ['development']
   },
   {
     title: 'popup-示例',
@@ -138,7 +138,7 @@ module.exports = [
     query: '',
     launchMode: 'default',
     scene: null,
-    mode: ['examples']
+    mode: ['development']
   },
   {
     title: 'toast-示例',
@@ -146,6 +146,6 @@ module.exports = [
     query: '',
     launchMode: 'default',
     scene: null,
-    mode: ['examples']
+    mode: ['development']
   }
 ]
