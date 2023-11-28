@@ -10,11 +10,12 @@ page {
   --tabs-background: var(--color-section);
   --tabs-indicator-width: var(--size-8);
   --tabs-indicator-height: calc(var(--size-1) * 0.5);
+  --tabs-indicator-radius: var(--radius-full);
   --tabs-indicator-background: var(--tab-active-color);
   --tabs-indicator-offset-left: var(--size-none);
   --tab-padding: var(--size-none) var(--size-1);
-  --tab-color: var(--text-color);
-  --tab-size: var(--size-md);
+  --tab-text-color: var(--text-color);
+  --tab-text-size: var(--size-md);
   --tab-disabled-color: var(--color-text-light);
   --tab-active-color: var(--color-primary);
   --tab-active-size: var(--tab-size);
@@ -25,6 +26,7 @@ page {
   position: relative;
   height: var(--tabs-height);
   background: var(--tabs-background);
+  overflow: hidden;
 
   &--scrollable {
     --tabs-scrollable-padding: var(--size-2);
@@ -33,6 +35,24 @@ page {
 
   &--border:after {
     .hairline-bottom(var(--cell-border-color));
+  }
+
+  &--card {
+    border-radius: var(--radius-sm);
+
+    --tabs-background: var(--color-grey-300);
+    --tabs-indicator-radius: var(--radius-sm);
+    --tabs-indicator-background: var(--color-section);
+
+    .@{tab-cls} {
+      z-index: var(--layer-2);
+    }
+  }
+
+  &--radius {
+    border-radius: var(--radius-full);
+
+    --tabs-indicator-radius: var(--radius-full);
   }
 
   &__content {
@@ -51,7 +71,7 @@ page {
     position: absolute;
     bottom: 0;
     left: 0;
-    border-radius: 10em;
+    border-radius: var(--tabs-indicator-radius);
     width: var(--tabs-indicator-width);
     height: var(--tabs-indicator-height);
     transform: translateX(calc(var(--tabs-indicator-offset-left) + var(--tabs-scrollable-padding))) translateX(-50%);
@@ -69,8 +89,8 @@ page {
   align-items: center;
   justify-content: center;
   padding: var(--tab-padding);
-  color: var(--tab-color);
-  font-size: var(--tab-size);
+  color: var(--tab-text-color);
+  font-size: var(--tab-text-size);
   line-height: var(--line-md);
   box-sizing: border-box;
 

@@ -39,8 +39,8 @@ export default defineComponent({
 
     const rootId = useId()
     const instance = getCurrentInstance()
-    const { width, left, boundingClientRect } = useRect(`#${rootId}`, {
-      refs: ['width', 'left'],
+    const { boundingClientRect, ...rect } = useRect(`#${rootId}`, {
+      refs: ['width', 'height', 'left'],
       callback: () => parent.link(instance!, true)
     })
 
@@ -77,7 +77,7 @@ export default defineComponent({
       }
     )
 
-    useExpose({ tabKey, width, left })
+    useExpose({ ...rect, tabKey })
 
     return () => (
       <view
