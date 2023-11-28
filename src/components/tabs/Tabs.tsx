@@ -1,5 +1,6 @@
 import {
   defineComponent,
+  shallowRef,
   ref,
   computed,
   watch,
@@ -12,7 +13,7 @@ import {
 } from 'vue'
 import { isNil, isArray } from '@txjs/bool'
 import { shallowMerge, callInterceptor, type Interceptor } from '@txjs/shared'
-import { useRect } from '@/hooks'
+import { useRect, useScroll } from '@/hooks'
 
 import { ScrollView, type ITouchEvent } from '@tarojs/components'
 import { useId } from '../composables/id'
@@ -21,6 +22,7 @@ import {
   truthProp,
   makeNumberProp,
   makeNumericProp,
+  makeStringProp,
   createInjectionKey,
   addUnit
 } from '../utils'
@@ -29,10 +31,12 @@ const [name, bem] = BEM('tabs')
 
 const tabsProps = {
   border: Boolean,
+  radius: Boolean,
   ellipsis: truthProp,
   value: makeNumericProp(0),
   swipeThreshold: makeNumberProp(4),
   duration: makeNumericProp(300),
+  type: makeStringProp<'line' | 'card'>('line'),
   showIndicator: truthProp,
   indicatorStyle: Object as PropType<CSSProperties>,
   beforeChange: Function as PropType<Interceptor>,
@@ -81,7 +85,9 @@ export default defineComponent({
   props: tabsProps,
 
   setup(props, { slots, emit }) {
+    const scrollId = useId()
     const contentId = useId()
+    const scroller = useScroll(scrollId)
     const { children, customChildren, linkChildren } = useChildren(TABS_KEY)
     const { width, boundingClientRect } = useRect(`#${contentId}`, {
       refs: ['width']
@@ -89,8 +95,8 @@ export default defineComponent({
 
     const initialized = ref(false)
     const currentIndex = ref(-1)
-    const scrollLeft = ref(0)
     const indicatorOffsetLeft = ref(0)
+    const cardIndicatorStyle = shallowRef<CSSProperties>({})
 
     const duration = computed(() =>
       initialized.value ? props.duration : 0
@@ -109,7 +115,7 @@ export default defineComponent({
       return style
     })
     const indicatorStyle = computed(() => {
-      const style = {} as CSSProperties
+      const style = shallowMerge({}, cardIndicatorStyle.value)
       if (props.showIndicator) {
         style.transitionDuration = `${duration.value}ms`
       }
@@ -135,8 +141,21 @@ export default defineComponent({
         }, 0
       )
 
-      indicatorOffsetLeft.value = tabOffsetLeft + (currentTab.width.value * 0.5)
-      scrollLeft.value = tabOffsetLeft - ((width.value - currentTab.width.value) * 0.5)
+      if (props.showIndicator) {
+        if (props.type === 'card') {
+          const margin = 5
+          // 不做单位转换
+          cardIndicatorStyle.value = {
+            width: `${currentTab.width.value - margin * 2}px`,
+            height: `${currentTab.height.value - margin * 2}px`,
+            top: `${margin}px`
+          }
+        }
+
+        indicatorOffsetLeft.value = tabOffsetLeft + (currentTab.width.value * 0.5)
+      }
+
+      scroller.scrollLeft(tabOffsetLeft - ((width.value - currentTab.width.value) * 0.5))
       currentIndex.value = foundAt
 
       return currentTab
@@ -185,11 +204,11 @@ export default defineComponent({
 
     return () => {
       const scrollable = canScroll.value
-      const { border } = props
+      const { border, radius } = props
 
       return (
         <view
-          class={bem({ scrollable, border })}
+          class={bem([props.type, { scrollable, border, radius }])}
           style={tabsStyle.value}
         >
           <ScrollView
@@ -198,7 +217,7 @@ export default defineComponent({
             scrollY={false}
             showScrollbar={false}
             scrollX={scrollable}
-            scrollLeft={scrollLeft.value}
+            scrollLeft={scroller.collector(scrollId, 'left').value}
             scrollAnimationDuration={`${duration.value}ms`}
             class={bem('scroll')}
           >
