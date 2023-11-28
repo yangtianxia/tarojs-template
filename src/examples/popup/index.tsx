@@ -5,7 +5,6 @@ import { Popup } from '@/components/popup'
 import less from './index.module.less'
 
 definePageConfig({
-  navigationStyle: 'default',
   navigationBarTitleText: 'popup'
 })
 
@@ -71,11 +70,17 @@ export default defineComponent({
           <Popup
             v-model:show={model.bottom}
             round
+            titleBorder
             closeable
-            title="bottom"
+            safeAreaInsetTop
+            safeAreaInsetBottom
+            title="设置产品价格"
             position="bottom"
+            style={{ height: '100%', width: '100%' }}
           >
-            <view style={{ height: '200px' }}></view>
+            <Popup.Content>
+              <view style={{ height: '1000px' }}></view>
+            </Popup.Content>
           </Popup>
           <Popup
             v-model:show={model.left}
@@ -85,8 +90,12 @@ export default defineComponent({
           </Popup>
           <Popup
             v-model:show={model.right}
+            closeable
+            safeAreaInsetTop
+            safeAreaInsetBottom
+            title="设置产品价格"
             position="right"
-            style={{ height: '100%', width: '80%' }}
+            style={{ height: '100%', width: '100%' }}
           >
           </Popup>
         </gm-body>
