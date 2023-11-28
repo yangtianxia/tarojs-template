@@ -11,7 +11,7 @@ import Button from '@/components/button'
 import Cell from '@/components/cell'
 
 import router from '@/router'
-import store, { useThemeStore, useUserStore } from '@/store'
+import Store, { useThemeStore, useUserStore } from '@/store'
 import { createApp } from 'vue'
 import { canIUse, getUpdateManager, exitMiniProgram } from '@tarojs/taro'
 import { useSystemInfo } from '@/hooks/system-info'
@@ -78,7 +78,7 @@ const app = createApp({
   }
 })
 
-app.use(store)
+app.use(Store)
 app.use(App)
 app.use(NavigationBar)
 app.use(Icon)
