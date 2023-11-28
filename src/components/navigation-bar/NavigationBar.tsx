@@ -255,10 +255,10 @@ export default defineComponent({
     )
 
     return () => (
-      <>
+      <view>
         {renderPlaceholder()}
         {renderNavbar()}
-      </>
+      </view>
     )
   }
 })

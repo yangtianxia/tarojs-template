@@ -30,7 +30,7 @@ export default defineComponent({
     })
 
     return () => (
-      <>
+      <view>
         {props.placeholder ? (
           <view style={{ height: `${height.value}px` }} />
         ) : null}
@@ -49,7 +49,7 @@ export default defineComponent({
             <view class={bem('bottom')} />
           </SafeArea>
         </view>
-      </>
+      </view>
     )
   }
 })
