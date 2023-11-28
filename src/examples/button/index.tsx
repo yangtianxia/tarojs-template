@@ -4,7 +4,7 @@ import less from './index.module.less'
 
 definePageConfig({
   navigationStyle: 'default',
-  navigationBarTitleText: 'gm-button'
+  navigationBarTitleText: 'button'
 })
 
 const [name, bem] = BEM('button', less)
