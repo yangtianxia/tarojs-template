@@ -141,6 +141,14 @@ module.exports = [
     mode: ['development']
   },
   {
+    title: 'tabs-示例',
+    page: 'examples/tabs/index',
+    query: '',
+    launchMode: 'default',
+    scene: null,
+    mode: ['development']
+  },
+  {
     title: 'toast-示例',
     page: 'examples/toast/index',
     query: '',

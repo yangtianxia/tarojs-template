@@ -51,6 +51,7 @@ if (process.env.ENV === 'development') {
       'count-down/index',
       'range-date-picker/index',
       'popup/index',
+      'tabs/index',
       'toast/index'
     ]
   })
