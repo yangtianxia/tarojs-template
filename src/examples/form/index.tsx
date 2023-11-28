@@ -74,6 +74,7 @@ export default defineComponent({
               <Field
                 v-model:value={formModel.password}
                 name="password"
+                type="password"
                 title="密码"
                 placeholder="请输入密码"
                 password={formModel.eye}
