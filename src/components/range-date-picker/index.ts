@@ -7,3 +7,4 @@ export const RangeDatePicker = withInstall(_RangeDatePicker)
 export default RangeDatePicker
 
 export type { DatePickerProps } from './RangeDatePicker'
+export { isInvalidDate, isEarlierDate } from './utils'
