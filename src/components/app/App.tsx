@@ -6,9 +6,10 @@ import {
   type ComputedRef,
   type ExtractPropTypes
 } from 'vue'
+import { getCurrentInstance } from '@tarojs/taro'
 import { noop, shallowMerge } from '@txjs/shared'
 import { notNil } from '@txjs/bool'
-import { USE_APP_KEY, useRoute, useRouter, useHideHomeButton } from '@/hooks'
+import { USE_PAGE_KEY, useRouter, useHideHomeButton } from '@/hooks'
 
 import { resultSharedProps, type ResultStatusType } from '../result'
 import { NavigationBar } from '../navigation-bar'
@@ -38,10 +39,10 @@ export default defineComponent({
   props: appProps,
 
   setup(props, { slots }) {
+    const context = getCurrentInstance()
     const router = useRouter()
-    const { path, pageInstance } = useRoute()
-    const { parent } = useParent(USE_APP_KEY)
-    const hasTabbar = router.checkTabbar(path)
+    const { parent } = useParent(USE_PAGE_KEY)
+    const hasTabbar = router.checkTabbar(context.page?.path!)
 
     const loading = computed(() =>
       parent?.state.loading ?? props.loading
@@ -50,7 +51,7 @@ export default defineComponent({
       parent?.state.status ?? props.status
     )
     const navigationStyle = computed(() =>
-      pageInstance?.page?.config?.navigationStyle || pageInstance?.app?.config?.window?.navigationStyle
+      context.page?.config?.navigationStyle || context?.app?.config?.window?.navigationStyle
     )
 
     // 支付宝默认隐藏首页图标按钮
