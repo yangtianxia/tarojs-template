@@ -37,25 +37,24 @@ export default defineComponent({
       image: props.image,
       title: props.title,
       bottom: props.bottom,
-      desc: props.desc,
-      refresh: props.refresh
+      desc: props.desc
     })
 
-    const withState = (status?: ResultCode) => {
+    const withState = (status?: ResultCode, refresh?: Callback) => {
       const statusConfig = resultStatusConfig[status!]
 
       if (statusConfig) {
         // 自定义状态不支持设置
-        if (state.refresh && (status === 'error' || status === '500')) {
+        if (refresh && (status === 'error' || status === '500')) {
           state.desc = '别紧张，试试看刷新页面',
           state.bottom = () => (
             <Button
               round
               bold={false}
-              width={200}
+              width={96}
               size="small"
               type="primary"
-              onTap={state.refresh}
+              onTap={refresh}
             >刷新</Button>
           )
         }
@@ -66,20 +65,21 @@ export default defineComponent({
 
     const updateState = () => {
       const currentStatus = props.status
+      const currentRefresh = props.refresh
 
       // 重置组件内容
-      shallowMerge(state, omit(props, ['status']))
+      shallowMerge(state, omit(props, ['status', 'refresh']))
 
       if (isPlainObject(currentStatus)) {
-        const { status, ...partial } = currentStatus
+        const { status, refresh, ...partial } = currentStatus
 
         if (isString(status)) {
-          withState(status)
+          withState(status, refresh || currentRefresh)
         }
 
         shallowMerge(state, partial)
       } else {
-        withState(currentStatus)
+        withState(currentStatus, currentRefresh)
       }
     }
 

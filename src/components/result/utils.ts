@@ -26,7 +26,7 @@ export const resultStatusConfig = {
     image: require(`./image/no-network.png`)
   },
   error: {
-    title: '抱歉，访问发生了错误',
+    title: '抱歉，访问发生错误',
     image: require(`./image/error.png`)
   }
 }
