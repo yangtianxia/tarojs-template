@@ -9,7 +9,7 @@ export default defineComponent({
 
   setup() {
     return () => (
-      <gm-app loading={false}>
+      <gm-app>
         <gm-body></gm-body>
       </gm-app>
     )
