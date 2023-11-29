@@ -1,4 +1,4 @@
-import type { ResultProps } from '@/components/result'
+import type { ResultStatusType } from '@/components/result'
 
 export type Query = Record<string, any>
 
@@ -22,7 +22,7 @@ export interface RouteMeta extends RouteMetaBase {
       options: RouteMetaBase
     }
   ) => {
-    validator?: () => false | Error | ResultProps | undefined
+    validator?: () => false | Error | ResultStatusType | undefined
     options: RouteMetaBase
   }
 }

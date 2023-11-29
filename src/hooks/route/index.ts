@@ -1,4 +1,4 @@
-import type { ResultProps } from '@/components/result'
+import type { ResultStatusType } from '@/components/result'
 import type { Query } from '@/router/types'
 
 import extend from 'extend'
@@ -29,7 +29,7 @@ const getCurrentRoute = (pageInstance?: ReturnType<typeof getCurrentInstance>) =
 
       currentRoute.value = extend(true, currentRoute.value, options)
 
-      let status: ResultProps | undefined
+      let status: ResultStatusType | undefined
 
       try {
         const verified = validator?.()
