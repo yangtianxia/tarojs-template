@@ -1,31 +1,30 @@
 import { reactive } from 'vue'
 import { isString } from '@txjs/bool'
+import type { Query } from '@/router/types'
 
 import type { ResultStatusType, ResultOptions } from '@/components/result'
-
 import { useChildren } from '@/components/composables/children'
 import { createInjectionKey } from '@/components/utils'
+import { useRoute } from '../route'
 
-interface UseAppOption {
+interface UsePageOption {
   loading?: boolean
   status?: ResultStatusType
 }
 
-export interface UseAppProvide {
+export interface UsePageProvide {
   state: {
     loading: boolean
     status?: ResultStatusType
   }
-  loading: boolean
-  status?: ResultStatusType
-  reload?(error: any, callback?: Callback): void
 }
 
-export const USE_APP_KEY = createInjectionKey<UseAppProvide>('use-app')
+export const USE_PAGE_KEY = createInjectionKey<UsePageProvide>('use-page')
 
-export const useApp = (options?: UseAppOption) => {
-  const { linkChildren } = useChildren(USE_APP_KEY)
+export const usePage = (options?: UsePageOption) => {
+  const { linkChildren } = useChildren(USE_PAGE_KEY)
 
+  const page = useRoute()
   const state = reactive({
     loading: options?.loading ?? true,
     status: options?.status
@@ -54,9 +53,23 @@ export const useApp = (options?: UseAppOption) => {
     state.status = result
   }
 
-  const result = {
-    state,
+  const beforeEnter = (callback?: Callback<Query>) => {
+    const result = page.activeUpdate()
+
+    if (result) {
+      state.status = result
+      state.loading = false
+    } else {
+      callback?.(page.params)
+    }
+  }
+
+  linkChildren({ state })
+
+  return {
+    page,
     reload,
+    beforeEnter,
     set loading(value: boolean) {
       state.loading = value
     },
@@ -70,8 +83,4 @@ export const useApp = (options?: UseAppOption) => {
       return state.status
     }
   }
-
-  linkChildren(result)
-
-  return result
 }
