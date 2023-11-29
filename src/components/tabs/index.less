@@ -14,12 +14,11 @@ page {
   --tabs-indicator-background: var(--tab-active-color);
   --tabs-indicator-offset-left: var(--size-none);
   --tab-padding: var(--size-none) var(--size-1);
-  --tab-text-color: var(--text-color);
+  --tab-text-color: var(--color-text);
   --tab-text-size: var(--size-md);
   --tab-disabled-color: var(--color-text-light);
   --tab-active-color: var(--color-primary);
-  --tab-active-size: var(--tab-size);
-  --tab-active-weight: var(--weight-medium);
+  --tab-active-size: var(--tab-text-size);
 }
 
 .@{tabs-cls} {
@@ -101,7 +100,6 @@ page {
   &--active {
     color: var(--tab-active-color);
     font-size: var(--tab-active-size);
-    font-weight: var(--tab-active-weight);
   }
 
   &__content {
