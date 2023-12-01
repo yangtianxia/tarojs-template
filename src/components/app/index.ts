@@ -19,3 +19,4 @@ export default App
 
 export type { AppProps } from './App'
 export type { BodyProps } from './Body'
+export * from './utils'

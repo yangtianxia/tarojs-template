@@ -1,10 +1,12 @@
 import {
   defineComponent,
+  ref,
   computed,
   provide,
   Transition,
   type ComputedRef,
-  type ExtractPropTypes
+  type ExtractPropTypes,
+  type CSSProperties
 } from 'vue'
 import { getCurrentInstance } from '@tarojs/taro'
 import { noop, shallowMerge } from '@txjs/shared'
@@ -12,11 +14,12 @@ import { notNil } from '@txjs/bool'
 import { USE_PAGE_KEY, useRouter, useHideHomeButton } from '@/hooks'
 
 import { resultSharedProps, type ResultStatusType } from '../result'
-import { NavigationBar } from '../navigation-bar'
+import { NavigationBar, type NavigationBarInstance } from '../navigation-bar'
 import { Loading } from '../loading'
 import { SafeArea } from '../safe-area'
 import { useParent } from '../composables/parent'
 import { truthProp, createInjectionKey } from '../utils'
+import { APP_LOADING_KEY } from './utils'
 
 const [name, bem] = BEM('app')
 
@@ -44,6 +47,7 @@ export default defineComponent({
     const { parent } = useParent(USE_PAGE_KEY)
     const hasTabbar = router.checkTabbar(context.page?.path!)
 
+    const navigationBarRef = ref<NavigationBarInstance>()
     const loading = computed(() =>
       parent?.state.loading ?? props.loading
     )
@@ -53,11 +57,20 @@ export default defineComponent({
     const navigationStyle = computed(() =>
       context.page?.config?.navigationStyle || context?.app?.config?.window?.navigationStyle
     )
+    const navigationBarStyle = computed(() => {
+      const style = {} as CSSProperties
+      if (navigationBarRef.value) {
+        style.paddingTop = `${navigationBarRef.value.height.value}px`
+      }
+      return style
+    })
 
     // 支付宝默认隐藏首页图标按钮
     if (process.env.TARO_ENV === 'alipay') {
       useHideHomeButton()
     }
+
+    provide(APP_LOADING_KEY, () => loading.value)
 
     provide(APP_KEY, { loading, status })
 
@@ -70,8 +83,13 @@ export default defineComponent({
           class={bem('overlay')}
           onTouchmove={noop}
         >
-          <view class={bem('overlay-wrapper')}>
-            <Loading size={26} />
+          <view
+            class={bem('overlay-wrapper', { skeleton: slots.loading })}
+            style={navigationBarStyle.value}
+          >
+            {slots.loading?.() || (
+              <Loading size={26} />
+            )}
           </view>
         </view>
       </Transition>
@@ -80,7 +98,7 @@ export default defineComponent({
     const renderNavigationBar = () => {
       if (navigationStyle.value === 'custom') {
         return (
-          <NavigationBar />
+          <NavigationBar ref={navigationBarRef} />
         )
       }
     }
