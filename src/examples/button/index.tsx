@@ -1,3 +1,5 @@
+import { CountDownButton } from '@/components/count-down-button'
+
 import { defineComponent } from 'vue'
 
 import less from './index.module.less'
@@ -124,6 +126,15 @@ export default defineComponent({
             <view class={bem('section-wrapper')}>
               <gm-space wrap>
                 <gm-button url="home" linkType="reLaunch" type="primary">访问home</gm-button>
+              </gm-space>
+            </view>
+          </view>
+
+          <view class={bem('section')}>
+            <view class={bem('title')}>倒计时按钮</view>
+            <view class={bem('section-wrapper')}>
+              <gm-space wrap>
+                <CountDownButton />
               </gm-space>
             </view>
           </view>
