@@ -8,7 +8,6 @@ import {
   Transition,
   onActivated,
   onDeactivated,
-  type CSSProperties,
   type ExtractPropTypes,
   type PropType
 } from 'vue'
@@ -25,8 +24,8 @@ import { useExpose } from '../composables/expose'
 import { useChildren } from '../composables/children'
 import { useParent } from '../composables/parent'
 import { useLazyRender } from '../composables/lazy-render'
-import { POPUP_TOGGLE_KEY, truthProp, numericProp, makeStringProp, addUnit, createInjectionKey } from '../utils'
-import { popupSharedProps } from './utils'
+import { truthProp, numericProp, makeStringProp, getZIndexStyle, addUnit, createInjectionKey } from '../utils'
+import { popupSharedProps, POPUP_TOGGLE_KEY } from './utils'
 import type { PopupPosition, PopupCloseIconPosition } from './types'
 
 const [name, bem] = BEM('popup')
@@ -79,15 +78,11 @@ export default defineComponent({
     const popupRef = ref<HTMLElement>()
 
     const style = computed(() => {
-      const style: CSSProperties = {
-        zIndex: zIndex.value
-      }
-
+      const style = getZIndexStyle(zIndex.value)
       if (notNil(props.duration)) {
         const key = props.position === 'center' ? 'animationDuration' : 'transitionDuration'
         style[key] = `${props.duration}s`
       }
-
       return style
     })
 
@@ -199,7 +194,7 @@ export default defineComponent({
     const renderTitle = () => {
       if (props.title) {
         return (
-          <view class={[bem('title'), props.titleBorder ? 'hairline--bottom' : '']}>
+          <view class={bem('title', { border: props.titleBorder })}>
             <text>{props.title}</text>
           </view>
         )

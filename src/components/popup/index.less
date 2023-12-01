@@ -1,3 +1,5 @@
+@import url('@/style/mixins/hairline.less');
+
 @overflow-cls: ~'@{prefix}-overflow';
 @popup-cls: ~'@{prefix}-popup';
 
@@ -138,10 +140,15 @@ page {
   }
 
   &__title {
+    position: relative;
     font-weight: var(--weight-bold);
     font-size: var(--popup-title-size);
     line-height: var(--popup-title-height);
     text-align: var(--popup-title-align);
+
+    &--border:after {
+      .hairline-bottom(var(--cell-border-color));
+    }
   }
 
   &__close {
