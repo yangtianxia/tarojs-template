@@ -13,13 +13,9 @@ import debounce from 'debounce'
 import { usePageScroll } from '@tarojs/taro'
 import { shallowMerge, callInterceptor, type Interceptor } from '@txjs/shared'
 import { useThemeStore } from '@/store'
-import {
-  USE_NAVIGATION_BAR,
-  useRoute,
-  useRouter,
-  useSystemInfo
-} from '@/hooks'
+import { USE_NAVIGATION_BAR, useRoute, useRouter, useSystemInfo } from '@/hooks'
 
+import { onAppLoaded } from '../app'
 import { Icon } from '../icon'
 import { useExpose } from '../composables/expose'
 import { useParent } from '../composables/parent'
@@ -30,8 +26,7 @@ import {
   makeStringProp,
   genVNode,
   getZIndexStyle,
-  addUnit,
-  onAppLoaded
+  addUnit
 } from '../utils'
 import type { NavigationBarPosition, NavigationBarTitleStyle } from './types'
 
@@ -76,8 +71,8 @@ export default defineComponent({
   props: navigationBarProps,
 
   setup(originProps, { slots, attrs }) {
-    const themeStore = useThemeStore()
     const router = useRouter()
+    const themeStore = useThemeStore()
     const { path, currentRoute } = useRoute()
     const { statusBarHeight = 0 } = useSystemInfo()
 
@@ -174,7 +169,9 @@ export default defineComponent({
     useExpose({ height, setConfig })
 
     onAppLoaded((value) => {
-      titleColor.value = value ? props.proloadTitleStyle : titleOriginColor.value
+      titleColor.value = value
+        ? props.proloadTitleStyle
+        : titleOriginColor.value
     })
 
     usePageScroll(({ scrollTop }) => {
