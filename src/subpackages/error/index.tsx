@@ -17,7 +17,11 @@ export default defineComponent({
           status: '404',
           title: '页面不存在或已删除',
           bottom: () => (
-            <gm-button onTap={() => router.navigateBack()}>返回上一页</gm-button>
+            <gm-button
+              width={80}
+              size="small"
+              onTap={() => router.navigateBack()}
+            >返回</gm-button>
           )
         }}
       >
