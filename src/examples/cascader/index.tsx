@@ -1,9 +1,8 @@
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, shallowRef } from 'vue'
 import { useAreaData } from '@/shared/area-data'
 
 import { Field } from '@/components/form'
 import { Cascader } from '@/components/cascader'
-import { Popup } from '@/components/popup'
 
 import less from './index.module.less'
 
@@ -21,6 +20,9 @@ export default defineComponent({
     const visible = ref(false)
     const fieldValue = ref()
     const value = ref('370323')
+    const area = shallowRef(
+      useAreaData()
+    )
 
     return () => (
       <gm-app loading={false}>
@@ -39,22 +41,15 @@ export default defineComponent({
               onTap={() => visible.value = true}
             />
           </gm-cell-group>
-          <Popup
+          <Cascader
+            v-model:value={value.value}
             v-model:show={visible.value}
-            round
-            closeable
-            safeAreaInsetBottom
-            position="bottom"
             title="选择地区"
-          >
-            <Cascader
-              v-model:value={value.value}
-              options={useAreaData()}
-              onFinish={({ selectedOptions }) => {
-                fieldValue.value = selectedOptions.map((item) => item.text).join('/')
-              }}
-            />
-          </Popup>
+            options={area.value}
+            onFinish={({ selectedOptions }) => {
+              fieldValue.value = selectedOptions.map((item) => item.text).join('/')
+            }}
+          />
         </gm-body>
       </gm-app>
     )
