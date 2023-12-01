@@ -13,6 +13,10 @@ export const useScroll = (element: SelectorElement) => {
     const selectorElement = getSelectorElement(scrollViewId || element)
     const cache =  topCollect.get(selectorElement)
     if (cache) {
+      // scroll-view主动滚动值没有变化，则无法触发滚动
+      if (cache.value === top) {
+        top = top - 0.1
+      }
       cache.value = top
       topCollect.set(selectorElement, cache)
     }
@@ -21,8 +25,11 @@ export const useScroll = (element: SelectorElement) => {
   function scrollLeft(left: number, scrollViewId?: SelectorElement) {
     const selectorElement = getSelectorElement(scrollViewId || element)
     const cache =  leftCollect.get(selectorElement)
-    if (cache ) {
-      cache .value = left
+    if (cache) {
+      if (cache.value === left) {
+        left = left - 0.1
+      }
+      cache.value = left
       leftCollect.set(selectorElement, cache)
     }
   }
