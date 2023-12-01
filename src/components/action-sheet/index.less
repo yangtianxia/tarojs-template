@@ -1,4 +1,4 @@
-@import url(@/style/mixins/hairline.less);
+@import url('@/style/mixins/hairline.less');
 
 @action-sheet-cls: ~"@{prefix}-action-sheet";
 
@@ -34,7 +34,7 @@ page {
     text-align: center;
 
     &:after {
-      .hairline-bottom(var(--color-border))
+      .hairline-bottom();
     }
   }
 
@@ -62,8 +62,14 @@ page {
   &__option {
     line-height: var(--action-sheet-option-line);
 
-    & + & {
-      border-top: var(--size-px) solid var(--color-border);
+    &-container {
+      position: relative;
+
+      & + & {
+        &:after {
+          .hairline-top();
+        }
+      }
     }
 
     &--unclickable:active {
