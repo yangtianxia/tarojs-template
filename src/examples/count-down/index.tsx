@@ -5,7 +5,8 @@ import { CountDown } from '@/components/count-down'
 import less from './index.module.less'
 
 definePageConfig({
-  navigationStyle: 'default'
+  navigationStyle: 'default',
+  navigationBarTitleText: 'count-down'
 })
 
 const [name] = BEM('count-down', less)
