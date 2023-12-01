@@ -1,3 +1,5 @@
+@import url('@/style/mixins/hairline.less');
+
 @cascader-cls: ~'@{prefix}-cascader';
 
 page {
@@ -25,6 +27,10 @@ page {
   &__tabs {
     position: relative;
     padding: var(--size-none) var(--cascader-steps-horizontal-padding) 12rpx;
+
+    &:after {
+      .hairline-bottom();
+    }
   }
 
   &__tab {
