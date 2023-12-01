@@ -3,26 +3,24 @@ import {
   ref,
   shallowRef,
   watch,
-  onBeforeMount,
   type PropType,
   type ExtractPropTypes
 } from 'vue'
-import { shallowMerge } from '@txjs/shared'
+import { shallowMerge, pick } from '@txjs/shared'
 import { makeArray } from '@txjs/make'
 import { isNil, notNil } from '@txjs/bool'
 import { useRect, useRectCallback, useScroll, useNextTick } from '@/hooks'
 
 import { ScrollView } from '@tarojs/components'
-import { POPUP_KEY } from '../popup'
 import { Icon } from '../icon'
+import { Popup, popupSharedProps, popupSharedPropKeys } from '../popup'
 import { useId } from '../composables/id'
-import { useParent } from '../composables/parent'
-import { truthProp, numericProp, makeArrayProp } from '../utils'
+import { truthProp, numericProp, makeStringProp, makeArrayProp } from '../utils'
 import type { CascaderOption, CascaderTab, CascaderFieldNames } from './types'
 
 const [name, bem] = BEM('cascader')
 
-const cascaderProps = {
+const cascaderProps = shallowMerge({}, popupSharedProps, {
   value: numericProp,
   round: truthProp,
   closeable: truthProp,
@@ -30,6 +28,7 @@ const cascaderProps = {
   safeAreaInsetBottom: truthProp,
   subTitles: Array as PropType<string[]>,
   options: makeArrayProp<CascaderOption>(),
+  defaultOptionLabel: makeStringProp('选择选项'),
   fieldNames: Object as PropType<CascaderFieldNames>,
   onClickTab: Function as PropType<(tabIndex: number) => void>,
   onChange: Function as PropType<(params: {
@@ -42,12 +41,19 @@ const cascaderProps = {
     value: Numeric
     selectedOptions: Array<CascaderOption>
   }) => void>,
-  'onUpdate:value': Function as PropType<(value: Numeric) => void>
-}
+  'onUpdate:value': Function as PropType<(value: Numeric) => void>,
+  'onUpdate:show': Function as PropType<(value: boolean) => void>
+})
 
 export type CascaderProps = ExtractPropTypes<typeof cascaderProps>
 
-const DefaultOptionLabel = '选择选项'
+const popupPropsKeys = [
+  ...popupSharedPropKeys,
+  'round',
+  'closeable',
+  'closeOnPopstate',
+  'safeAreaInsetBottom'
+] as const
 
 export default defineComponent({
   name,
@@ -56,13 +62,15 @@ export default defineComponent({
 
   setup(props, { slots, emit }) {
     const id = useId()
-    const cacheScrollTop = new Map<number, number>()
-    const containerRect = useRect(`#${id}-container`, {
-      useCache: true
-    })
-    const menuRect = useRect(() => `.${id}-${activeTab.value}`)
+    const scrollingHistory = new Map<number, number>()
     const scroller = useScroll(() => `${id}-${activeTab.value}`)
-    const { parent: popup } = useParent(POPUP_KEY)
+    const menuRect = useRect(() => `.${id}-${activeTab.value}`, {
+      immediate: false
+    })
+    const containerRect = useRect(`#${id}-container`, {
+      useCache: true,
+      immediate: false
+    })
 
     const initialized = ref(false)
     const activeTab = ref(0)
@@ -81,10 +89,96 @@ export default defineComponent({
       children: 'children'
     }, props.fieldNames)
 
-    const onScrollOldView = (top?: number) => {
-      notNil(top) && useNextTick(
-        () => scroller.scrollTop(top, `${id}-${oldActiveTab.value}`)
-      )
+    const updateShow = (show: boolean) => emit('update:show', show)
+
+    const triggerScrollTop = (tabIndex: number, callback?: Callback) => {
+      const { options, selected } = tabs.value[activeTab.value]
+
+      if (selected) {
+        useRectCallback([containerRect, menuRect], ([container, menu]) => {
+          const halfHeight = container.height * 0.5
+          const optionHeight = menu.height / options.length
+          const optionTop = optionHeight * options.findIndex(
+            (option) => option[valueKey] === selected[valueKey]
+          )
+          const expectedPos = optionTop + (optionHeight * 0.5)
+          const scrollTop = expectedPos < halfHeight ? 0 : expectedPos - halfHeight
+          scrollingHistory.set(activeTab.value, scrollTop)
+
+          if (activeTab.value !== tabIndex) {
+            activeTab.value = tabIndex
+          }
+
+          callback?.()
+        })
+      }
+    }
+
+    const updateTab = () => {
+      const { options, value } = props
+
+      if (value !== undefined) {
+        const selectedOptions = getSelectedOptionsByValue(options, value)
+
+        if (selectedOptions) {
+          let optionsCursor = options
+          tabs.value = selectedOptions.map((option) => {
+            const tab = {
+              options: optionsCursor,
+              selected: option,
+            }
+            const next = optionsCursor.find(
+              (item) => item[valueKey] === option[valueKey]
+            )
+            if (next) {
+              optionsCursor = next[childrenKey]
+            }
+            return tab
+          })
+
+          if (optionsCursor) {
+            tabs.value.push({
+              options: optionsCursor,
+              selected: null
+            })
+          }
+
+          const activeIndex = tabs.value.length - 1
+
+          if (!initialized.value) {
+            activeTab.value = activeIndex
+          }
+
+          triggerScrollTop(activeIndex, () => {
+            if (!initialized.value) {
+              onScrollView()
+              initialized.value = true
+            }
+          })
+          return
+        }
+      }
+
+      tabs.value = [{
+        options,
+        selected: null
+      }]
+      initialized.value = true
+    }
+
+    const onScrollView = () => {
+      const top = scrollingHistory.get(activeTab.value)
+      if (notNil(top)) {
+        scroller.scrollTop(top)
+      }
+    }
+
+    const onOpen = () => {
+      if (!initialized.value) {
+        updateTab()
+      } else {
+        onScrollView()
+      }
     }
 
     const getSelectedOptionsByValue = (
@@ -135,7 +229,9 @@ export default defineComponent({
         }
       }
 
-      triggerScrollTop(childrenOption ? activeTab.value + 1 : activeTab.value, () => {
+      const nextIndex = childrenOption ? activeTab.value + 1 : activeTab.value
+
+      triggerScrollTop(nextIndex, () => {
         const selectedOptions = tabs.value
           .map((tab) => tab.selected!)
           .filter(Boolean)
@@ -149,7 +245,7 @@ export default defineComponent({
         props.onChange?.(params)
 
         if (!childrenOption) {
-          popup?.close?.()
+          updateShow(false)
           props.onFinish?.(params)
         }
       })
@@ -160,11 +256,11 @@ export default defineComponent({
       props.onClickTab?.(tabIndex)
 
       // 滚动当前scrollView
-      const curScrollTop = cacheScrollTop.get(tabIndex)
+      const curScrollTop = scrollingHistory.get(tabIndex)
       if (isNil(curScrollTop)) {
         triggerScrollTop(tabIndex, () => {
           scroller.scrollTop(
-            cacheScrollTop.get(tabIndex)!
+            scrollingHistory.get(tabIndex)!
           )
         })
       } else {
@@ -172,83 +268,10 @@ export default defineComponent({
       }
 
       // 滚动上一个scrollView
-      onScrollOldView(
-        cacheScrollTop.get(oldActiveTab.value!)
-      )
-    }
-
-    const onUpdateTab = () => {
-      const { options, value } = props
-
-      if (value !== undefined) {
-        const selectedOptions = getSelectedOptionsByValue(options, value)
-
-        if (selectedOptions) {
-          let optionsCursor = options
-          tabs.value = selectedOptions.map((option) => {
-            const tab = {
-              options: optionsCursor,
-              selected: option,
-            }
-            const next = optionsCursor.find(
-              (item) => item[valueKey] === option[valueKey]
-            )
-            if (next) {
-              optionsCursor = next[childrenKey]
-            }
-            return tab
-          })
-
-          if (optionsCursor) {
-            tabs.value.push({
-              options: optionsCursor,
-              selected: null
-            })
-          }
-
-          const activeIndex = tabs.value.length - 1
-
-          if (!initialized.value) {
-            activeTab.value = activeIndex
-          }
-
-          triggerScrollTop(activeIndex, () => {
-            useNextTick(() => {
-              if (!initialized.value) {
-                initialized.value = true
-              }
-            })
-          })
-          return
-        }
-      }
-
-      tabs.value = [{
-        options,
-        selected: null
-      }]
-      initialized.value = true
-    }
-
-    const triggerScrollTop = (tabIndex: number, callback?: Callback) => {
-      const { options, selected } = tabs.value[activeTab.value]
-
-      if (selected) {
-        useRectCallback([containerRect, menuRect], ([container, menu]) => {
-          const halfHeight = container.height * 0.5
-          const optionHeight = menu.height / options.length
-          const optionTop = optionHeight * options.findIndex(
-            (option) => option[valueKey] === selected[valueKey]
-          )
-          const expectedPos = optionTop + (optionHeight * 0.5)
-          const scrollTop = expectedPos < halfHeight ? 0 : expectedPos - halfHeight
-          cacheScrollTop.set(activeTab.value, scrollTop)
-
-          if (activeTab.value !== tabIndex) {
-            activeTab.value = tabIndex
-          }
-
-          callback?.()
+      const oldScrollTop = scrollingHistory.get(oldActiveTab.value)
+      if (notNil(oldScrollTop)) {
+        useNextTick(() => {
+          scroller.scrollTop(oldScrollTop, () => `${id}-${oldActiveTab.value}`)
         })
       }
     }
@@ -257,7 +280,7 @@ export default defineComponent({
       tabs.value = []
       activeTab.value = 0
       oldActiveTab.value = 0
-      cacheScrollTop.clear()
+      scrollingHistory.clear()
     }
 
     watch(
@@ -272,14 +295,9 @@ export default defineComponent({
     watch(
       () => tabs.value,
       () => {
-        cacheScrollTop.clear()
+        scrollingHistory.clear()
         scroller.clearScrollTop()
       }
-    )
-
-    watch(
-      () => props.options,
-      onUpdateTab
     )
 
     watch(
@@ -288,7 +306,7 @@ export default defineComponent({
         if (value !== undefined) {
           const values = tabs.value.map((tab) => tab.selected?.[valueKey])
           if (!values.includes(value)) {
-            onUpdateTab()
+            updateTab()
           }
         } else {
           onReset()
@@ -296,10 +314,8 @@ export default defineComponent({
       }
     )
 
-    onBeforeMount(onUpdateTab)
-
     const renderTab = ({ selected }: CascaderTab, index: number) => {
-      const title = selected ? selected[textKey] : DefaultOptionLabel
+      const title = selected ? selected[textKey] : props.defaultOptionLabel
       const active = !!selected
       const last = tabs.value.length - 1 === index
       return (
@@ -341,7 +357,6 @@ export default defineComponent({
     ) => {
       const { disabled } = option
       const selected = !!(selectedOption && option[valueKey] === selectedOption[valueKey])
-
       return (
         <view
           key={option[valueKey]}
@@ -386,25 +401,32 @@ export default defineComponent({
     )
 
     return () => (
-      <view class={bem()}>
-        <view
-          disableScroll
-          class={[bem('tabs'), 'hairline--bottom']}
-        >
-          {tabs.value.map(renderTab)}
+      <Popup
+        position="bottom"
+        onOpen={onOpen}
+        onUpdate:show={props['onUpdate:show'] || updateShow}
+        {...pick(props, popupPropsKeys)}
+      >
+        <view class={bem()}>
+          <view
+            disableScroll
+            class={bem('tabs')}
+          >
+            {tabs.value.map(renderTab)}
+          </view>
+          {renderOptionsTitle()}
+          <view
+            id={`${id}-container`}
+            class={bem('options-container', { animate: initialized.value })}
+            style={{
+              width: `${tabs.value.length}00vw`,
+              transform: `translateX(${activeTab.value === 0 ? 0 : `-${activeTab.value}00vw`})`
+            }}
+          >
+            {tabs.value.map(({ options, selected }: CascaderTab, tabIndex) => renderOptions(options, selected, tabIndex))}
+          </view>
         </view>
-        {renderOptionsTitle()}
-        <view
-          id={`${id}-container`}
-          class={bem('options-container', { animate: initialized.value })}
-          style={{
-            width: `${tabs.value.length}00vw`,
-            transform: `translateX(${activeTab.value === 0 ? 0 : `-${activeTab.value}00vw`})`
-          }}
-        >
-          {tabs.value.map(({ options, selected }: CascaderTab, tabIndex) => renderOptions(options, selected, tabIndex))}
-        </view>
-      </view>
+      </Popup>
     )
   }
 })
