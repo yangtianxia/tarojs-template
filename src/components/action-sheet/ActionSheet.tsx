@@ -74,7 +74,6 @@ export default defineComponent({
 
     const renderDescription = () => {
       const description = genVNode(slots.description || props.description)
-
       if (description) {
         return (
           <view class={bem('description')}>
@@ -86,7 +85,6 @@ export default defineComponent({
 
     const renderCancel = () => {
       const cencel = genVNode(slots.cancel || props.cancelText)
-
       if (cencel) {
         return (
           <>
@@ -125,19 +123,21 @@ export default defineComponent({
     const renderOption = (option: ActionSheetOption, index: number) => {
       const { color, loading, disabled, className } = option
       return (
-        <Button
-          block
-          bold={false}
-          disabled={disabled}
-          loading={loading}
-          size="large"
-          iconPosition="right"
-          class={[bem('option', { unclickable: loading || disabled }), className]}
-          style={{ color }}
-          onTap={() => onOptionTap(option, index)}
-        >
-          {renderOptionContent(option, index)}
-        </Button>
+        <view class={bem('option-container')}>
+          <Button
+            block
+            bold={false}
+            disabled={disabled}
+            loading={loading}
+            size="large"
+            iconPosition="right"
+            class={[bem('option', { unclickable: loading || disabled }), className]}
+            style={{ color }}
+            onTap={() => onOptionTap(option, index)}
+          >
+            {renderOptionContent(option, index)}
+          </Button>
+        </view>
       )
     }
 
