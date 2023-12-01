@@ -5,8 +5,9 @@
 
 page {
   --navigation-bar-background: var(--color-section);
-  --navigation-bar-title-size: var(--size-lg);
   --navigation-bar-title-color: var(--color-text);
+  --navigation-bar-title-size: var(--size-lg);
+  --navigation-bar-title-weight: var(--weight-semibold);
 }
 
 .@{navigation-bar-cls} {
@@ -74,7 +75,7 @@ page {
     display: flex;
     align-items: center;
     font-size: var(--size-md);
-    padding: 0 var(--size-lg);
+    padding: var(--size-none) var(--size-lg);
 
     &:active {
       opacity: var(--opacity-active);
@@ -88,7 +89,7 @@ page {
   &__title {
     max-width: 50%;
     color: var(--navigation-bar-title-color);
-    font-weight: var(--weight-bold);
+    font-weight: var(--navigation-bar-title-weight);
     font-size: var(--navigation-bar-title-size);
     .ellipsis();
   }
