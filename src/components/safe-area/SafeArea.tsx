@@ -1,4 +1,5 @@
 import { defineComponent, computed, type CSSProperties, type ExtractPropTypes } from 'vue'
+import { useAppStore } from '@/store'
 import { useSystemInfo } from '@/hooks'
 
 import { addUnit, truthProp, makeStringProp } from '../utils'
@@ -29,7 +30,14 @@ export default defineComponent({
   props: safeAreaProps,
 
   setup(props, { slots, attrs }) {
+    const appStore = useAppStore()
+
     const visible = computed(() => {
+      // 半屏打开不可见
+      if (appStore.apiCategory === 'embedded') {
+        return false
+      }
+
       switch (props.position) {
         case 'bottom':
           return hasSafeArea
