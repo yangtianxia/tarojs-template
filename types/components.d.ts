@@ -1,5 +1,6 @@
 import type { ElementAttrs, TransformReact2VueType, StandardProps, ITouchEvent } from '@tarojs/components/types/index.vue3'
 import type { AppProps, BodyProps } from '../src/components/app'
+import type { SafeAreaProps } from '../src/components/safe-area'
 import type { NavigationBarProps } from '../src/components/navigation-bar'
 import type { ButtonProps } from '../src/components/button'
 import type { SpaceProps } from '../src/components/space'
@@ -17,6 +18,8 @@ declare global {
       'gm-app': Shim<AppProps>,
       gmBody: Shim<BodyProps>,
       'gm-body': Shim<BodyProps>,
+      gmSafeArea: Shim<SafeAreaProps>,
+      'gm-safe-area': Shim<SafeAreaProps>,
       gmNavigationBar: Shim<NavigationBarProps>,
       'gm-navigation-bar': Shim<NavigationBarProps>,
       gmButton: Shim<ButtonProps>,
