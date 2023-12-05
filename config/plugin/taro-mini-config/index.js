@@ -11,6 +11,7 @@ const { miniConfigMap, envMap } = require('./utils')
  */
 module.exports = (ctx, option = {}) => {
   const taroEnv = getCurrentTaroEnv()
+  let isComplete = false
 
   if (
     isNil(taroEnv) ||
@@ -25,32 +26,40 @@ module.exports = (ctx, option = {}) => {
   const sourceRoot = Reflect.get(option, 'sourceRoot')
   const globalOption = Reflect.get(option, 'global') || {}
 
-  ctx.onBuildFinish(() => {
-    if (shell.test('-e', outputPath)) {
-      const env = loadEnv()
-      const partial = Object
-        .keys(env)
-        .reduce(
-          (obj, key) => {
-            if (Reflect.has(envMap, key)) {
-              const newKey = Reflect.get(envMap, key)
-              const value = Reflect.get(env, key)
-              Reflect.set(obj, newKey, cleanEnvValue(value))
-            }
-            return obj
-          }, {}
-        )
+  const merged = () => {
+    if (!shell.test('-e', outputPath)) return
 
-      try {
-        const temp = shell.cat(outputPath)
-        const projectConfig = toJSON(temp)
-        const config = extend(true, partial, globalOption, dynamicOption)
-        const extraConfig = run(config)
-        const usedConfig = extend(true, projectConfig, extraConfig)
-        shell.ShellString(JSON.stringify(usedConfig)).to(outputPath)
-      } catch (err) {
-        console.log('❌', err)
-      }
+    const env = loadEnv()
+    const partial = Object
+      .keys(env)
+      .reduce(
+        (obj, key) => {
+          if (Reflect.has(envMap, key)) {
+            const newKey = Reflect.get(envMap, key)
+            const value = Reflect.get(env, key)
+            Reflect.set(obj, newKey, cleanEnvValue(value))
+          }
+          return obj
+        }, {}
+      )
+
+    try {
+      const projectConfig = toJSON(
+        shell.cat(outputPath)
+      )
+      const extraConfig = run(
+        extend(true, partial, globalOption, dynamicOption)
+      )
+      const usedConfig = extend(true, projectConfig, extraConfig)
+      shell.ShellString(JSON.stringify(usedConfig)).to(outputPath)
+    } catch (err) {
+      console.log('❌', err)
+    }
+  }
+
+  ctx.onBuildFinish(() => {
+    if (isComplete) {
+      merged()
     }
   })
 
@@ -61,6 +70,8 @@ module.exports = (ctx, option = {}) => {
       await fs.copy(fromRoot, ctx.paths.outputPath, {
         overwrite: true
       })
+      merged()
     }
+    isComplete = true
   })
 }
