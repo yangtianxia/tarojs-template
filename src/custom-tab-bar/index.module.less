@@ -1,0 +1,56 @@
+@import url(../style/mixins/hairline.less);
+
+.tab-bar {
+  display: flex;
+  flex-direction: column;
+  pointer-events: auto;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  box-sizing: var(--shadow-sm);
+  background-color: var(--color-section);
+
+  &:after {
+    .hairline-top(var(--color-section));
+  }
+
+  &__list {
+    display: flex;
+    align-items: center;
+  }
+
+  &__item {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    color: var(--color-text);
+
+    &:not(&--active):active {
+      opacity: var(--opacity-medium);
+    }
+
+    &--active {
+      color: var(--color-primary);
+    }
+  }
+
+  &__icon {
+    width: var(--size-6);
+    height: var(--size-6);
+    margin: var(--size-2) auto var(--size-1);
+    pointer-events: none;
+  }
+
+  &__text {
+    font-size: var(--size-sm);
+    line-height: var(--line-sm);
+    text-align: center;
+    pointer-events: none;
+  }
+
+  &__bottom {
+    height: var(--size-5);
+  }
+}
