@@ -78,6 +78,7 @@ const config = {
     }
   },
   plugins: [
+    [resolve('config/plugin/taro-custom-tab-bar')],
     [resolve('config/plugin/taro-provider')],
     [resolve('config/plugin/taro-mini-worker')],
     [resolve('config/plugin/taro-mini-compile')],
@@ -101,7 +102,7 @@ const config = {
     ['@tarojs/plugin-framework-vue3', {
       vueLoaderOption: {
         compilerOptions: {
-          isCustomElement: (tag) => tag.startsWith('custom')
+          isCustomElement: (tag) => ['custom', 'cover'].some((item) => tag.startsWith(item))
         }
       }
     }],

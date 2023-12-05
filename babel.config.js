@@ -6,7 +6,7 @@ module.exports = {
       framework: 'vue3',
       ts: true,
       vueJsx: {
-        isCustomElement: (tag) => tag.startsWith('custom')
+        isCustomElement: (tag) => ['custom', 'cover'].some((item) => tag.startsWith(item))
       }
     }]
   ]
