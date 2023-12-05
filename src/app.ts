@@ -3,7 +3,10 @@ import '@/style/hairline.less'
 import '@/style/normalize.less'
 import '@/components/style/index.less'
 
+import { createApp } from 'vue'
+
 import App from '@/components/app'
+import SafeArea from '@/components/safe-area'
 import NavigationBar from '@/components/navigation-bar'
 import Icon from '@/components/icon'
 import Space from '@/components/space'
@@ -11,8 +14,7 @@ import Button from '@/components/button'
 import Cell from '@/components/cell'
 
 import router from '@/router'
-import Store, { useThemeStore, useUserStore } from '@/store'
-import { createApp } from 'vue'
+import Store, { useAppStore, useUserStore } from '@/store'
 import { canIUse, getUpdateManager, exitMiniProgram } from '@tarojs/taro'
 import { useSystemInfo } from '@/hooks/system-info'
 import { useThemeChange } from '@/hooks/theme-change'
@@ -20,11 +22,13 @@ import { EVENT_TYPE } from '@/shared/constants'
 
 const app = createApp({
   onLaunch() {
-    const themeStore = useThemeStore()
+    const appStore = useAppStore()
     const sysInfo = useSystemInfo()
 
     if (sysInfo.theme) {
-      themeStore.setTheme(sysInfo.theme)
+      appStore.setInfo({
+        theme: sysInfo.theme
+      })
     }
 
     if (sysInfo.enableDebug) {
@@ -34,10 +38,11 @@ const app = createApp({
     }
 
     useThemeChange(({ theme }) => {
-      themeStore.setTheme(theme)
+      appStore.setInfo({ theme })
     })
   },
   onShow(options: Taro.getLaunchOptionsSync.LaunchOptions) {
+    const appStore = useAppStore()
     const userStore = useUserStore()
 
     if (canIUse('getUpdateManager')) {
@@ -74,12 +79,14 @@ const app = createApp({
       }
     }
 
+    appStore.setInfo(options)
     userStore.init()
   }
 })
 
 app.use(Store)
 app.use(App)
+app.use(SafeArea)
 app.use(NavigationBar)
 app.use(Icon)
 app.use(Space)
