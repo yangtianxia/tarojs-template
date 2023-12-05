@@ -1,6 +1,7 @@
 const config = {
   pages: [
-    'pages/home/index'
+    'pages/home/index',
+    'pages/my/index'
   ],
   subpackages: [{
     root: 'subpackages',
@@ -17,6 +18,27 @@ const config = {
     navigationBarTextStyle: '@navigation' as unknown,
     navigationBarBackgroundColor: '@section',
     navigationBarTitleText: process.env.PROJECT_NAME
+  },
+  tabBar: {
+    custom: true,
+    color: '@grey800',
+    selectedColor: '@primary500',
+    backgroundColor: '@section',
+    borderStyle: 'white',
+    list: [
+      {
+        text: '首页',
+        pagePath: 'pages/home/index',
+        iconPath: './assets/home.png',
+        selectedIconPath: './assets/home-active.png'
+      },
+      {
+        text: '我的',
+        pagePath: 'pages/my/index',
+        iconPath: './assets/my.png',
+        selectedIconPath: './assets/my-active.png'
+      }
+    ]
   },
   useExtendedLib: {
     weui: true
