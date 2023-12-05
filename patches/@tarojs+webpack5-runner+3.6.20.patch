@@ -1,0 +1,13 @@
+diff --git a/node_modules/@tarojs/webpack5-runner/dist/plugins/MiniPlugin.js b/node_modules/@tarojs/webpack5-runner/dist/plugins/MiniPlugin.js
+index b5dc366..a6dbbb8 100644
+--- a/node_modules/@tarojs/webpack5-runner/dist/plugins/MiniPlugin.js
++++ b/node_modules/@tarojs/webpack5-runner/dist/plugins/MiniPlugin.js
+@@ -879,7 +879,7 @@ class TaroMiniPlugin {
+             });
+             if (tabBar.custom) {
+                 const isAlipay = process.env.TARO_ENV === 'alipay';
+-                const customTabBarPath = path_1.default.join(sourceDir, isAlipay ? 'customize-tab-bar' : 'custom-tab-bar');
++                const customTabBarPath = path_1.default.join(sourceDir, 'custom-tab-bar');
+                 const customTabBarComponentPath = (0, helper_1.resolveMainFilePath)(customTabBarPath, [...frameworkExts, ...helper_1.SCRIPT_EXT]);
+                 if (helper_1.fs.existsSync(customTabBarComponentPath)) {
+                     const customTabBarComponentTemplPath = this.getTemplatePath(customTabBarComponentPath);
