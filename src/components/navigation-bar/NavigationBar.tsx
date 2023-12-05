@@ -4,7 +4,7 @@ import {
   reactive,
   computed,
   watch,
-  type Ref,
+  type ComputedRef,
   type PropType,
   type ExtractPropTypes,
   type CSSProperties
@@ -12,11 +12,12 @@ import {
 import debounce from 'debounce'
 import { usePageScroll } from '@tarojs/taro'
 import { shallowMerge, callInterceptor, type Interceptor } from '@txjs/shared'
-import { useThemeStore } from '@/store'
+import { useAppStore } from '@/store'
 import { USE_NAVIGATION_BAR, useRoute, useRouter, useSystemInfo } from '@/hooks'
 
 import { onAppLoaded } from '../app'
 import { Icon } from '../icon'
+import { SafeArea } from '../safe-area'
 import { useExpose } from '../composables/expose'
 import { useParent } from '../composables/parent'
 import {
@@ -59,7 +60,7 @@ export type NavigationBarProps = ExtractPropTypes<typeof navigationBarProps>
 export type NavigationBarConfig = Partial<NavigationBarProps>
 
 export type NavigationBarProvide = {
-  readonly height: Ref<number>
+  readonly height: ComputedRef<number>
   setConfig(config: NavigationBarConfig): void
 }
 
@@ -72,7 +73,7 @@ export default defineComponent({
 
   setup(originProps, { slots, attrs }) {
     const router = useRouter()
-    const themeStore = useThemeStore()
+    const appStore = useAppStore()
     const { path, currentRoute } = useRoute()
     const { statusBarHeight = 0 } = useSystemInfo()
 
@@ -85,15 +86,12 @@ export default defineComponent({
 
     const titleOriginColor = computed(() => {
       let foundAt = titleStyle.indexOf(props.titleStyle)
-      if (themeStore.theme === 'dark') {
+      if (appStore.theme === 'dark') {
         foundAt = foundAt === 0 ? foundAt + 1 : foundAt - 1
       }
       return titleStyle[foundAt]
     })
 
-    const height = ref(
-      statusBarHeight + BASE_HEIGHT
-    )
     const opacity = ref(
       props.scrollAnimation ? 0 : 1
     )
@@ -101,23 +99,17 @@ export default defineComponent({
       titleOriginColor.value
     )
 
+    const height = computed(() =>
+      appStore.apiCategory === 'embedded'
+        ? BASE_HEIGHT
+        : statusBarHeight + BASE_HEIGHT
+    )
     const leftArrowVisible = computed(() =>
       !hasTabbar && (hasAccessRecord || props.showHomeIcon)
     )
     const showLeftAction = computed(() =>
       !!slots.left || leftArrowVisible.value
     )
-    const navigationBarStyle = computed(() => {
-      const style = {
-        ...getZIndexStyle(props.zIndex),
-        height: addUnit(BASE_HEIGHT),
-        lineHeight: addUnit(BASE_HEIGHT)
-      } as CSSProperties
-      if (props.safeAreaInsetTop) {
-        style.paddingTop = addUnit(statusBarHeight)
-      }
-      return style
-    })
     const leftStyle = computed(() => {
       const style = {} as CSSProperties
       if (props.leftArrowNoPaddingLeft) {
@@ -228,15 +220,19 @@ export default defineComponent({
 
     const renderNavbar = () => (
       <view
-        catchMove
         {...attrs}
-        style={navigationBarStyle.value}
+        catchMove
         class={bem({
           fixed: props.fixed,
           border: props.border,
           [props.position]: true
         })}
+        style={getZIndexStyle(props.zIndex)}
       >
+        <SafeArea
+          show={props.safeAreaInsetTop}
+          position="top"
+        />
         <view
           class={bem('curtain')}
           style={{
@@ -244,7 +240,13 @@ export default defineComponent({
             background: props.background
           }}
         />
-        <view class={bem('wrapper')}>
+        <view
+          class={bem('wrapper')}
+          style={{
+            height: addUnit(BASE_HEIGHT),
+            lineHeight: addUnit(BASE_HEIGHT)
+          }}
+        >
           {renderLeft()}
           {renderTitle()}
         </view>
