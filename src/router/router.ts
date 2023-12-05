@@ -1,7 +1,7 @@
 import extend from 'extend'
 import { noop, cloneDeep, callInterceptor, interceptorAll, type Interceptor } from '@txjs/shared'
 import { isNil, isArray, isPlainObject, isFunction } from '@txjs/bool'
-import { useUserStore } from '@/store'
+import { useUserStore, useTabbarStore } from '@/store'
 import { useAppConfig } from '@/hooks/app-config'
 import { REDIRECT_URI } from '@/hooks/redirect'
 import { isLogin } from '@/shared/auth'
@@ -49,15 +49,12 @@ class Router<T extends readonly any[]> {
   private paths: Record<string, Readonly<RouteMeta>> = {}
   private interceptor?: RouterInterceptor
   private appConfigBase?: ReturnType<typeof useAppConfig>
+  private userStoreBase?: ReturnType<typeof useUserStore>
+  private tabbarStoreBase?: ReturnType<typeof useTabbarStore>
 
   constructor(private readonly sourceRoutes: T) {
     this.routes = this.flat(this.sourceRoutes)
     this.init()
-  }
-
-  get appConfig() {
-    this.appConfigBase ??= useAppConfig()
-    return this.appConfigBase
   }
 
   private init() {
@@ -123,6 +120,8 @@ class Router<T extends readonly any[]> {
             url.push(
               queryStringify(route.query)!
             )
+          } else {
+            this.tabbarStore.setCurrentPath(route.path)
           }
 
           iteratee({
@@ -134,11 +133,29 @@ class Router<T extends readonly any[]> {
     return callback
   }
 
+  get appConfig() {
+    this.appConfigBase ??= useAppConfig()
+    return this.appConfigBase
+  }
+
+  get userStore() {
+    this.userStoreBase ??= useUserStore()
+    return this.userStoreBase
+  }
+
+  get tabbarStore() {
+    this.tabbarStoreBase ??= useTabbarStore()
+    return this.tabbarStoreBase
+  }
+
   beforeEnter(interceptor: RouterInterceptor) {
     this.interceptor = interceptor
   }
 
-  checkTabbar(path: string) {
+  checkTabbar(path?: string) {
+    if (isNil(path)) {
+      return false
+    }
     return this.appConfig?.tabBar?.list?.some((tab) => path.indexOf(tab.pagePath) !== -1) ?? false
   }
 
@@ -195,8 +212,6 @@ class Router<T extends readonly any[]> {
 
     if (isNil(login) || path.startsWith(login.path)) return
 
-    const userStore = useUserStore()
-
     if (this.checkTabbar(path)) {
       this.navigateTo(login.path)
     } else {
@@ -207,7 +222,7 @@ class Router<T extends readonly any[]> {
       })
     }
 
-    userStore.logoutCallback()
+    this.userStore.logoutCallback()
   }
 
   private navigateToBase = this.route(taroNavigateTo)
