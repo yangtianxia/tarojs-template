@@ -117,7 +117,7 @@ module.exports = defineConfig((defaultConfig) => {
   return {
     media,
     modules,
-    selector: 'page',
+    selector: 'page,.CUSTOM_TAB_BAR',
     output: 'node_modules/pollen-css/pollen.css'
   }
 })
