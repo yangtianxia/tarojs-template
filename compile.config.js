@@ -7,6 +7,13 @@ module.exports = [
     scene: null
   },
   {
+    title: '我的',
+    page: 'pages/my/index',
+    query: '',
+    launchMode: 'default',
+    scene: null
+  },
+  {
     title: '登录页面',
     page: 'subpackages/login/index',
     query: '',
