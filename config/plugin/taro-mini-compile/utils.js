@@ -41,7 +41,7 @@ const miniConfigMap = {
   weapp: 'project.private.config.json',
   qq: 'project.private.config.json',
   alipay: '.mini-ide/compileMode.json',
-  tt: 'project.config.json',
+  tt: 'project.private.config.json',
   swan: 'project.swan.json',
   lark: 'project.config.json'
 }
