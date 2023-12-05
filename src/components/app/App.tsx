@@ -11,6 +11,7 @@ import {
 import { getCurrentInstance } from '@tarojs/taro'
 import { noop, shallowMerge } from '@txjs/shared'
 import { notNil } from '@txjs/bool'
+import { useTabbarStore } from '@/store'
 import { USE_PAGE_KEY, useRouter, useHideHomeButton } from '@/hooks'
 
 import { resultSharedProps, type ResultStatusType } from '../result'
@@ -42,10 +43,11 @@ export default defineComponent({
   props: appProps,
 
   setup(props, { slots }) {
+    const tabbarStore = useTabbarStore()
     const context = getCurrentInstance()
     const router = useRouter()
     const { parent } = useParent(USE_PAGE_KEY)
-    const hasTabbar = router.checkTabbar(context.page?.path!)
+    const hasTabbar = router.checkTabbar(context.router?.path)
 
     const navigationBarRef = ref<NavigationBarInstance>()
     const loading = computed(() =>
@@ -61,6 +63,9 @@ export default defineComponent({
       const style = {} as CSSProperties
       if (navigationBarRef.value) {
         style.paddingTop = `${navigationBarRef.value.height.value}px`
+      }
+      if (hasTabbar) {
+        style.paddingBottom = `${tabbarStore.height}px`
       }
       return style
     })
@@ -106,16 +111,19 @@ export default defineComponent({
     const renderBottom = () => {
       if (notNil(status.value)) return
 
-      const nodeChild = (
-        <view class={bem('bottom')} />
-      )
-
       if (hasTabbar) {
-        return nodeChild
+        return (
+          <view
+            class={bem('bottom')}
+            style={{ paddingBottom: `${tabbarStore.height}px` }}
+          />
+        )
       }
 
       return (
-        <SafeArea>{nodeChild}</SafeArea>
+        <SafeArea>
+          <view class={bem('bottom')} />
+        </SafeArea>
       )
     }
 
