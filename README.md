@@ -1,4 +1,4 @@
-# ghost-miniprogram
+# tarojs-template
 
 > 基于 [tarojs](https://taro-docs.jd.com/docs/) 快速开发模板，API方法都是以[微信小程序](https://developers.weixin.qq.com/miniprogram/dev/framework/)标准
 
