@@ -53,5 +53,14 @@ module.exports = {
         'header-pattern': '/ * @author Tianxia Yang * /'
       }
     ]
+  },
+  globals: {
+    t: true,
+    wx: true,
+    my: true,
+    BEM: true,
+    emitter: true,
+    toast: true,
+    modal: true
   }
 }

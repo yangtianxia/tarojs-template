@@ -9,7 +9,7 @@
 		"css": "less"
 	},
 	"scripts": {
-    "lint": "eslint src --ext .ts,.tsx",
+		"lint": "eslint src --ext .ts,.tsx",
 		"build:weapp": "npm run lint && taro build --type weapp",
 		"build:alipay": "npm run lint && taro build --type alipay",
 		"build:tt": "npm run lint && taro build --type tt",
@@ -49,7 +49,7 @@
 		"@txjs/bem": "^0.0.5",
 		"@txjs/bool": "^0.0.9",
 		"@txjs/make": "^0.0.3",
-		"@txjs/shared": "^0.0.14",
+		"@txjs/shared": "^0.0.15",
 		"@txjs/taro-request": "^0.0.1",
 		"@vant/area-data": "^1.5.1",
 		"@vant/icons": "^1.8.0",

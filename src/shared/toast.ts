@@ -1,5 +1,6 @@
 import { showToast, hideToast, showLoading, hideLoading } from '@tarojs/taro'
 import { shallowMerge } from '@txjs/shared'
+import { makeString } from '@txjs/make'
 import { isString } from '@txjs/bool'
 
 type ShowToastOption = NonNullable<Parameters<typeof showToast>[0]>
@@ -8,7 +9,7 @@ type ShowLoadingOption = NonNullable<Parameters<typeof showLoading>[0]>
 
 class Toast {
   #timer: TimeoutType = null
-  #type: string | undefined
+  #type = makeString()
   #visible = false
   #locked = false
   #config = {
