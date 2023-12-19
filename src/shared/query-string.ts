@@ -1,6 +1,6 @@
 import { isPlainObject, isValidString, isURL, isNil } from '@txjs/bool'
 
-export type URLParams = Record<string, string>
+export type URLParams = Record<string, any>
 
 const PARAMS_CONNECT_SYMBOL = '?'
 

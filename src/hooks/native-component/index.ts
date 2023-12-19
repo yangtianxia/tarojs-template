@@ -18,7 +18,7 @@ const EventMatch = /^on[A-Z|-](.+)?$/
  * useNative('ocr-navigator', {
  *  certificateType: 'idCard',
  *  opposite: true,
- *  onOnSuccess(res) {
+ *  onSuccess(res) {
  *    console.log(res)
  *  }
  * })
@@ -27,18 +27,18 @@ const EventMatch = /^on[A-Z|-](.+)?$/
  *
  * ```
  */
-export const useNative = <T extends Record<string, any>>(componentId: string, props: T) => {
+export const useNativeComponent = <T extends Record<string, any>>(componentId: string, props: T) => {
   const { page } = getCurrentInstance()
+  const emits = new Map<string, AnyCallback>()
   let nativeComponent: any
 
   const update = (newProps?: Partial<T>) => {
     if (page) {
       const options = extend(true, props, newProps)
-      const $emit = new Map<string, AnyCallback>()
 
       for (const name in options) {
         if (EventMatch.test(name)) {
-          $emit.set(camelize(name), options[name])
+          emits.set(camelize(name), options[name])
           delete options[name]
         }
       }
@@ -46,9 +46,9 @@ export const useNative = <T extends Record<string, any>>(componentId: string, pr
       useNextTick(() => {
         if (!nativeComponent) {
           nativeComponent = page.selectComponent?.(`#${componentId}`)
-          nativeComponent.triggerEvent = function (name: string, eventDetail?: Record<string, any>) {
-            const trigger = $emit.get(camelize(`on-${name}`))
-            trigger && trigger(eventDetail)
+          nativeComponent.triggerEvent = (name: string, eventDetail?: Record<string, any>) => {
+            const trigger = emits.get(camelize(`on-${name}`))
+            trigger?.(eventDetail)
           }
         }
         nativeComponent.setData(options)

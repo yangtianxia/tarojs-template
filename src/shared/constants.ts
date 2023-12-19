@@ -1,5 +1,5 @@
 export const EVENT_TYPE = {
-  /** REQUEST事件 */
+  /** request 网络请求事件 */
   REQUEST_EVENT: Symbol('REQUEST_EVENT')
 } as const
 

@@ -87,12 +87,10 @@ class createRouter<T extends readonly any[]> extends createRoute<T> {
   }
 
   checkTabbar(path?: string) {
-    return isNil(path)
-      ? false
-      : this.appConfig
-        ?.tabBar
-        ?.list
-        ?.some((tab) => path.indexOf(tab.pagePath) !== -1) ?? false
+    if (isNil(path)) {
+      return false
+    }
+    return this.appConfig?.tabBar?.list?.some((tab) => path.indexOf(tab.pagePath) !== -1) ?? false
   }
 
   beforeEnter(interceptor: NavigateInterceptor) {

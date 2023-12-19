@@ -15,7 +15,7 @@ export function jumpLogin(
   if (isNil(path)) {
     const router = useRouter()
     path = router.path
-    params = router.params as Record<string, string>
+    params = router.params
     linkType = 'redirectTo'
   }
 
