@@ -76,19 +76,21 @@ const config = {
   },
   plugins: [
     [resolve('packages/taro-plugin-env')],
-    ['@tarojs/plugin-framework-vue3', {
-      vueLoaderOption: {
-        compilerOptions: {
-          isCustomElement: (tag) => tag.startsWith('custom')
-        }
-      }
-    }],
+    [resolve('packages/taro-quick-compile')],
+    [resolve('packages/taro-plugin-theme')],
     ['taro-plugin-style-resource', {
       less: {
         patterns: [
           resolve('src/assets/style/mixins/ellipsis.less'),
           resolve('src/assets/style/mixins/hairline.less')
         ]
+      }
+    }],
+    ['@tarojs/plugin-framework-vue3', {
+      vueLoaderOption: {
+        compilerOptions: {
+          isCustomElement: (tag) => tag.startsWith('custom')
+        }
       }
     }]
   ]

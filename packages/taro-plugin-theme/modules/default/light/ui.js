@@ -9,14 +9,6 @@ module.exports = {
     full: '9999px'
   },
 
-  blur: {
-    xs: 'blur(4px)',
-    sm: 'blur(8px)',
-    md: 'blur(16px)',
-    lg: 'blur(24px)',
-    xl: 'blur(40px)'
-  },
-
   layer: {
     below: -1,
     1: 10,

@@ -33,7 +33,6 @@ function loadEnv() {
   })
 
   const sourceEnv = {}
-  const env = {}
 
   extend(true, sourceEnv,
     // 全局环境
@@ -50,16 +49,17 @@ function loadEnv() {
     !localTaroEnvConfig.error && localTaroEnvConfig.parsed,
   )
 
-  for (const key in sourceEnv) {
-    const value = envUtils.parse(
-      Reflect.get(sourceEnv, key),
-      sourceEnv
-    )
-    Reflect.set(sourceEnv, key, JSON.parse(value))
-    Reflect.set(env, key, value)
-  }
-
-  return env
+  return Object
+    .keys(sourceEnv)
+    .reduce((env, key) => {
+      const value = envUtils.parse(
+        Reflect.get(sourceEnv, key),
+        sourceEnv
+      )
+      Reflect.set(sourceEnv, key, JSON.parse(value))
+      Reflect.set(env, key, value)
+      return env
+    }, {})
 }
 
 module.exports = {

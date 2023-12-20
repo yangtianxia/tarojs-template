@@ -9,13 +9,13 @@ function toDTS(...args) {
     shell.rm('-r', outputPath)
   }
 
-  const env = args.reduce((obj, cur) => {
-    for (const key in cur) {
-      const value = Reflect.get(cur, key)
-      Reflect.set(obj, key, value)
-    }
-    return obj
-  }, {})
+  const env = args
+    .reduce((obj, cur) => {
+      for (const key in cur) {
+        Reflect.set(obj, key, cur[key])
+      }
+      return obj
+    }, {})
 
   shell.mkdir('-p', outputPath)
   shell.ShellString(

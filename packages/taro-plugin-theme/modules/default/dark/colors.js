@@ -1,5 +1,11 @@
 module.exports = {
   color: {
+    /** Window */
+    navigation: 'white',
+
+    /** Page */
+    section: '#191919',
+
     /** Greyscale */
     'grey-10': '#0D0D0D',
     'grey-50': '#161616',
@@ -38,12 +44,6 @@ module.exports = {
     /** Info */
     'info-300': '#0A3498',
     'info-500': '#4A88E5',
-    'info-700': '#A0CBFA',
-
-    /** Window */
-    navigation: 'white',
-
-    /** Page */
-    section: '#191919'
+    'info-700': '#A0CBFA'
   }
 }

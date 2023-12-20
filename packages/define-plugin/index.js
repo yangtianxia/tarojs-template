@@ -2,7 +2,7 @@ const { isNil } = require('@txjs/bool')
 const { getCurrentTaroEnv, getCurrentModeEnv } = require('../utils/cli')
 
 /**
- * @param callback {(ctx: import('@tarojs/service').IPluginContext, options: Record<string, any>) => void}
+ * @param callback {(ctx: import('@tarojs/service').IPluginContext & Record<'taroEnv' | 'modeEnv', string>, options: Record<string, any>) => void}
  */
 function definePlugin(callback) {
   const taroEnv = getCurrentTaroEnv()

@@ -1,15 +1,16 @@
 const tinycolor2 = require('tinycolor2')
 const { defineConfig } = require('pollen-css/utils')
-const { shallowMerge, cloneDeep, omit } = require('@txjs/shared')
+const { shallowMerge } = require('@txjs/shared')
+const { getCurrentTheme } = require('./modules')
 const { getCurrentTaroEnv } = require('../utils/cli')
 const envUtils = require('../utils/env-utils')
-const modules = require('./modules')
-
-const UnitMatch = /([(-?\d)(\.\d)|\d])+(px)/ig
 
 const taroEnv = getCurrentTaroEnv()
 
+const UnitMatch = /([(-?\d)(\.\d)|\d])+(px)/ig
+
 function toRatio(size) {
+  size = parseFloat(size)
   return size === 1 ? size : size * 2
 }
 
@@ -17,7 +18,7 @@ function pxToRpx(value) {
   const result = value.match(UnitMatch)
   if (result) {
     return result.reduce(
-      (input, cur) => input.replace(cur, `${toRatio(parseFloat(cur))}rpx`), value
+      (input, numeric) => input.replace(numeric, `${toRatio(numeric)}rpx`), value
     )
   }
   return value
@@ -27,7 +28,8 @@ function pxTransform(values) {
   const shallowCopy = shallowMerge({}, values)
   if (taroEnv !== 'h5') {
     for (const key in values) {
-      shallowCopy[key] = pxToRpx(values[key])
+      const value = Reflect.get(values, key)
+      Reflect.set(shallowCopy, key, pxToRpx(value))
     }
   }
   return shallowCopy
@@ -37,7 +39,9 @@ function getAlphaColor(value) {
   const color = tinycolor2(value)
   if (color.isValid()) {
     return Object
-      .values(color.toRgb())
+      .values(
+        color.toRgb()
+      )
       .slice(0, 3)
       .toString()
   }
@@ -60,12 +64,10 @@ function formatColor(colors = {}) {
 }
 
 module.exports = defineConfig((defaultConfig) => {
-  const cloneLight = cloneDeep(light || {})
-  const cloneDark = cloneDeep(dark || {})
-  const modules = omit(cloneLight, ['font', 'blur', 'width'])
+  const { light, dark } = getCurrentTheme()
 
-  modules.color = {
-    ...formatColor(cloneLight.color),
+  light.color = {
+    ...formatColor(light.color),
     grey: 'var(--color-grey-500)',
     info: 'var(--color-info-500)',
     primary: 'var(--color-primary-500)',
@@ -81,39 +83,35 @@ module.exports = defineConfig((defaultConfig) => {
     'text-weak': 'var(--color-grey-500)',
   }
 
-  modules.size = pxTransform({
-    ...cloneLight.size,
+  light.size = pxTransform({
+    ...light.size,
     xs: '10px',
     sm: '12px',
     md: '14px',
     lg: '16px',
-    xl: '18px',
-    xxl: '20px'
+    xl: '18px'
   })
 
-  modules.radius = pxTransform(
-    modules.radius
-  )
+  light.radius = pxTransform(light.radius)
 
   for (const key in defaultConfig) {
-    if (!Reflect.has(modules, key)) {
-      Reflect.set(modules, key, false)
+    if (!Reflect.has(light, key)) {
+      Reflect.set(light, key, false)
     }
   }
 
   const media = {}
 
+  // 暗黑模式仅处理 color
   if (envUtils.isTruly(process.env.DARKMODE)) {
     Reflect.set(media, '(prefers-color-scheme: dark)', {
-      ...cloneDark,
-      size: pxTransform(cloneDark.size),
-      color: formatColor(cloneDark.color)
+      color: formatColor(dark.color)
     })
   }
 
   return {
     media,
-    modules,
+    modules: light,
     selector: 'page',
     output: 'node_modules/pollen-css/pollen.css'
   }
