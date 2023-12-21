@@ -1,4 +1,4 @@
-const fieldMap = {
+const configFieldMap = {
   weapp: {
     title: 'name',
     page: 'pathName',
@@ -38,7 +38,7 @@ const fieldMap = {
   swan: {}
 }
 
-const outputMap = {
+const outputFileMap = {
   weapp: 'project.private.config.json',
   qq: 'project.private.config.json',
   alipay: '.mini-ide/compileMode.json',
@@ -48,6 +48,6 @@ const outputMap = {
 }
 
 module.exports = {
-  fieldMap,
-  outputMap
+  configFieldMap,
+  outputFileMap
 }

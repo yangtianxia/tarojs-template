@@ -4,7 +4,7 @@ const definePlugin = require('../define-plugin')
 const { isNil } = require('@txjs/bool')
 const { toArray } = require('@txjs/shared')
 const { resolve, toJSON } = require('../utils/basic')
-const { fieldMap, outputMap } = require('./utils')
+const { configFieldMap, outputFileMap } = require('./utils')
 
 const defaultPath = 'compile.config.js'
 
@@ -12,8 +12,8 @@ module.exports = definePlugin((ctx, options) => {
   const sourcePath = resolve(options.path || defaultPath)
   const outputDir = resolve(ctx.paths.outputPath)
 
-  const fileName = Reflect.get(outputMap, ctx.taroEnv)
-  const fieldKey = Reflect.get(fieldMap, ctx.taroEnv)
+  const fileName = Reflect.get(outputFileMap, ctx.taroEnv)
+  const fieldKey = Reflect.get(configFieldMap, ctx.taroEnv)
   const keys = Object.keys(fieldKey)
 
   function transform(option) {
@@ -28,12 +28,12 @@ module.exports = definePlugin((ctx, options) => {
       const useMode = isNil(item.mode)
       const useTaro = isNil(item.taro)
 
-      if (!useMode && !useTaro) {
+      if (useMode && useTaro) {
         return true
       }
 
-      const mode = toArray(useMode ? item.mode : '*')
-      const taro = toArray(useTaro ? item.taro : '*')
+      const mode = toArray(useMode ? '*' : item.mode)
+      const taro = toArray(useTaro ? '*' : item.taro)
 
       return (
         mode.includes('*') ||
@@ -45,7 +45,7 @@ module.exports = definePlugin((ctx, options) => {
     })
     .map(transform)
 
-    switch (taroEnv) {
+    switch (ctx.taroEnv) {
       case 'alipay':
         return { modes: compiles }
       case 'tt':
@@ -74,7 +74,7 @@ module.exports = definePlugin((ctx, options) => {
     return path
   }
 
-  function buildQuickCompile() {
+  function buildCompile() {
     const sourceConfig = require(sourcePath)
     const compiles = generate(sourceConfig)
 
@@ -100,15 +100,15 @@ module.exports = definePlugin((ctx, options) => {
         resolve(outputDir, fileName)
       )
 
-      shell.echo('✨ [taro-quick-compile] build finish')
+      shell.echo('✨ [taro-plugin-compile] build finish')
     } catch (err) {
-      console.log('❌', err)
+      console.log('❌', '[taro-plugin-compile]', err)
     }
   }
 
   ctx.onBuildFinish(() => {
-    if (shell.test('-e', path)) {
-      buildQuickCompile()
+    if (shell.test('-e', sourcePath)) {
+      buildCompile()
     }
   })
 })

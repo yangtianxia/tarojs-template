@@ -1,4 +1,4 @@
-const fs = require('fs')
+const fs = require('fs-extra')
 const extend = require('extend')
 const { cloneDeep } = require('@txjs/shared')
 const { isPlainObject } = require('@txjs/bool')

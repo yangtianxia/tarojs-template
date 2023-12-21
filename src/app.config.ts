@@ -1,6 +1,6 @@
 const config = {
   pages: [
-    'pages/home/index'
+    'pages/index/index'
   ],
   window: {
     navigationStyle: 'custom',
@@ -21,7 +21,7 @@ const config = {
 if (process.env.TARO_ENV === 'alipay') {
   config.window = {
     ...config.window,
-    titleBarColor: '#ffffff'
+    titleBarColor: '@section'
   }
 }
 

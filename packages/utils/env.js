@@ -1,9 +1,10 @@
+const dotenv = require('dotenv')
 const extend = require('extend')
 const envUtils = require('./env-utils')
 const { resolve } = require('./basic')
 const { getCurrentModeEnv, getCurrentTaroEnv } = require('./cli')
 
-const DIRECTORY = 'env'
+const DIRECTORY = '.env'
 
 function pathSplicing(...args) {
   return resolve([DIRECTORY, ...args].join('.'))

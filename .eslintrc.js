@@ -1,10 +1,11 @@
 module.exports = {
   root: true,
+  parser: '@typescript-eslint/parser',
   extends: [
     'eslint:recommended',
-    'taro/vue3',
-    'eslint-config-airbnb'
+    'taro/vue3'
   ],
+  plugins: ['@typescript-eslint'],
   parserOptions: {
     ecmaVersion: '2020',
     ecmaFeatures: {
@@ -13,10 +14,12 @@ module.exports = {
     }
   },
   rules: {
+    // 检查未声明的变量
+    'no-undef': 'off',
     // 要求变量名和函数名必须使用驼峰命名法
-    'camelcase': 'error',
+    'camelcase': 'off',
     // 要求未使用的变量必须被删除
-    'no-unused-vars': 'warn',
+    'no-unused-vars': 'off',
     // 禁止使用 console 进行日志记录
     'no-console': 'off',
     // 禁止使用 debugger 语句
@@ -24,9 +27,9 @@ module.exports = {
     // 要求文件必须以换行符结尾
     'eol-last': 'error',
     // 要求对象属性的值必须使用双引号或单引号括起来
-    'quote-props': 'error',
+    'quote-props': 'off',
     // 要求函数括号之前必须有一个空格
-    'space-before-function-paren': 'error',
+    'space-before-function-paren': 'off',
     // 要求未使用的表达式必须被删除
     'no-unused-expressions': 'error',
     // 禁止使用内联回调函数
@@ -41,18 +44,8 @@ module.exports = {
     '@typescript-eslint/no-explicit-any': 'off',
     // 禁止使用 ! 来断言变量不为 null 或 undefined
     '@typescript-eslint/no-non-null-assertion': 'off',
-    // 要求导出和导入的类型必须一致
-    '@typescript-eslint/explicit-module-boundary-types': 'error',
-    // 检查注释是否符合规范
-    'comment-format': [
-      'error',
-      {
-        'line-length': 100,
-        'require-header': true,
-        'header-max-length': 50,
-        'header-pattern': '/ * @author Tianxia Yang * /'
-      }
-    ]
+    // 要求未使用的变量必须被删除
+    '@typescript-eslint/no-unused-vars': 'error'
   },
   globals: {
     t: true,

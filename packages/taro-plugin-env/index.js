@@ -35,7 +35,8 @@ module.exports = definPlugin((ctx) => {
       Reflect.set(constants, envUtils.toName(key), value)
     }
 
-    chain.plugin('definePlugin')
+    chain
+      .plugin('definePlugin')
       .tap((args) => {
         shallowMerge(args[0], constants)
         return args

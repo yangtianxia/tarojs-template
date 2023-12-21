@@ -4,6 +4,7 @@ const cleanCss = require('clean-css')
 const { isString, isPlainObject, isArray } = require('@txjs/bool')
 const definPlugin = require('../define-plugin')
 const { getThemeColor } = require('./modules')
+const envUtils = require('../utils/env-utils')
 const { pathResolve, resolve } = require('../utils/basic')
 
 const pollenConfigPath = pathResolve(__dirname, 'pollen.config.js')
@@ -39,28 +40,27 @@ function formatMiniConfig(config, constants) {
   }
 }
 
-function buildThemeOutput(useDarkMode = false) {
-  if (shell.test('-e', pollenConfigPath)) {
-    shell.exec(`pollen --config ${pollenConfigPath}`)
-  }
-
-  // 微信小程序 theme 配置
-  if (useDarkMode) {
-    const theme = JSON.stringify(getThemeColor(), null, 2)
-    const outputPath = resolve(ctx.paths.outputPath, 'theme.json')
-    shell.ShellString(theme).to(outputPath)
-  }
-
-  shell.echo('✨ [taro-plugin-theme] build finish')
-}
-
 module.exports = definPlugin((ctx) => {
   const isWeapp = ctx.taroEnv === 'weapp'
-  const useDarkMode = isWeapp && isTruly(process.env.DARKMODE)
   let packed = false
 
+  function buildThemeOutput() {
+    if (shell.test('-e', pollenConfigPath)) {
+      shell.exec(`pollen --config ${pollenConfigPath}`)
+    }
+
+    // 微信小程序 theme 配置
+    if (isWeapp && envUtils.isTruly(process.env.DARKMODE)) {
+      const theme = JSON.stringify(getThemeColor(), null, 2)
+      const outputPath = resolve(ctx.paths.outputPath, 'theme.json')
+      shell.ShellString(theme).to(outputPath)
+    }
+
+    shell.echo('✨ [taro-plugin-theme] build finish')
+  }
+
   ctx.modifyMiniConfigs(({ configMap }) => {
-    if (useDarkMode) {
+    if (isWeapp && envUtils.isTruly(process.env.DARKMODE)) {
       if (Reflect.has(configMap, 'app.config')) {
         const content = Reflect.get(configMap, 'app.config')
         const appConfig = Reflect.get(content, 'content')
@@ -72,8 +72,10 @@ module.exports = definPlugin((ctx) => {
       }
     } else {
       const theme = getThemeColor()
-      Object.keys(configMap).forEach((content) => {
+      Object.keys(configMap).forEach((key) => {
+        const content = Reflect.get(configMap, key)
         const pageConfig = Reflect.get(content, 'content')
+
         // 将暗黑模式配置的变量
         // 重新改为默认配置原始值
         formatMiniConfig(pageConfig, theme.light)
@@ -98,14 +100,11 @@ module.exports = definPlugin((ctx) => {
     }
   })
 
-  // 延迟任务执行，等待taro生成完项目
-  ctx.onBuildStart(() => {
-    setTimeout(() => buildThemeOutput(useDarkMode), 1)
-  })
+  ctx.onBuildStart(() => setTimeout(buildThemeOutput, 1))
 
   ctx.onBuildFinish(() => {
     if (packed) {
-      buildThemeOutput(useDarkMode)
+      buildThemeOutput()
     }
     packed = true
   })

@@ -10,7 +10,7 @@ class createRoute<T extends readonly any[]> {
   #paths: Record<string, Readonly<PageRoute>> = {}
 
   constructor(readonly sourceRoutes: T) {
-    this.#route = this.#generate(this.sourceRoutes)
+    this.#route = this.#generate(sourceRoutes)
     this.#init()
   }
 

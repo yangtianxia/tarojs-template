@@ -1,4 +1,5 @@
-const { notNil } = require('@txjs/bool')
+const { shallowMerge } = require('@txjs/shared')
+const { notNil, isPlainObject } = require('@txjs/bool')
 
 class EnvUtils {
   constructor () {}
@@ -16,6 +17,26 @@ class EnvUtils {
         .join('')
     }
     return JSON.stringify(value)
+  }
+
+  filter(sourceEnv, callback) {
+    const newObj = {}
+    const keys = Object.keys(sourceEnv)
+    let i = 0
+
+    while (keys.length) {
+      const key = keys.shift()
+      const value = Reflect.get(sourceEnv, key)
+      const result = callback(key, value, i)
+
+      if (result === true) {
+        Reflect.set(newObj, key, value)
+      } else if (isPlainObject(result)) {
+        shallowMerge(newObj, result)
+      }
+
+      i++
+    }
   }
 
   toName(value) {

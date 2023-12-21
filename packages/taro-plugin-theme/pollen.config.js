@@ -15,9 +15,10 @@ function toRatio(size) {
 }
 
 function pxToRpx(value) {
-  const result = value.match(UnitMatch)
-  if (result) {
-    return result.reduce(
+  const found = value.match(UnitMatch)
+
+  if (found) {
+    return found.reduce(
       (input, numeric) => input.replace(numeric, `${toRatio(numeric)}rpx`), value
     )
   }
@@ -26,6 +27,7 @@ function pxToRpx(value) {
 
 function pxTransform(values) {
   const shallowCopy = shallowMerge({}, values)
+
   if (taroEnv !== 'h5') {
     for (const key in values) {
       const value = Reflect.get(values, key)
@@ -37,6 +39,7 @@ function pxTransform(values) {
 
 function getAlphaColor(value) {
   const color = tinycolor2(value)
+
   if (color.isValid()) {
     return Object
       .values(

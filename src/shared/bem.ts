@@ -1,7 +1,7 @@
 import bem from '@txjs/bem'
 
 bem.config({
-  debugger: process.env.ENV !== 'production',
+  debugger: process.env.NODE_ENV !== 'production',
   prefixer: {
     comp: process.env.PREFIX,
     page: 'page'

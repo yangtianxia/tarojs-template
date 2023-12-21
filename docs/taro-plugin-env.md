@@ -1,8 +1,8 @@
-## Taro-plugin-env
+## taro-plugin-env
 
-环境配置插件，在项目根目录添加 `.env` 环境配置文件即可使用，有任何问题可以 [issues](https://github.com/yangtianxia/tarojs-template/issues)
+环境配置插件，在项目根目录添加 `.env*` 环境配置文件即可使用，有任何问题可以 [issues](https://github.com/yangtianxia/tarojs-template/issues)
 
-> 注意：配置环境字段没有前缀要求，可自行处理避免出现意外问题
+> 注意：配置环境字段没有前缀要求，请规避可能出现的意外问题
 
 ### 配置文件选项
 - 全局环境 `.env`
@@ -30,9 +30,6 @@
   }
 }
 ```
-
-### 环境文件加载
-只修改环境配置文件，环境变量不会得到更新。这个是因为加载 `.env*` 配置文件是在 `tarojs/cli` 的 [`modifyWebpackChain`](https://taro-docs.jd.com/docs/plugin-custom#%E7%BC%96%E8%AF%91%E8%BF%87%E7%A8%8B%E6%89%A9%E5%B1%95) 方法下调用的，所以只有项目本身有内容修改，环境配置文件才会得到重新加载
 
 ### 环境文件加载顺序
 后加载的配置文件，将覆盖前面加载的配置
@@ -79,10 +76,13 @@ process.env.PREFIX
 ```less
 // 组件样式命名
 @button-cls: ~'@{prefix}-button';
+
+.@{button-cls} {
+  display: flex;
+}
 ```
 
 ### 添加微信
-
 添加请备注-项目名
 
-![weixin](./images/weixin.jpg)
+![weixin](http://s6021rm6s.bkt.clouddn.com/weixin.jpg?imageView2/0/format/webp/q/75)

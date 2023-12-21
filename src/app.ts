@@ -1,13 +1,14 @@
-import '@/style/normalize.less'
+import '@/assets/style/normalize.less'
+
 import { createApp } from 'vue'
 import { canIUse, getUpdateManager, exitMiniProgram } from '@tarojs/taro'
+import router from '@/router'
 import { useSystemInfo } from '@/hooks/system-info'
 import { jumpLogin } from '@/shared/jump-login'
 import { EVENT_TYPE } from '@/shared/constants'
-import router from '@/router'
 
 const app = createApp({
-  onLaunch() {
+  onLaunch () {
     const sysInfo = useSystemInfo()
 
     if (sysInfo.enableDebug) {
@@ -16,7 +17,7 @@ const app = createApp({
       })
     }
   },
-  onShow(options: Taro.getLaunchOptionsSync.LaunchOptions) {
+  onShow (options: Taro.getLaunchOptionsSync.LaunchOptions) {
     if (canIUse('getUpdateManager')) {
       const updateManager = getUpdateManager()
 

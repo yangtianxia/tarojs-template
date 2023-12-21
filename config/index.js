@@ -2,6 +2,7 @@ const pkg = require('../package.json')
 const { resolve } = require('../packages/utils/basic')
 
 const isDev = process.env.NODE_ENV === 'development'
+const isProd = process.env.NODE_ENV === 'production'
 
 const config = {
   projectName: pkg.name,
@@ -32,7 +33,7 @@ const config = {
         }
       ]
 
-      if (process.env.NODE_ENV === 'production') {
+      if (isProd) {
         rule.push({
           test: /\.js$/,
           loader: 'babel-loader'
@@ -44,6 +45,18 @@ const config = {
           rule
         }
       })
+
+      chain
+        .plugin('providerPlugin')
+        .tap((args) => {
+          args[0].t = [resolve('src/shared/locale.ts'), 'default']
+          args[0].BEM = [resolve('src/shared/bem.ts'), 'default']
+          args[0].emitter = [resolve('src/shared/emitter.ts'), 'default']
+          args[0].toast = [resolve('src/shared/toast.ts'), 'default']
+          args[0].modal = [resolve('src/shared/modal.ts'), 'default']
+          return args
+        })
+        .end()
     },
     postcss: {
       pxtransform: {
@@ -76,8 +89,24 @@ const config = {
   },
   plugins: [
     [resolve('packages/taro-plugin-env')],
-    [resolve('packages/taro-quick-compile')],
     [resolve('packages/taro-plugin-theme')],
+    [resolve('packages/taro-plugin-compile'), {
+      path: resolve('public/compile.config.js')
+    }],
+    [resolve('packages/taro-plugin-config'), {
+      sourceRoot: 'public',
+      global: {
+        projectname: pkg.name,
+        setting: {
+          // 不启用es6转es5
+          es6: false,
+          // 默认不压缩
+          minified: false,
+          // 开发环境不检查域名
+          urlCheck: isProd
+        }
+      }
+    }],
     ['taro-plugin-style-resource', {
       less: {
         patterns: [
