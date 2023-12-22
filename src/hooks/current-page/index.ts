@@ -40,7 +40,7 @@ const getCurrentPage = (context: CurrentInstance) => {
       try {
         const verified = validator?.()
         if (verified === false) {
-          throw new Error(t('hooks.current.page.error'))
+          throw new Error($t('hooks.current.page.error'))
         } else if (!(verified instanceof Error)) {
           status = verified
         }

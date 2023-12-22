@@ -49,11 +49,12 @@ const config = {
       chain
         .plugin('providerPlugin')
         .tap((args) => {
-          args[0].t = [resolve('src/shared/locale.ts'), 'default']
+          args[0].$t = [resolve('src/shared/locale.ts'), 'default']
           args[0].BEM = [resolve('src/shared/bem.ts'), 'default']
           args[0].emitter = [resolve('src/shared/emitter.ts'), 'default']
           args[0].toast = [resolve('src/shared/toast.ts'), 'default']
           args[0].modal = [resolve('src/shared/modal.ts'), 'default']
+          args[0].request = [resolve('src/shared/request.ts'), 'default']
           return args
         })
         .end()

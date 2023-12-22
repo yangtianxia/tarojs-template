@@ -34,8 +34,8 @@ export const useAuthPermission = async (authName: AuthSettingText, authZHName: s
 
   return new Promise<boolean>((resolve) => {
     modal.confirm({
-      title: t('hooks.auth.permission.title'),
-      content: t('hooks.auth.permission.content', authZHName),
+      title: $t('hooks.auth.permission.title'),
+      content: $t('hooks.auth.permission.content', authZHName),
       onCancel: () => resolve(false),
       onOk: async () => {
         await openSetting()

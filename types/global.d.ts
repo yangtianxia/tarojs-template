@@ -13,15 +13,12 @@ declare module '*.sass'
 declare module '*.styl'
 declare module '*.json'
 
-declare const t: typeof import('../src/shared/locale')['default']
-
+declare const $t: typeof import('../src/shared/locale')['default']
 declare const BEM: typeof import('../src/shared/bem')['default']
-
 declare const emitter: typeof import('../src/shared/emitter')['default']
-
 declare const toast: typeof import('../src/shared/toast')['default']
-
 declare const modal: typeof import('../src/shared/modal')['default']
+declare const request: typeof import('../src/shared/request')['default']
 
 declare type Numeric = number | string
 

@@ -48,12 +48,13 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': 'error'
   },
   globals: {
-    t: true,
     wx: true,
     my: true,
+    $t: true,
     BEM: true,
     emitter: true,
     toast: true,
-    modal: true
+    modal: true,
+    request: true
   }
 }

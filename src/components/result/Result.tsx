@@ -54,7 +54,7 @@ export default defineComponent({
       if (newConfig) {
         // 自定义状态不支持设置
         if (refresh && ['error', '500'].includes(status)) {
-          option.desc = t('result.500.desc')
+          option.desc = $t('result.500.desc')
         }
 
         shallowMerge(option, newConfig)
