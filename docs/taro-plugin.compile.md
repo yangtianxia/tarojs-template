@@ -2,8 +2,8 @@
 
 小程序编译模式插件，配置相关需要快捷编译的页面入口，即可生成相关页面的快捷入口。是一个可以提高效率的插件，有任何问题可以 [issues](https://github.com/yangtianxia/tarojs-template/issues)
 
-### 设置配置路径
-支持在项目根目录添加 `compile.config.js` 文件，或者使用插件时，设置插件参数 `path` 配置路径
+### 插件配置
+支持在项目根目录添加 `compile.config.js` 文件或者配置插件参数 `path` 设置编译配置文件
 
 - 默认
 ```ts
