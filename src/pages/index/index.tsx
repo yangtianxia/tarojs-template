@@ -9,7 +9,8 @@ export default defineComponent({
 
   setup() {
     return () => (
-      <view style={{ padding: '40px' }}>
+      <view style={{ padding: '80px 20px' }}>
+        <t-loading />
         <t-icon name="wechat-moments" size={32} />
       </view>
     )

@@ -7,7 +7,7 @@ import {
   type ExtractPropTypes
 } from 'vue'
 
-// Component Utils
+// Component utils
 import { numericProp } from '../_utils/props'
 import { addUnit } from '../_utils/style'
 

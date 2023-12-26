@@ -1,16 +1,16 @@
 import type { JSXShim } from '../_utils/types'
 import { withInstall } from '../_utils/with-install'
-import _Icon, { type IconProps } from './Icon'
+import _Loading, { type LoadingProps } from './Loading'
 
 import './index.less'
 
-export const Icon = withInstall(_Icon)
-export default Icon
+export const Loading = withInstall(_Loading)
+export default Loading
 
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      't-icon': JSXShim<IconProps>
+      't-loading': JSXShim<LoadingProps>
     }
   }
 }

@@ -1,6 +1,6 @@
 import type { JSXShim } from '../_utils/types'
 import { withInstall } from '../_utils/with-install'
-import _Result, { ResultProps } from './Result'
+import _Result, { type ResultProps } from './Result'
 
 import './index.less'
 

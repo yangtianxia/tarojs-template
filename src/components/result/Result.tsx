@@ -18,7 +18,7 @@ import { isPlainObject, isString } from '@txjs/bool'
 
 // Components
 
-// Component Utils
+// Component utils
 import { createVNode } from '../_utils/basic'
 import { VNodeProp } from '../_utils/props'
 import { resultSharedProps, resultStatusConfig } from './utils'

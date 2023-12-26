@@ -1,5 +1,8 @@
 import '@/assets/style/normalize.less'
 
+import Icon from '@/components/icon'
+import Loading from '@/components/loading'
+
 import router from '@/router'
 import { createApp } from 'vue'
 import { canIUse, getUpdateManager, exitMiniProgram } from '@tarojs/taro'
@@ -8,8 +11,6 @@ import { useSystemInfo } from '@/hooks/system-info'
 import { useThemeChange } from '@/hooks/theme-change'
 import { jumpLogin } from '@/shared/jump-login'
 import { EVENT_TYPE } from '@/shared/constants'
-
-import tIcon from '@/components/icon'
 
 const app = createApp({
   onLaunch () {
@@ -76,6 +77,7 @@ const app = createApp({
 })
 
 app.use(store)
-app.use(tIcon)
+app.use(Icon)
+app.use(Loading)
 
 export default app
