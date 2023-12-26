@@ -18,8 +18,8 @@ import { isPlainObject, isString } from '@txjs/bool'
 
 // Components
 
-// Utils
-import { renderVNode } from '../_utils/basic'
+// Component Utils
+import { createVNode } from '../_utils/basic'
 import { VNodeProp } from '../_utils/props'
 import { resultSharedProps, resultStatusConfig } from './utils'
 
@@ -66,7 +66,7 @@ export default defineComponent({
       const currentRefresh = props.refresh
       const newOption = omit(props, ['status', 'refresh'])
 
-      // 重新合并option
+      // 重新合并 option
       shallowMerge(option, newOption)
 
       if (isPlainObject(currentStatus)) {
@@ -90,7 +90,7 @@ export default defineComponent({
     onMounted(updateOption)
 
     const renderImage = () => {
-      const image = renderVNode(slots.image || option.image, {
+      const image = createVNode(slots.image || option.image, {
         render: (value) => (
           <image src={value} />
         )
@@ -106,7 +106,7 @@ export default defineComponent({
     }
 
     const renderTitle = () => {
-      const title = renderVNode(slots.title || option.title)
+      const title = createVNode(slots.title || option.title)
 
       if (title) {
         return (
@@ -118,7 +118,7 @@ export default defineComponent({
     }
 
     const renderDesc = () => {
-      const desc = renderVNode(slots.desc || option.desc)
+      const desc = createVNode(slots.desc || option.desc)
 
       if (desc) {
         return (
@@ -130,7 +130,7 @@ export default defineComponent({
     }
 
     const renderBottom = () => {
-      const bottom = renderVNode(slots.default || option.bottom)
+      const bottom = createVNode(slots.default || option.bottom)
 
       if (bottom) {
         return (

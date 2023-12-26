@@ -5,5 +5,5 @@ deploy_versions/
 .swc
 node_modules/
 .DS_Store
-.local
+*.local
 *lock.json

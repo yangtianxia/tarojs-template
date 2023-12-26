@@ -90,6 +90,7 @@ const config = {
   },
   plugins: [
     [resolve('packages/taro-plugin-env')],
+    [resolve('packages/taro-plugin-types')],
     [resolve('packages/taro-plugin-theme')],
     [resolve('packages/taro-plugin-compile'), {
       path: resolve('public/compile.config.js')

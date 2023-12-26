@@ -6,4 +6,5 @@ export interface UserState {
   phone?: string
   email?: string
   introduction?: string
+  [key: string]: any
 }

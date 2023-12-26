@@ -1,13 +1,11 @@
 const extend = require('extend')
 const { shallowMerge } = require('@txjs/shared')
 const definPlugin = require('../define-plugin')
-const toDTS = require('./dts')
 const envUtils = require('../utils/env-utils')
-const { loadEnv } = require('../utils/env')
 
 module.exports = definPlugin((ctx) => {
   ctx.modifyWebpackChain(({ chain }) => {
-    const env = loadEnv()
+    const env = envUtils.loadEnv()
     const prefix = Reflect.get(env, 'PREFIX')
 
     if (envUtils.isValid(prefix)) {
@@ -43,6 +41,4 @@ module.exports = definPlugin((ctx) => {
       })
       .end()
   })
-
-  ctx.onBuildFinish(() => toDTS(loadEnv()))
 })

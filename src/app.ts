@@ -1,23 +1,41 @@
 import '@/assets/style/normalize.less'
 
+import router from '@/router'
 import { createApp } from 'vue'
 import { canIUse, getUpdateManager, exitMiniProgram } from '@tarojs/taro'
-import router from '@/router'
+import store, { useAppStore, useUserStore } from '@/store'
 import { useSystemInfo } from '@/hooks/system-info'
+import { useThemeChange } from '@/hooks/theme-change'
 import { jumpLogin } from '@/shared/jump-login'
 import { EVENT_TYPE } from '@/shared/constants'
 
+import tIcon from '@/components/icon'
+
 const app = createApp({
   onLaunch () {
+    const appStore = useAppStore()
     const sysInfo = useSystemInfo()
+
+    if (sysInfo.theme) {
+      appStore.setInfo({
+        theme: sysInfo.theme
+      })
+    }
 
     if (sysInfo.enableDebug) {
       emitter.on(EVENT_TYPE.REQUEST_EVENT, (event) => {
         console.log(event)
       })
     }
+
+    useThemeChange(({ theme }) => {
+      appStore.setInfo({ theme })
+    })
   },
   onShow (options: Taro.getLaunchOptionsSync.LaunchOptions) {
+    const appStore = useAppStore()
+    const userStore = useUserStore()
+
     if (canIUse('getUpdateManager')) {
       const updateManager = getUpdateManager()
 
@@ -51,7 +69,13 @@ const app = createApp({
         jumpLogin(path, query, 'redirectTo')
       }
     }
+
+    appStore.setInfo(options)
+    userStore.init()
   }
 })
+
+app.use(store)
+app.use(tIcon)
 
 export default app

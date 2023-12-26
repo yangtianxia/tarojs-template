@@ -3,7 +3,6 @@ const shell = require('shelljs')
 const extend = require('extend')
 const definePlugin = require('../define-plugin')
 const { resolve, toJSON } = require('../utils/basic')
-const { loadEnv } = require('../utils/env')
 const envUtils = require('../utils/env-utils')
 const { outputFileNameMap, globalFieldMap } = require('./utils')
 
@@ -34,7 +33,7 @@ module.exports = definePlugin((ctx, options = {}) => {
       fs.writeFileSync(outputPath, '{}')
     }
 
-    const env = loadEnv()
+    const env = envUtils.loadEnv()
     const partialEnv = envUtils.filter(env, (key, value) => {
       if (Reflect.has(globalFieldMap, key)) {
         const newKey = Reflect.get(globalFieldMap, key)

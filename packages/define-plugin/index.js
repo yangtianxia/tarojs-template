@@ -1,4 +1,5 @@
 const { isNil } = require('@txjs/bool')
+const { noop } = require('@txjs/shared')
 const { getCurrentTaroEnv, getCurrentModeEnv } = require('../utils/cli')
 
 /**
@@ -9,7 +10,7 @@ function definePlugin(callback) {
   const modeEnv = getCurrentModeEnv()
 
   if (isNil(taroEnv) || taroEnv === 'h5') {
-    return
+    return noop
   }
 
   return (ctx, options) => {

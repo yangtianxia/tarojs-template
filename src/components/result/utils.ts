@@ -9,11 +9,11 @@ export const resultSharedProps = {
 }
 
 export const resultStatusConfig = {
-  '404': {
+  404: {
     title: $t('result.404.title'),
     image: require('./image/404.png')
   },
-  '500': {
+  500: {
     title: $t('result.500.title'),
     image: require('./image/500.png')
   },

@@ -85,4 +85,4 @@ process.env.PREFIX
 ### 添加微信
 添加请备注-项目名
 
-![weixin](http://s6021rm6s.bkt.clouddn.com/weixin.jpg?imageView2/0/format/webp/q/75)
+![weixin](http://s6021rm6s.bkt.clouddn.com/weixin.webp)

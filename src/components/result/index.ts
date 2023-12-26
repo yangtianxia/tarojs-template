@@ -13,7 +13,7 @@ export { resultSharedProps } from './utils'
 declare global {
   namespace JSX {
     interface IntrinsicElements {
-      TResult: JSXShim<ResultProps>
+      't-result': JSXShim<ResultProps>
     }
   }
 }
