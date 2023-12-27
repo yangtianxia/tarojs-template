@@ -9,6 +9,10 @@ const useAppStore = defineStore('app', {
     apiCategory: 'default'
   }),
 
+  getters: {
+    isEmbedded: (state) => state.apiCategory === 'embedded'
+  },
+
   actions: {
     setInfo(partial: Partial<AppState>) {
       this.$patch(partial)

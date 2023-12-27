@@ -2,10 +2,12 @@ import type { CSSProperties } from 'vue'
 import { isInteger, isArray, isNumeric } from '@txjs/bool'
 import { useSystemInfo } from '@/hooks/system-info'
 
+const { dpr } = useSystemInfo()
+
 export function addUnit(input?: Numeric, unit = 'rpx') {
   if (isNumeric(input)) {
     if (unit === 'rpx') {
-      input = Math.round(input * useSystemInfo().dpr)
+      input = Math.round(input * dpr)
     }
     return `${input}${unit}`
   }

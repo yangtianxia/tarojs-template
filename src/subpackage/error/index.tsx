@@ -1,28 +1,26 @@
 // Vue
 import { defineComponent } from 'vue'
 
-// Common
-import { useAppContext } from '@/hooks/app-context'
-
 // Component
 import { App } from '@/components/app'
 
 // Style
 import less from './index.module.less'
 
-const [name] = BEM('index', less)
+const [name] = BEM('error', less)
 
 export default defineComponent({
   name,
 
   setup() {
-    const appContext = useAppContext()
-
-    appContext.loading = false
-
     return () => (
-      <App>
-      </App>
+      <App
+        loading={false}
+        status={{
+          status: '404',
+          title: '页面不存在或已删除',
+        }}
+      />
     )
   }
 })

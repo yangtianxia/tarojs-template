@@ -1,3 +1,4 @@
+import extend from 'extend'
 import { ref } from 'vue'
 import { getCurrentInstance } from '@tarojs/taro'
 import { shallowMerge } from '@txjs/shared'
@@ -17,7 +18,7 @@ const getCurrentPage = (context: CurrentInstance) => {
   const route = _router.getRoute(router.path)
 
   const currentRoute = ref(
-    shallowMerge({}, route, {
+    extend({}, route, {
       title: page.config?.navigationBarTitleText
     })
   )

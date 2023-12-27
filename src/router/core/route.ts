@@ -9,8 +9,8 @@ class createRoute<T extends readonly any[]> {
   #names: Record<string, Readonly<PageRoute>> = {}
   #paths: Record<string, Readonly<PageRoute>> = {}
 
-  constructor(readonly sourceRoutes: T) {
-    this.#route = this.#generate(sourceRoutes)
+  constructor(private readonly sourceRoutes: T) {
+    this.#route = this.#generate(this.sourceRoutes)
     this.#init()
   }
 

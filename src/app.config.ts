@@ -2,6 +2,14 @@ const config = {
   pages: [
     'pages/index/index'
   ],
+  subpackages: [
+    {
+      root: 'subpackage',
+      pages: [
+        'error/index'
+      ]
+    }
+  ],
   window: {
     navigationStyle: 'custom',
     backgroundColor: '@grey200',

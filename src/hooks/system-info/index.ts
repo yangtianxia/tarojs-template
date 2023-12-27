@@ -25,7 +25,7 @@ export const useSystemInfo = () => {
       isAnd,
       isMobile: isIOS || isAnd,
       isPC: system.startsWith('Windows') || system.startsWith('macOS'),
-      dpr: toFixed(750 / info.windowWidth),
+      dpr: toFixed(750 / info.windowWidth, 2),
       hasBottomSafeArea: info.safeArea?.bottom !== info.screenHeight
     })
 

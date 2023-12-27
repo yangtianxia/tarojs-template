@@ -2,8 +2,9 @@ module.exports = [
   {
     title: '首页',
     page: 'pages/index/index',
-    query: '',
-    launchMode: 'default',
-    scene: null
+  },
+  {
+    title: '错误页',
+    page: 'subpackage/error/index',
   }
 ]
