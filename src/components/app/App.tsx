@@ -13,7 +13,6 @@ import {
 // Common
 import { notNil } from '@txjs/bool'
 import { noop, shallowMerge } from '@txjs/shared'
-import _router from '@/router'
 import { useCurrentPage } from '@/hooks/current-page'
 import { useParent } from '@/hooks/relation'
 import { APP_CONTEXT_KEY } from '@/hooks/app-context'
@@ -53,7 +52,7 @@ export default defineComponent({
   setup(props, { slots }) {
     const currentPage = useCurrentPage()
     const { parent: appContext } = useParent(APP_CONTEXT_KEY)
-    const hasTabbar = _router.checkTabbar(currentPage.router.path)
+    const hasTabbar = router.checkTabbar(currentPage.router.path)
 
     const navBarRef = ref<any>()
     const loading = computed(() =>

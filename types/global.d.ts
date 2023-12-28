@@ -19,6 +19,7 @@ declare const emitter: typeof import('../src/shared/emitter')['default']
 declare const toast: typeof import('../src/shared/toast')['default']
 declare const modal: typeof import('../src/shared/modal')['default']
 declare const request: typeof import('../src/shared/request')['default']
+declare const router: typeof import('../src/router')['default']
 
 declare type Numeric = number | string
 

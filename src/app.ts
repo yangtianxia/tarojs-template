@@ -5,7 +5,6 @@ import Loading from '@/components/loading'
 
 import { createApp } from 'vue'
 import { canIUse, getUpdateManager, exitMiniProgram } from '@tarojs/taro'
-import _router from '@/router'
 import store, { useAppStore, useUserStore } from '@/store'
 import { useSystemInfo } from '@/hooks/system-info'
 import { useThemeChange } from '@/hooks/theme-change'
@@ -64,7 +63,7 @@ const app = createApp({
 
     if (process.env.NODE_ENV === 'production') {
       const { path, query } = options
-      const code = _router.getPermission(path)
+      const code = router.getPermission(path)
 
       if (code === 401) {
         jumpLogin(path, query, 'redirectTo')

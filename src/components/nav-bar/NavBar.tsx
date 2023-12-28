@@ -20,7 +20,6 @@ import { usePageScroll } from '@tarojs/taro'
 // Common
 import debounce from 'debounce'
 import { shallowMerge, callInterceptor, type Interceptor } from '@txjs/shared'
-import _router from '@/router'
 import { useAppStore } from '@/store'
 import { useCurrentPage } from '@/hooks/current-page'
 import { useSystemInfo } from '@/hooks/system-info'
@@ -83,8 +82,8 @@ export default defineComponent({
 
     const minHeight = 44
     const minHeightUnit = addUnit(minHeight)
-    const hasTabbar = _router.checkTabbar(currentPage.router.path)
-    const hasAccessRecord = _router.getPages().length > 1
+    const hasTabbar = router.checkTabbar(currentPage.router.path)
+    const hasAccessRecord = router.getPages().length > 1
 
     // props 失去响应式
     const props = reactive({ ...originProps })
@@ -132,7 +131,7 @@ export default defineComponent({
 
     const goBack = () => {
       callInterceptor(props.backBefore, {
-        done: () => _router.navigateBack()
+        done: () => router.navigateBack()
       })
     }
 

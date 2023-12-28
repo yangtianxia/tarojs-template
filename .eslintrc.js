@@ -39,6 +39,7 @@ module.exports = {
     emitter: true,
     toast: true,
     modal: true,
-    request: true
+    request: true,
+    router: true
   }
 }

@@ -41,9 +41,7 @@ const config = {
       }
 
       chain.merge({
-        module: {
-          rule
-        }
+        module: { rule }
       })
 
       chain
@@ -55,6 +53,7 @@ const config = {
           args[0].toast = [resolve('src/shared/toast.ts'), 'default']
           args[0].modal = [resolve('src/shared/modal.ts'), 'default']
           args[0].request = [resolve('src/shared/request.ts'), 'default']
+          args[0].router = [resolve('src/router/index.ts'), 'default']
           return args
         })
         .end()
@@ -75,7 +74,9 @@ const config = {
         config: {
           auto: true,
           namingPattern: 'module',
-          generateScopedName: isDev ? '[local]_[hash:base64:8]' : '[hash:base64:6]'
+          generateScopedName: isDev
+            ? '[local]_[hash:base64:8]'
+            : '[hash:base64:6]'
         }
       }
     },
@@ -100,11 +101,8 @@ const config = {
       global: {
         projectname: pkg.name,
         setting: {
-          // 不启用es6转es5
           es6: false,
-          // 默认不压缩
           minified: false,
-          // 开发环境不检查域名
           urlCheck: isProd
         }
       }

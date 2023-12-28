@@ -2,7 +2,6 @@ import extend from 'extend'
 import { ref } from 'vue'
 import { getCurrentInstance } from '@tarojs/taro'
 import { shallowMerge } from '@txjs/shared'
-import _router from '@/router'
 import type { ResultStatus } from '@/components/result'
 import type { URLParams } from '@/shared/query-string'
 
@@ -11,11 +10,11 @@ export type CurrentInstance = ReturnType<typeof getCurrentInstance>
 export const CURRENT_PAGE_SYMBOL = Symbol('current-page')
 
 const getCurrentPage = (context: CurrentInstance) => {
-  const router = context.router!
+  const _router = context.router!
   const page = context.page!
   const app =  context.app!
   const preloadData = context.preloadData!
-  const route = _router.getRoute(router.path)
+  const route = router.getRoute(_router.path)
 
   const currentRoute = ref(
     extend({}, route, {
@@ -27,11 +26,11 @@ const getCurrentPage = (context: CurrentInstance) => {
     const { beforeEnter } = currentRoute.value || {}
 
     if (beforeEnter) {
-      router.params = shallowMerge({}, router.params, query)
+      _router.params = shallowMerge({}, _router.params, query)
 
       const { validator, options } = beforeEnter({
         options: currentRoute.value!,
-        query: router.params
+        query: _router.params
       })
 
       shallowMerge(currentRoute.value, options)
@@ -56,7 +55,14 @@ const getCurrentPage = (context: CurrentInstance) => {
     }
   }
 
-  return { app, page, router, preloadData, currentRoute, validator }
+  return {
+    app,
+    page,
+    preloadData,
+    currentRoute,
+    validator,
+    router: _router
+  }
 }
 
 export const useCurrentPage = () => {

@@ -1,7 +1,6 @@
 import { reactive } from 'vue'
 import { useRouter } from '@tarojs/taro'
 import { isValidString } from '@txjs/bool'
-import _router from '@/router'
 import { REDIRECT_URI, REDIRECT_PARAMS } from '@/shared/constants'
 
 export const useRedirect = () => {
@@ -24,10 +23,10 @@ export const useRedirect = () => {
       if (callback) {
         callback(redirectURL)
       } else {
-        _router[_router.checkTabbar(redirectURL) ? 'reLaunch' : 'redirectTo'](redirectURL)
+        router[router.checkTabbar(redirectURL) ? 'reLaunch' : 'redirectTo'](redirectURL)
       }
     } else {
-      _router.navigateBack()
+      router.navigateBack()
     }
   }
 

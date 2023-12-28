@@ -2,7 +2,6 @@ import type { PropType } from 'vue'
 import type { Interceptor } from '@txjs/shared'
 import type { URLParams } from '@/shared/query-string'
 import type { NavigateType } from '@/router/core'
-import _router from '@/router'
 import { isNil, isString, isFunction } from '@txjs/bool'
 
 export const jumpLinkSharedProps = {
@@ -20,7 +19,7 @@ const jumpLinkImplement = (
 ) => {
   if (isNil(path)) return
 
-  _router[linkType]({
+  router[linkType]({
     path,
     query,
     beforeEnter: interceptor
