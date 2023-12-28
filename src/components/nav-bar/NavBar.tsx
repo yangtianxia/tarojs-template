@@ -1,5 +1,5 @@
 // Types
-import type { NavBarPosition, NavBarTitleStyle } from './types'
+import type { NavBarPosition, NavBarTextStyle } from './types'
 
 // Vue
 import {
@@ -26,6 +26,7 @@ import { useSystemInfo } from '@/hooks/system-info'
 import { NAV_BAR_CONTEXT_KEY } from '@/hooks/nav-bar-context'
 import { useExpose } from '@/hooks/expose'
 import { useParent } from '@/hooks/relation/parent'
+import { getRGBA } from '@/shared/utils'
 
 // Components
 import Icon from '../icon'
@@ -36,10 +37,9 @@ import { onAppLoaded } from '../app/AppContext'
 import { VNodeProp, truthProp, makeNumericProp, makeStringProp } from '../_utils/props'
 import { createVNode } from '../_utils/basic'
 import { addUnit, getZIndexStyle } from '../_utils/style'
+import { TEXT_STYLE, getTextStyle } from './utils'
 
 const [name, bem] = BEM('nav-bar')
-
-const titleStyle = ['black', 'white'] as const
 
 const navBarProps = {
   border: Boolean,
@@ -56,8 +56,8 @@ const navBarProps = {
   leftArrowNoPaddingLeft: Boolean,
   zIndex: makeNumericProp(971),
   position: makeStringProp<NavBarPosition>('center'),
-  proloadTitleStyle: makeStringProp<NavBarTitleStyle>('black'),
-  titleStyle: makeStringProp<NavBarTitleStyle>('black'),
+  proloadTextStyle: makeStringProp<NavBarTextStyle>(TEXT_STYLE.black),
+  textStyle: makeStringProp<NavBarTextStyle>(TEXT_STYLE.black),
   backBefore: Function as PropType<Interceptor>
 }
 
@@ -85,21 +85,14 @@ export default defineComponent({
     const hasTabbar = router.checkTabbar(currentPage.router.path)
     const hasAccessRecord = router.getPages().length > 1
 
-    // props 失去响应式
     const props = reactive({ ...originProps })
 
     const opacity = ref(
       props.scrollAnimation ? 0 : 1
     )
-    const titleOriginStyle = computed(() => {
-      let foundAt = titleStyle.indexOf(props.titleStyle)
-      if (appStore.theme === 'dark') {
-        foundAt = foundAt ? 1 : 0
-      }
-      return titleStyle[foundAt]
-    })
-    const titleColor = ref<string>(
-      titleOriginStyle.value
+
+    const textStyle = computed(() =>
+      appStore.isDark ? getTextStyle(props.textStyle) : props.textStyle
     )
     const height = computed(() =>
       appStore.isEmbedded ? minHeight : (statusBarHeight + minHeight)
@@ -110,22 +103,16 @@ export default defineComponent({
     const showLeftAction = computed(() =>
       !!slots.left || leftArrowVisible.value
     )
-    const leftStyle = computed(() => {
-      const style = {} as CSSProperties
-      if (props.leftArrowNoPaddingLeft) {
-        style.paddingLeft = addUnit(0)
-      }
-      return style
-    })
+    const currnetTextStyle = ref<string>(
+      textStyle.value
+    )
 
     const lazyOpacity = debounce((scrollTop: number) => {
-      const visibility = parseFloat(
-        (scrollTop / height.value).toFixed(2)
-      )
+      const visibility = parseFloat((scrollTop / height.value).toFixed(2))
       opacity.value = Math.min(visibility, 1)
-      titleColor.value = props.titleAnimation && (opacity.value > 0.1)
-        ? `rgba(var(--color-${titleOriginStyle.value})-base, ${opacity.value})`
-        : titleOriginStyle.value
+      currnetTextStyle.value = props.titleAnimation && (opacity.value > 0.1)
+        ? getRGBA(textStyle.value, opacity.value)
+        : textStyle.value
     }, 16, true)
 
     const goBack = () => {
@@ -138,26 +125,27 @@ export default defineComponent({
       shallowMerge(props, partial)
     }
 
-    // 监听原 props 变化
+    onAppLoaded((loading) => {
+      currnetTextStyle.value = loading
+        ? props.proloadTextStyle
+        : textStyle.value
+    })
+
     watch(
       () => originProps,
       setConfig
     )
 
     watch(
-      () => titleOriginStyle.value,
+      () => textStyle.value,
       (value) => {
-        titleColor.value = value
+        currnetTextStyle.value = value
       }
     )
 
     useParent(NAV_BAR_CONTEXT_KEY)
 
     useExpose({ height, setConfig })
-
-    onAppLoaded((value) => {
-      titleColor.value = value ? props.proloadTitleStyle : titleOriginStyle.value
-    })
 
     usePageScroll(({ scrollTop }) => {
       if (props.scrollAnimation) {
@@ -167,17 +155,23 @@ export default defineComponent({
 
     const renderLeft = () => {
       if (process.env.TARO_ENV !== 'alipay' && showLeftAction.value) {
+        const style = {} as CSSProperties
+
+        if (props.leftArrowNoPaddingLeft) {
+          style.paddingLeft = addUnit(0)
+        }
+
         return (
           <view
             class={[bem('left'), props.leftClass]}
-            style={leftStyle.value}
+            style={style}
           >
             {slots.left?.() || leftArrowVisible.value ? (
               <Icon
                 size={24}
                 name={hasAccessRecord ? 'arrow-left' : 'wap-home-o'}
                 class={bem('left-icon')}
-                color={titleColor.value}
+                color={currnetTextStyle.value}
                 onTap={goBack}
               />
             ) : null}
@@ -187,20 +181,14 @@ export default defineComponent({
     }
 
     const renderTitle = () => {
-      const title = createVNode(
-        slots.default ||
-        (props.title ?? currentPage.currentRoute.value?.title)
-      )
+      const title = createVNode(slots.default || (props.title ?? currentPage.currentRoute.value?.title))
 
       if (title) {
         const noLeft = !showLeftAction.value && !props.leftArrowNoPaddingLeft
         return (
           <view
-            class={[
-              bem('title', { 'no-left': noLeft }),
-              props.titleClass
-            ]}
-            style={{ color: titleColor.value }}
+            style={{ color: currnetTextStyle.value }}
+            class={[bem('title', { 'no-left': noLeft }), props.titleClass]}
           >
             {title}
           </view>
@@ -220,12 +208,12 @@ export default defineComponent({
       <view
         {...attrs}
         catchMove
+        style={getZIndexStyle(props.zIndex)}
         class={bem({
           fixed: props.fixed,
           border: props.border,
           [props.position]: true
         })}
-        style={getZIndexStyle(props.zIndex)}
       >
         <SafeArea
           show={props.safeAreaInsetTop}

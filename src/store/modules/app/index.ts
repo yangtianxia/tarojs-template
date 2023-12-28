@@ -10,7 +10,15 @@ const useAppStore = defineStore('app', {
   }),
 
   getters: {
-    isEmbedded: (state) => state.apiCategory === 'embedded'
+    /** 暗黑模式 */
+    isDark: (state) => {
+      return state.theme === 'dark'
+    },
+
+    /** 半屏打开 */
+    isEmbedded: (state) => {
+      return state.apiCategory === 'embedded'
+    }
   },
 
   actions: {
