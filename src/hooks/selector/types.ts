@@ -12,9 +12,9 @@ export interface RectOptions {
 export interface SingleRectOptions<K> extends RectOptions {
   refs?: K[]
   observe?: string | boolean
-  callback?: AnyCallback<DOMRect>
+  callback?: UnknownCallback<DOMRect>
 }
 
 export interface AllRectOptions extends RectOptions {
-  callback?: AnyCallback<DOMRect[]>
+  callback?: UnknownCallback<DOMRect[]>
 }

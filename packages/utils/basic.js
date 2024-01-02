@@ -1,6 +1,4 @@
 const path = require('path')
-const { camelize } = require('@txjs/shared')
-const { isPlainObject } = require('@txjs/bool')
 
 function pathResolve(...dir) {
   return path.resolve(...dir)
@@ -22,22 +20,8 @@ function toJSON(input) {
   }
 }
 
-function camelCase(obj = {}) {
-  return Object
-    .keys(obj)
-    .reduce((newObj, key) => {
-      let value = Reflect.get(obj, key)
-      if (isPlainObject(value)) {
-        value = camelCase(value)
-      }
-      Reflect.set(newObj, camelize(key), value)
-      return newObj
-    }, {})
-}
-
 module.exports = {
   pathResolve,
   resolve,
-  toJSON,
-  camelCase
+  toJSON
 }

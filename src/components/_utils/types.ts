@@ -2,7 +2,7 @@ import type { ElementAttrs, TransformReact2VueType, StandardProps, ITouchEvent }
 import type { VNode as _VNode, ComponentPublicInstance } from 'vue'
 
 export type EventEmits = {
-  onTap?: AnyCallback<ITouchEvent>
+  onTap?: UnknownCallback<ITouchEvent>
 }
 
 export type JSXShim<T extends Record<string, any>> =

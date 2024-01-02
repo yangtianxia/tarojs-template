@@ -38,7 +38,7 @@ export const useRects = (
     }
   }
 
-  const boundingClientRect = (callback?: AnyCallback<DOMRect[]>) => {
+  const boundingClientRect = (callback?: UnknownCallback<DOMRect[]>) => {
     if (useCache && cached) {
       callback?.(rects.value)
       return

@@ -7,10 +7,8 @@ export type ButtonSize =
 export type ButtonType =
   | 'default'
   | 'light'
+  | 'ghost'
   | 'primary'
-  | 'danger'
-  | 'warning'
-  | 'success'
-  | 'info'
+  | 'text'
 
 export type ButtonIconPosition = 'left' | 'right'

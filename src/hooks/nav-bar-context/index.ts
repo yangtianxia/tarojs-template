@@ -11,9 +11,9 @@ export interface NavBarContextProvide {
 export const NAV_BAR_CONTEXT_KEY = createInjectionKey<NavBarContextProvide>('nav-bar-context')
 
 export const useNavBarContext = (props?: NavBarConfig) => {
-  const context = ref<NavBarInstance>()
   const { linkChildren, children } = useChildren<NavBarInstance>(NAV_BAR_CONTEXT_KEY)
 
+  const context = ref<NavBarInstance>()
   const height = computed(() =>
     context.value?.height.value || 0
   )

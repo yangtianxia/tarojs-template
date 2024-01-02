@@ -29,7 +29,7 @@ export const useAppContext = (option?: AppContextOption) => {
     status: option?.status
   })
 
-  const reload = (error: any, callback?: AnyCallback) => {
+  const reload = (error: any, callback?: UnknownCallback) => {
     if (error.code === 401) return
 
     let result = { status: error } as ResultOptions
@@ -52,7 +52,7 @@ export const useAppContext = (option?: AppContextOption) => {
     state.status = result
   }
 
-  const beforeEnter = (callback?: AnyCallback<URLParams>) => {
+  const beforeEnter = (callback?: UnknownCallback<URLParams>) => {
     const result = currentPage.validator()
 
     if (result) {

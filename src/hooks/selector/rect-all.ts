@@ -10,7 +10,7 @@ type ExtractTrigger<T> =
 const rectCallback = <T,>(
   triggers: Function[],
   results: T[],
-  callback?: AnyCallback<T[]>
+  callback?: UnknownCallback<T[]>
 ) => {
   const trigger = triggers.pop()!
 
@@ -31,7 +31,7 @@ export const useRectAll = <
   R extends Parameters<C>[0]
 >(
   triggers: T[],
-  callback: AnyCallback<R[]>
+  callback: UnknownCallback<R[]>
 ) => {
   const list = triggers
     .reverse()

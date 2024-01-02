@@ -16,7 +16,7 @@ export const useRedirect = () => {
     [REDIRECT_PARAMS]: redirect_uri
   })
 
-  const redirectTo = (callback?: AnyCallback) => {
+  const redirectTo = (callback?: UnknownCallback) => {
     const redirectURL = from[REDIRECT_PARAMS]
 
     if (redirectURL) {

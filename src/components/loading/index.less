@@ -2,7 +2,7 @@
 
 page {
   --loading-spinner-color: currentColor;
-  --loading-spinner-size: var(--size-xxl);
+  --loading-spinner-size: var(--size-5);
   --loading-text-color: var(--color-text-light);
   --loading-text-size: var(--size-md);
 }
@@ -25,7 +25,7 @@ page {
   }
 
   &__text {
-    margin-left: var(--size-xs);
+    margin-left: var(--size-2);
     color: var(--loading-text-color);
     font-size: var(--loading-text-size);
     line-height: var(--line-md);
@@ -35,7 +35,7 @@ page {
     flex-direction: column;
 
     .@{loading-cls}__text {
-      margin: var(--size-xs) 0 0;
+      margin: var(--size-2) 0 0;
     }
   }
 }

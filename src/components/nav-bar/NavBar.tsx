@@ -122,7 +122,6 @@ export default defineComponent({
       const visibility = parseFloat(
         (scrollTop / height.value).toFixed(2)
       )
-
       opacity.value = Math.min(visibility, 1)
       titleColor.value = props.titleAnimation && (opacity.value > 0.1)
         ? `rgba(var(--color-${titleOriginStyle.value})-base, ${opacity.value})`

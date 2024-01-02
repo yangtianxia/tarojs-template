@@ -27,7 +27,7 @@ declare type TimeoutType = ReturnType<typeof setTimeout> | null
 
 declare type IntervalType = ReturnType<typeof setInterval> | null
 
-declare type AnyCallback<T = any, U = void> = (...args: T[]) => U
+declare type UnknownCallback<T = unknown, U = void> = (...args: T[]) => U
 
 declare type Writeable<T> = {
   -readonly [P in keyof T]: T[P]

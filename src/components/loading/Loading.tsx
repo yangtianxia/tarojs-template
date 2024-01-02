@@ -44,24 +44,17 @@ export default defineComponent({
       }
     }
 
-    return () => {
-      const { vertical } = props
-      return (
+    return () => (
+      <view class={bem({ vertical: props.vertical })}>
         <view
-          class={bem({ vertical })}
-          aria-live="polite"
-          aria-busy={true}
-        >
-          <view
-            class={bem('spinner')}
-            style={{
-              color: props.color,
-              fontSize: addUnit(props.size)
-            }}
-          />
-          {renderText()}
-        </view>
-      )
-    }
+          class={bem('spinner')}
+          style={{
+            color: props.color,
+            fontSize: addUnit(props.size)
+          }}
+        />
+        {renderText()}
+      </view>
+    )
   }
 })

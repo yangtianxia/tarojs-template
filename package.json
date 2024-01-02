@@ -58,6 +58,7 @@
 		"vue": "^3.2.24"
 	},
 	"devDependencies": {
+		"@ant-design/colors": "^7.0.1",
 		"@babel/core": "^7.8.0",
 		"@mini-types/alipay": "^3.0.12",
 		"@rollup/plugin-commonjs": "^21.1.0",

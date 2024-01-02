@@ -29,7 +29,7 @@ const EventMatch = /^on[A-Z|-](.+)?$/
  */
 export const useNativeComponent = <T extends Record<string, any>>(componentId: string, props: T) => {
   const { page } = getCurrentInstance()
-  const emits = new Map<string, AnyCallback>()
+  const emits = new Map<string, UnknownCallback>()
   let nativeComponent: any
 
   const update = (newProps?: Partial<T>) => {

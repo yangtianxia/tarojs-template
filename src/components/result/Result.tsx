@@ -30,7 +30,7 @@ const resultProps = shallowMerge({}, resultSharedProps, {
   title: VNodeProp,
   desc: VNodeProp,
   bottom: Function as PropType<VNode>,
-  refresh: Function as PropType<AnyCallback>
+  refresh: Function as PropType<UnknownCallback>
 })
 
 export type ResultProps = ExtractPropTypes<typeof resultProps>
@@ -48,7 +48,7 @@ export default defineComponent({
       desc: props.desc
     })
 
-    const withOption = (status: ResultCode, refresh?: AnyCallback) => {
+    const withOption = (status: ResultCode, refresh?: UnknownCallback) => {
       const newConfig = resultStatusConfig[status]
 
       if (newConfig) {

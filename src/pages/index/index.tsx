@@ -6,6 +6,7 @@ import { useAppContext } from '@/hooks/app-context'
 
 // Component
 import { App } from '@/components/app'
+import { Button } from '@/components/button'
 
 // Style
 import less from './index.module.less'
@@ -22,6 +23,7 @@ export default defineComponent({
 
     return () => (
       <App>
+        <Button>按钮</Button>
       </App>
     )
   }

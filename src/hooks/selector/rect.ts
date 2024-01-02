@@ -3,7 +3,6 @@ import { reactive, toRef, type Ref, onUnmounted } from 'vue'
 import { createSelectorQuery, useReady, useUnload } from '@tarojs/taro'
 import { shallowMerge } from '@txjs/shared'
 import { isString, notNil } from '@txjs/bool'
-
 import { makeDOMRect, getSelectorElement, type DOMRect } from './utils'
 import type { SelectorElement, SingleRectOptions } from './types'
 
@@ -48,7 +47,7 @@ export const useRect = <K extends DOMRectKey>(
     }
   }
 
-  const triggerBoundingClientRect = (callback?: AnyCallback<DOMRect>) => {
+  const triggerBoundingClientRect = (callback?: UnknownCallback<DOMRect>) => {
     const query = createSelectorQuery()
     const selectElement = getSelectorElement(element)
 
@@ -70,7 +69,7 @@ export const useRect = <K extends DOMRectKey>(
       })
   }
 
-  const boundingClientRect = (callback?: AnyCallback<DOMRect>) => {
+  const boundingClientRect = (callback?: UnknownCallback<DOMRect>) => {
     if (useCache && cached) {
       callback?.(rect)
       return

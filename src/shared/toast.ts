@@ -69,7 +69,7 @@ class Toast {
     showToast(options)
   }
 
-  #hideToast(complete?: AnyCallback) {
+  #hideToast(complete?: UnknownCallback) {
     try {
       hideToast({
         noConflict: true,
@@ -111,7 +111,7 @@ class Toast {
     showLoading(options)
   }
 
-  #hideLoading(complete?: AnyCallback) {
+  #hideLoading(complete?: UnknownCallback) {
     try {
       hideLoading({
         noConflict: true,
@@ -126,7 +126,7 @@ class Toast {
     }
   }
 
-  #hide(complete?: AnyCallback) {
+  #hide(complete?: UnknownCallback) {
     if (this.#type === 'toast') {
       this.#hideToast(complete)
     } else if (this.#type === 'loading') {
@@ -156,7 +156,7 @@ class Toast {
     }
   }
 
-  hide(complete?: AnyCallback) {
+  hide(complete?: UnknownCallback) {
     if (this.#visible && !this.#locked) {
       this.#locked = true
       this.#hide(complete)

@@ -5,7 +5,7 @@ import { canIUse, nextTick } from '@tarojs/taro'
  * * 当前在tarojs支持nextTick基础上使用setTimeout再次延迟
  * * 不支持nextTick方法，则直接使用setTimeout延迟
  */
-export const useNextTick = (callback: AnyCallback, delay = 32) => {
+export const useNextTick = (callback: UnknownCallback, delay = 32) => {
   if (canIUse('nextTick')) {
     nextTick(() => setTimeout(callback, 1))
   } else {

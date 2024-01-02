@@ -3,7 +3,7 @@ const webpack = require('webpack')
 const cleanCss = require('clean-css')
 const { isString, isPlainObject, isArray } = require('@txjs/bool')
 const definPlugin = require('../define-plugin')
-const { getThemeColor } = require('./modules')
+const { getCurrentColor } = require('./color')
 const envUtils = require('../utils/env-utils')
 const { pathResolve, resolve } = require('../utils/basic')
 
@@ -51,7 +51,7 @@ module.exports = definPlugin((ctx) => {
 
     // 微信小程序 theme 配置
     if (isWeapp && envUtils.isTruly(process.env.DARKMODE)) {
-      const theme = JSON.stringify(getThemeColor(), null, 2)
+      const theme = JSON.stringify(getCurrentColor(), null, 2)
       const outputPath = resolve(ctx.paths.outputPath, 'theme.json')
       shell.ShellString(theme).to(outputPath)
     }
@@ -71,7 +71,7 @@ module.exports = definPlugin((ctx) => {
         Reflect.set(content, 'content', appConfig)
       }
     } else {
-      const theme = getThemeColor()
+      const theme = getCurrentColor()
       Object.keys(configMap).forEach((key) => {
         const content = Reflect.get(configMap, key)
         const pageConfig = Reflect.get(content, 'content')

@@ -12,7 +12,7 @@ export const createVNode = (
   vnode?: string | VNode,
   options?: {
     extra?: Record<any, any>
-    render?: AnyCallback<string>
+    render?: UnknownCallback<string>
   }
 ) => {
   if (vnode) {

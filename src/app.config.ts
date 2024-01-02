@@ -12,9 +12,9 @@ const config = {
   ],
   window: {
     navigationStyle: 'custom',
-    backgroundColor: '@grey200',
-    backgroundColorTop: '@grey200',
-    backgroundColorBottom: '@grey200',
+    backgroundColor: '@grey-2',
+    backgroundColorTop: '@grey-2',
+    backgroundColorBottom: '@grey-2',
     navigationBarTextStyle: '@navigation' as unknown,
     navigationBarBackgroundColor: '@section',
     navigationBarTitleText: process.env.PROJECT_NAME

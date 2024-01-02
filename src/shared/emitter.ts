@@ -4,13 +4,13 @@ import { onUnmounted } from 'vue'
 type EventName = string | symbol
 
 class Emitter extends Events {
-  monitor(eventName: EventName, listener: AnyCallback) {
+  von(eventName: EventName, listener: UnknownCallback) {
     const on = this.on(eventName, listener)
     onUnmounted(() => this.off(eventName))
     return on
   }
 
-  monitorOnce(eventName: EventName, listener: AnyCallback) {
+  vonce(eventName: EventName, listener: UnknownCallback) {
     const once = this.once(eventName, listener)
     onUnmounted(() => this.off(eventName))
     return once

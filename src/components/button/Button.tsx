@@ -33,7 +33,7 @@ export default defineComponent({
 
   props: buttonProps,
 
-  setup(props, { slots, attrs }) {
+  setup(props, { slots }) {
     const rootStyle = computed(() => {
       const style = {} as CSSProperties
       const { color, plain, block, width } = props
@@ -124,7 +124,6 @@ export default defineComponent({
       const {
         type,
         size,
-        bold,
         link,
         block,
         round,
@@ -132,6 +131,7 @@ export default defineComponent({
         square,
         loading,
         disabled,
+        danger,
         border,
         iconPosition
       } = props
@@ -140,13 +140,13 @@ export default defineComponent({
         bem([
           type,
           size,
+          danger,
           {
             block,
             round,
             square,
             loading,
             disabled,
-            bold: link ? false : bold,
             plain: link || plain,
             link: link && type !== 'cell',
             hairline: plain && border,
@@ -158,12 +158,11 @@ export default defineComponent({
       const state = pick(props, buttonNativePropKeys)
 
       if (props.loading || props.disabled) {
-        delete buttonProps.formType
+        delete state.formType
       }
 
       return (
         <Button
-          {...attrs}
           {...state}
           class={cls}
           hoverClass={bem('active')}
