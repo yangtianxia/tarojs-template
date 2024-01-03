@@ -24,6 +24,11 @@ export default defineComponent({
     return () => (
       <App>
         <Button>按钮</Button>
+        <Button type="primary">按钮</Button>
+        <Button block type="primary">按钮</Button>
+        <Button>按钮</Button>
+        <Button loading type="primary">按钮</Button>
+        <Button size="large" type="primary">按钮</Button>
       </App>
     )
   }

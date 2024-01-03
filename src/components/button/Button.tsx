@@ -81,7 +81,7 @@ export default defineComponent({
       )
 
       if (childVNode) {
-        if (props.type === 'cell') {
+        if (props.type === 'ghost') {
           return childVNode
         }
 
@@ -148,7 +148,7 @@ export default defineComponent({
             loading,
             disabled,
             plain: link || plain,
-            link: link && type !== 'cell',
+            link: link && type !== 'ghost',
             hairline: plain && border,
             unclickable: disabled || loading
           }

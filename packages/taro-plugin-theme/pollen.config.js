@@ -87,15 +87,15 @@ module.exports = defineConfig((defaultConfig) => {
 
   modules.color = {
     ...formatColor(colors.light),
-    grey: 'var(--color-grey-5)',
+    grey: 'var(--color-grey-6)',
     primary: 'var(--color-primary-6)',
-    active: 'var(--color-grey-3)',
-    bgcolor: 'var(--color-grey-2)',
-    border: 'var(--color-grey-3)',
-    text: 'var(--color-grey-9)',
-    'text-base': 'var(--color-grey-8)',
-    'text-light': 'var(--color-grey-7)',
-    'text-weak': 'var(--color-grey-6)',
+    active: 'var(--color-grey-5)',
+    bgcolor: 'var(--color-grey-4)',
+    border: 'var(--color-grey-5)',
+    text: 'var(--color-grey-10)',
+    'text-base': 'var(--color-grey-9)',
+    'text-light': 'var(--color-grey-8)',
+    'text-weak': 'var(--color-grey-7)',
   }
 
   modules.size = pxTransform({
